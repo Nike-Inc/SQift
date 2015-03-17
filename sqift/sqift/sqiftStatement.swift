@@ -26,6 +26,8 @@ public class sqiftStatement
     public var parameters: [Any] = [Any]()
     var columnNames: [String]? = nil
     
+    // MARK: Initialization
+    
     /**
     Initialize a statement with the supplied SQL
     
@@ -93,6 +95,8 @@ public class sqiftStatement
         }
     }
     
+    // MARK: Prepare
+    
     func prepare() -> sqiftResult
     {
         if preparedStatement != nil
@@ -103,6 +107,8 @@ public class sqiftStatement
         let result = database.sqResult(sqlite3_prepare_v2(database.database, sqlStatement, -1, &preparedStatement, nil))
         return result;
     }
+    
+    // MARK: Bind
     
     /**
     Reset the prepared SQL statement. Allows you to re-use frequetnly used SQL statements or statements with bindings.
@@ -207,6 +213,8 @@ public class sqiftStatement
 
         return result
     }
+    
+    // MARK: Result Columns
     
     /**
     Number of columns in the result set

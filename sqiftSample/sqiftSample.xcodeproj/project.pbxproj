@@ -474,6 +474,7 @@
 				552D1C0A1AB6ABA2007359B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		552D1C0B1AB6ABA2007359B0 /* Build configuration list for PBXNativeTarget "sqiftSampleTests" */ = {
 			isa = XCConfigurationList;
@@ -482,6 +483,7 @@
 				552D1C0D1AB6ABA2007359B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

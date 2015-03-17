@@ -159,9 +159,11 @@ class sqiftTests: XCTestCase {
             
             XCTAssert(statement.columnNameForIndex(0) == "A", "Column A has incorrect name")
             XCTAssert(statement.columnNameForIndex(1) == "B", "Column B has incorrect name")
+            XCTAssert(statement.columnNameForIndex(2) == nil, "Column X has incorrect name")
             
             XCTAssert(statement.columnTypeForIndex(0) == sqiftColumnType.Integer, "Column A has incorrect type")
             XCTAssert(statement.columnTypeForIndex(1) == sqiftColumnType.String, "Column B has incorrect type")
+            XCTAssert(statement.columnTypeForIndex(2) == sqiftColumnType.Null, "Column X has incorrect name")
             rowCount++
         }
         
