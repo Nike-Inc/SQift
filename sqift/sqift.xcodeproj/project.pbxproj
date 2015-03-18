@@ -17,6 +17,8 @@
 		552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BCC1AB6249D007359B0 /* String+sqift.swift */; };
 		552D1BD51AB624CC007359B0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1BD41AB624CC007359B0 /* libsqlite3.dylib */; };
 		552D1BDB1AB62548007359B0 /* sqift-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 552D1BDA1AB62548007359B0 /* sqift-Bridging-Header.h */; };
+		555AD5B81AB90253007961BC /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B71AB90253007961BC /* WeakSet.swift */; };
+		555AD5BA1AB90880007961BC /* WeakSetTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B91AB90880007961BC /* WeakSetTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +47,8 @@
 		552D1BD41AB624CC007359B0 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		552D1BDA1AB62548007359B0 /* sqift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "sqift-Bridging-Header.h"; sourceTree = "<group>"; };
 		552D1BDC1AB62AED007359B0 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.map; path = ModuleMaps/module.map; sourceTree = "<group>"; };
+		555AD5B71AB90253007961BC /* WeakSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
+		555AD5B91AB90880007961BC /* WeakSetTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSetTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +103,7 @@
 				552D1BAF1AB623EC007359B0 /* Supporting Files */,
 				552D1BCD1AB6249D007359B0 /* ToDo.rtf */,
 				552D1BDC1AB62AED007359B0 /* module.map */,
+				555AD5B71AB90253007961BC /* WeakSet.swift */,
 			);
 			path = sqift;
 			sourceTree = "<group>";
@@ -116,6 +121,7 @@
 			children = (
 				552D1BBE1AB623EC007359B0 /* sqiftTests.swift */,
 				552D1BBC1AB623EC007359B0 /* Supporting Files */,
+				555AD5B91AB90880007961BC /* WeakSetTest.swift */,
 			);
 			path = sqiftTests;
 			sourceTree = "<group>";
@@ -236,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				555AD5B81AB90253007961BC /* WeakSet.swift in Sources */,
 				552D1BD01AB6249D007359B0 /* sqiftResult.swift in Sources */,
 				552D1BCE1AB6249D007359B0 /* sqift.swift in Sources */,
 				552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */,
@@ -248,6 +255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				555AD5BA1AB90880007961BC /* WeakSetTest.swift in Sources */,
 				552D1BBF1AB623EC007359B0 /* sqiftTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -448,6 +456,7 @@
 				552D1BC41AB623EC007359B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		552D1BC51AB623EC007359B0 /* Build configuration list for PBXNativeTarget "sqiftTests" */ = {
 			isa = XCConfigurationList;
@@ -456,6 +465,7 @@
 				552D1BC71AB623EC007359B0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
