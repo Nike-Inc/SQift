@@ -38,7 +38,13 @@ class sqiftTests: XCTestCase {
     
     func testSQLiteVersion()
     {
-        XCTAssertEqual(database.sqlite3Version(), "3.8.5", "Version is incorrect")
+        var sqliteVersion = "3.7.13"    // iOS 8.1
+        
+        if UIDevice.currentDevice().systemVersion == "8.3"
+        {
+            sqliteVersion = "3.8.5"
+        }
+        XCTAssertEqual(database.sqlite3Version(), sqliteVersion, "Version is incorrect")
     }
     
     func testResult()

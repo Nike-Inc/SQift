@@ -28,19 +28,26 @@ class WeakSetTest: XCTestCase {
         var objectA: sqift? = sqift("")
         var objectB: sqift? = sqift("")
         
+        XCTAssertTrue(ws.isEmpty, "Empty is incorrect")
+
         ws.addObject(objectA)
-        ws.addObject(objectB)
+        XCTAssertFalse(ws.isEmpty, "Empty is incorrect")
         
+        ws.addObject(objectB)
+
+        XCTAssertFalse(ws.isEmpty, "Empty is incorrect")
         XCTAssertTrue(ws.containsObject(objectA), "Object A missing")
         XCTAssertTrue(ws.containsObject(objectB), "Object B missing")
         
         objectA = nil
 
+        XCTAssertFalse(ws.isEmpty, "Empty is incorrect")
         XCTAssertFalse(ws.containsObject(objectA), "Object A did not go away")
         XCTAssertTrue(ws.containsObject(objectB), "Object B missing")
 
         ws.removeObject(objectB)
 
+        XCTAssertTrue(ws.isEmpty, "Empty is incorrect")
         XCTAssertFalse(ws.containsObject(objectA), "Object A did not go away")
         XCTAssertFalse(ws.containsObject(objectB), "Object B did not go away")
     }

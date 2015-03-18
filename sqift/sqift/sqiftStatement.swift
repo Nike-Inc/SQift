@@ -40,6 +40,7 @@ public class sqiftStatement
     {
         self.database = database
         self.sqlStatement = sqlStatement
+        database.statements.addObject(self)
     }
     
     /**
@@ -84,6 +85,7 @@ public class sqiftStatement
         self.init(database: database, sqlStatement: statement)
         
         self.columnNames = tempColumnNames
+        database.statements.addObject(self)
     }
 
     deinit

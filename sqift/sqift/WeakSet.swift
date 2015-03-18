@@ -75,4 +75,13 @@ public class WeakSet<T: AnyObject>
         
         return result
     }
+    
+    public var isEmpty: Bool
+    {
+        get
+        {
+            compact()
+            return weakObjects.isEmpty
+        }
+    }
 }

@@ -22,6 +22,7 @@ public class sqift
 {
     public let path: String
     var database: COpaquePointer = nil
+    let statements = WeakSet<sqiftStatement>()
 
     /**
     Init
@@ -109,6 +110,8 @@ public class sqift
     */
     public func close() -> sqiftResult
     {
+        assert(statements.isEmpty == true, "Closing database with active sqiftStatements")
+        
         var result = sqiftResult.Success
         if database != nil
         {
