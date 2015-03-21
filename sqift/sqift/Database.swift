@@ -136,6 +136,7 @@ public class Database
     */
     public func lastErrorMessage() -> String?
     {
+        assert(database != nil, "database is not open")
         return String.fromCString(sqlite3_errmsg(database))
     }
     
@@ -149,6 +150,8 @@ public class Database
     */
     public func executeSQLStatement(statement: String) -> DatabaseResult
     {
+        assert(database != nil, "database is not open")
+
         var result = DatabaseResult.Success
         
         result = sqResult(sqlite3_exec(database, statement, nil, nil, nil))
@@ -165,6 +168,8 @@ public class Database
     */
     public func transaction(transaction: (database: Database) -> TransactionResult) -> DatabaseResult
     {
+        assert(database != nil, "database is not open")
+
         var result = DatabaseResult.Success
         
         result = sqResult(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil))
@@ -200,6 +205,8 @@ public class Database
     */
     public func lastRowInserted() -> Int64
     {
+        assert(database != nil, "database is not open")
+
         let rowID = sqlite3_last_insert_rowid(database)
         return rowID
     }

@@ -107,29 +107,31 @@ class sqiftTests: XCTestCase {
         XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == DatabaseResult.Success, "Exec failed")
     }
     
-    func oneRowTable()
+    func oneRowTable(_ database: Database? = nil)
     {
-        XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
-        XCTAssertEqual(database.createTable("table1", columns: [
+        var db = database == nil ? self.database : database!
+        XCTAssertEqual(db.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
+        XCTAssertEqual(db.createTable("table1", columns: [
             Column(name: "A", type: .Integer),
             Column(name: "B", type: .String)
             ]), DatabaseResult.Success, "Create failed")
-        XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == DatabaseResult.Success, "Exec failed")
-        XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == DatabaseResult.Success, "Exec failed")
+        XCTAssert(db.executeSQLStatement("DELETE FROM table1;") == DatabaseResult.Success, "Exec failed")
+        XCTAssert(db.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == DatabaseResult.Success, "Exec failed")
     }
     
-    func fiftyRowTable()
+    func fiftyRowTable(_ database: Database? = nil)
     {
-        database.transaction { (database) -> TransactionResult in
-            XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
-            XCTAssertEqual(database.createTable("table1", columns: [
+        var db = database == nil ? self.database : database!
+        db.transaction { (db) -> TransactionResult in
+            XCTAssertEqual(db.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
+            XCTAssertEqual(db.createTable("table1", columns: [
                 Column(name: "A", type: .Integer),
                 Column(name: "B", type: .String)
                 ]), DatabaseResult.Success, "Create failed")
             
             if self.fiftyRowTableStatement == nil
             {
-                self.fiftyRowTableStatement = Statement(database: database, sqlStatement: "INSERT INTO table1(A, B) VALUES (?, ?);")
+                self.fiftyRowTableStatement = Statement(database: db, sqlStatement: "INSERT INTO table1(A, B) VALUES (?, ?);")
             }
             
             for index in 0 ..< 50
@@ -506,5 +508,35 @@ class sqiftTests: XCTestCase {
         XCTAssertEqual(database.dropIndex("MyIndex"), .Success, "Drop index failed")
         
         XCTAssertEqual(database.dropIndex("Foobar"), .Success, "Drop index failed")
+    }
+    
+    func testQueue()
+    {
+        XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
+
+        let queue = DatabaseQueue(database: database)
+        let expect = expectationWithDescription("async")
+        
+        queue.transaction({ (transactionDatabase) -> TransactionResult in
+            XCTAssert(self.database !== transactionDatabase, "incorrect database")
+            self.oneRowTable(transactionDatabase)
+            return .Commit
+        }, completion: { (result) -> () in
+            switch result
+            {
+            case let .Error(error):
+                println("\(error)")
+            default:
+                ()
+            }
+            XCTAssertEqual(result, .Success, "transaction failed")
+            self.validateTable("table1", rowID: 1, values: [ 42, "Bob"])
+            expect.fulfill()
+        })
+        
+        waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
+            
+        })
+
     }
 }
