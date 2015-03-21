@@ -1,6 +1,6 @@
 //
-//  sqift.swift
-//  sqift
+//  Database.swift
+//  Database
 //
 //  Created by Dave Camp on 3/7/15.
 //  Copyright (c) 2015 thinbits. All rights reserved.
@@ -18,17 +18,17 @@ import Foundation
 public enum TransactionResult
 {
     case Commit
-    case Rollback(sqiftResult)
+    case Rollback(DatabaseResult)
 }
 
 /**
-*  Main sqift class
+*  Main Database class
 */
-public class sqift
+public class Database
 {
     public let path: String
     var database: COpaquePointer = nil
-    let statements = WeakSet<sqiftStatement>()
+    let statements = WeakSet<Statement>()
 
     /**
     Init
@@ -43,7 +43,7 @@ public class sqift
     }
     
     /**
-    Return the version of sqift being used
+    Return the version of Database being used
     
     :returns: Version string
     */
@@ -71,7 +71,7 @@ public class sqift
     
     :returns: Result
     */
-    internal func sqResult(result: Int32) -> sqiftResult
+    internal func sqResult(result: Int32) -> DatabaseResult
     {
         if result == SQLITE_OK
         {
@@ -97,9 +97,9 @@ public class sqift
     
     :returns: Result
     */
-    public func open() -> sqiftResult
+    public func open() -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         if database == nil
         {
             result = sqResult(sqlite3_open(path, &database))
@@ -114,11 +114,11 @@ public class sqift
     
     :returns: Result
     */
-    public func close() -> sqiftResult
+    public func close() -> DatabaseResult
     {
-        assert(statements.isEmpty == true, "Closing database with active sqiftStatements")
+        assert(statements.isEmpty == true, "Closing database with active Statements")
         
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         if database != nil
         {
             result = sqResult(sqlite3_close(database))
@@ -147,9 +147,9 @@ public class sqift
     
     :returns: Result
     */
-    public func executeSQLStatement(statement: String) -> sqiftResult
+    public func executeSQLStatement(statement: String) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         
         result = sqResult(sqlite3_exec(database, statement, nil, nil, nil))
         
@@ -163,9 +163,9 @@ public class sqift
     
     :returns: Result
     */
-    public func transaction(transaction: (database: sqift) -> TransactionResult) -> sqiftResult
+    public func transaction(transaction: (database: Database) -> TransactionResult) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         
         result = sqResult(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil))
         if result == .Success

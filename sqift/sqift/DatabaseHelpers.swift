@@ -34,7 +34,7 @@ public enum OnConflict : String
     case Ignore = " OR IGNORE "
 }
 
-public extension sqift
+public extension Database
 {
     /**
     Create a new table from the array of column definitions
@@ -44,9 +44,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func createTable(name: String, columns: [sqiftColumn]) -> sqiftResult
+    public func createTable(name: String, columns: [Column]) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         var createString = "CREATE TABLE IF NOT EXISTS \(name.sqiftSanitize())"
@@ -71,9 +71,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func dropTable(name: String) -> sqiftResult
+    public func dropTable(name: String) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         var dropString = "DROP TABLE IF EXISTS \(name.sqiftSanitize());"
@@ -92,7 +92,7 @@ public extension sqift
     public func tableExists(name: String) -> Bool
     {
         var exists = false
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let string = "SELECT name FROM sqlite_master WHERE type='table' AND name=\(name.sqiftSanitize());"
@@ -137,9 +137,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) -> sqiftResult
+    public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
        
@@ -156,7 +156,7 @@ public extension sqift
         
         string += " VALUES(\(parameters));"
         
-        let statement = sqiftStatement(database: self, sqlStatement: string)
+        let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = values
         
         result = statement.step()
@@ -178,9 +178,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) -> sqiftResult
+    public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
         
@@ -189,7 +189,7 @@ public extension sqift
         
         string += " WHERE \(whereExpression);"
         
-        let statement = sqiftStatement(database: self, sqlStatement: string)
+        let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = values
         
         result = statement.step()
@@ -209,15 +209,15 @@ public extension sqift
     
     :returns: Result
     */
-    public func deleteAllRowsFromTable(unsafeTableName: String) -> sqiftResult
+    public func deleteAllRowsFromTable(unsafeTableName: String) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let table = unsafeTableName.sqiftSanitize()
         var string = "DELETE FROM \(table)"
         
-        let statement = sqiftStatement(database: self, sqlStatement: string)
+        let statement = Statement(database: self, sqlStatement: string)
         
         result = statement.step()
         
@@ -238,11 +238,11 @@ public extension sqift
     */
     public func numberOfRowsInTable(unsafeTableName: String) -> Int64?
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let table = unsafeTableName.sqiftSanitize()
-        let statement = sqiftStatement(database: self, sqlStatement: "SELECT count(*) FROM \(table);")
+        let statement = Statement(database: self, sqlStatement: "SELECT count(*) FROM \(table);")
         result = statement.step()
         
         var count: Int64? = nil
@@ -266,9 +266,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) -> sqiftResult
+    public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
         
@@ -304,7 +304,7 @@ public extension sqift
         }
         string += ";"
         
-        let statement = sqiftStatement(database: self, sqlStatement: string)
+        let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = parameters
         
         result = statement.step()
@@ -326,9 +326,9 @@ public extension sqift
 
     :returns: Result
     */
-    public func createIndex(name: String, table: String,  columns: [String]) -> sqiftResult
+    public func createIndex(name: String, table: String,  columns: [String]) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(columns.count != 0, "values array is empty")
         
@@ -346,9 +346,9 @@ public extension sqift
     
     :returns: Result
     */
-    public func dropIndex(name: String) -> sqiftResult
+    public func dropIndex(name: String) -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let safeName = name.sqiftSanitize()

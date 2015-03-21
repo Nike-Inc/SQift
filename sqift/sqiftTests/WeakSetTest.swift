@@ -24,9 +24,9 @@ class WeakSetTest: XCTestCase {
 
     func testWeakSet()
     {
-        let ws = WeakSet<sqift>()
-        var objectA: sqift? = sqift("")
-        var objectB: sqift? = sqift("")
+        let ws = WeakSet<Database>()
+        var objectA: Database? = Database("")
+        var objectB: Database? = Database("")
         
         XCTAssertTrue(ws.isEmpty, "Empty is incorrect")
 

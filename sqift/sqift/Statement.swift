@@ -1,5 +1,5 @@
 //
-//  sqiftStatement.swift
+//  Statement.swift
 //  sqift
 //
 //  Created by Dave Camp on 3/8/15.
@@ -18,9 +18,9 @@ import Foundation
 internal let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
 internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
 
-public class sqiftStatement
+public class Statement
 {
-    let database: sqift
+    let database: Database
     let sqlStatement: String
     var preparedStatement: COpaquePointer = nil
     public var parameters: [Any] = [Any]()
@@ -34,9 +34,9 @@ public class sqiftStatement
     :param: database     Database to query
     :param: sqlStatement Valid SQL statement.
     
-    :returns: sqiftStatement object
+    :returns: Statement object
     */
-    public init(database: sqift, sqlStatement: String, parameters: Any...)
+    public init(database: Database, sqlStatement: String, parameters: Any...)
     {
         self.database = database
         self.sqlStatement = sqlStatement
@@ -55,9 +55,9 @@ public class sqiftStatement
     :param: ascending                Ascending or descending order. Ignored if unordered.
     :param: limit                    Maximum number of rows to return. 0 = no limit.
     
-    :returns: sqiftStatement object
+    :returns: Statement object
     */
-    public convenience init(database: sqift, table unsafeTable: String, columnNames unsafeColumnNames: [String]? = nil, orderByColumnNames unsafeOrderByColumnNames: [String]? = nil, ascending: Bool = true, limit: Int32 = 0)
+    public convenience init(database: Database, table unsafeTable: String, columnNames unsafeColumnNames: [String]? = nil, orderByColumnNames unsafeOrderByColumnNames: [String]? = nil, ascending: Bool = true, limit: Int32 = 0)
     {
         let table = unsafeTable.sqiftSanitize()
         var columns = "*"
@@ -101,7 +101,7 @@ public class sqiftStatement
     
     // MARK: Prepare
     
-    func prepare() -> sqiftResult
+    func prepare() -> DatabaseResult
     {
         if preparedStatement != nil
         {
@@ -119,7 +119,7 @@ public class sqiftStatement
     
     :returns: Result
     */
-    public func reset() -> sqiftResult
+    public func reset() -> DatabaseResult
     {
         let result = database.sqResult(sqlite3_reset(preparedStatement))
         return result
@@ -133,16 +133,16 @@ public class sqiftStatement
     
     :returns: Result
     */
-    public func bindParameters(parameters: Any...) -> sqiftResult
+    public func bindParameters(parameters: Any...) -> DatabaseResult
     {
         self.parameters = parameters
         let result = bind()
         return result
     }
     
-    func bind() -> sqiftResult
+    func bind() -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         
         // Prepare or reset as needed
         result = preparedStatement == nil ? prepare() : reset()
@@ -195,9 +195,9 @@ public class sqiftStatement
     
     :returns: Result. .More = there are more rows to process, .Done = No more rows to process
     */
-    public func step() -> sqiftResult
+    public func step() -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         
         if preparedStatement == nil
         {
@@ -314,9 +314,9 @@ public class sqiftStatement
     
     :returns: Result
     */
-    func cacheColumnNames() -> sqiftResult
+    func cacheColumnNames() -> DatabaseResult
     {
-        var result = sqiftResult.Success
+        var result = DatabaseResult.Success
         
         if columnNames == nil
         {
@@ -379,10 +379,10 @@ public class sqiftStatement
     
     :returns: Type of the column.
     */
-    public func columnTypeForIndex(index: Int) -> sqiftColumnType
+    public func columnTypeForIndex(index: Int) -> ColumnType
     {
         let value = sqlite3_column_type(preparedStatement, Int32(index))
-        let type = sqiftColumnType.fromColumnType(value)
+        let type = ColumnType.fromColumnType(value)
         return type
     }
 }

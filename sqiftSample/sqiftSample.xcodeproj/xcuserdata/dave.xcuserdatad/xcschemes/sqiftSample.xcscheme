@@ -34,6 +34,20 @@
                ReferencedContainer = "container:sqiftSample.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "555B216E1ABDF20700AF4102"
+               BuildableName = "NamespaceTestTests.xctest"
+               BlueprintName = "NamespaceTestTests"
+               ReferencedContainer = "container:sqiftSample.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -49,6 +63,16 @@
                BlueprintIdentifier = "552D1BFD1AB6ABA2007359B0"
                BuildableName = "sqiftSampleTests.xctest"
                BlueprintName = "sqiftSampleTests"
+               ReferencedContainer = "container:sqiftSample.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "555B216E1ABDF20700AF4102"
+               BuildableName = "NamespaceTestTests.xctest"
+               BlueprintName = "NamespaceTestTests"
                ReferencedContainer = "container:sqiftSample.xcodeproj">
             </BuildableReference>
          </TestableReference>

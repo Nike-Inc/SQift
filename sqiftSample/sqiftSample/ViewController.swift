@@ -8,6 +8,7 @@
 
 import UIKit
 import sqift
+import NamespaceTest
 
 class ViewController: UIViewController {
 
@@ -15,12 +16,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let database = sqift("/Users/dave/Desktop/sqift.db")
+        let database = Database("/Users/dave/Desktop/sqift.db")
         if database.open() == .Success
         {
             println("opened database")
             
-            let statement = sqiftStatement(database: database, table: "table1")
+            let statement = Statement(database: database, table: "table1")
             while statement.step() == .More
             {
                 let a = statement[0] as Int
@@ -33,7 +34,16 @@ class ViewController: UIViewController {
         {
             println("failed to opened database")
         }
-    }
+        
+//        let sqiftStatement = sqift.Statement(foo: "hello")
+//        println("\(sqiftStatement)")
+//
+//        let testStatement = NamespaceTest.Statement(foo: "hello")
+//        println("\(testStatement)")
+//        
+//        let foo = "hello".sqiftSanitize()
+//        println("\(foo)")
+}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

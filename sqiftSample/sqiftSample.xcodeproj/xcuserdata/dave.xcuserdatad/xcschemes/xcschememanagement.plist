@@ -4,10 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>NamespaceTest.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 		<key>sqiftSample.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -18,6 +23,16 @@
 			<true/>
 		</dict>
 		<key>552D1BFD1AB6ABA2007359B0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>555B21641ABDF20700AF4102</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>555B216E1ABDF20700AF4102</key>
 		<dict>
 			<key>primary</key>
 			<true/>

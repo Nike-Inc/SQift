@@ -1,5 +1,5 @@
 //
-//  sqiftColumn.swift
+//  Column.swift
 //  sqift
 //
 //  Created by Dave Camp on 3/14/15.
@@ -23,7 +23,7 @@ Column types
 - String: Text
 - Blob:   Binary object
 */
-public enum sqiftColumnType : String
+public enum ColumnType : String
 {
     case Integer = "INTEGER"
     case Float = "REAL"
@@ -52,7 +52,7 @@ public enum sqiftColumnType : String
         }
     }
     
-    static func fromColumnType(type: Int32) -> sqiftColumnType
+    static func fromColumnType(type: Int32) -> ColumnType
     {
         switch type
         {
@@ -77,16 +77,16 @@ public enum sqiftColumnType : String
 /**
 *  Column definition
 */
-public struct sqiftColumn
+public struct Column
 {
     public let name: String
-    public let type: sqiftColumnType
+    public let type: ColumnType
     public let notNull: Bool
     public let unique: Bool
     public let primaryKey: Bool
     public let foreignKey: Bool
     
-    public init(name: String, type: sqiftColumnType, notNull: Bool = true, unique: Bool = false, primaryKey: Bool = false, foreignKey: Bool = false)
+    public init(name: String, type: ColumnType, notNull: Bool = true, unique: Bool = false, primaryKey: Bool = false, foreignKey: Bool = false)
     {
         self.name = name.sqiftSanitize()
         self.type = type

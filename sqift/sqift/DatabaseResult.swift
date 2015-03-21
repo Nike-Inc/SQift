@@ -1,5 +1,5 @@
 //
-//  sqiftResult.swift
+//  DatabaseResult.swift
 //  sqift
 //
 //  Created by Dave Camp on 3/14/15.
@@ -21,7 +21,7 @@ Enum wrapper for sqlite results
 - Success: Operation succeeded with no errors
 - Error:   Operation failed, error string is associated value
 */
-public enum sqiftResult : Equatable
+public enum DatabaseResult : Equatable
 {
     case Success
     case More
@@ -34,7 +34,7 @@ public enum sqiftResult : Equatable
     }
 }
 
-public func ==(a: sqiftResult, b: sqiftResult) -> Bool {
+public func ==(a: DatabaseResult, b: DatabaseResult) -> Bool {
     switch (a, b)
     {
     case (.Success(), .Success()):
@@ -54,7 +54,7 @@ public func ==(a: sqiftResult, b: sqiftResult) -> Bool {
     }
 }
 
-public func !=(a: sqiftResult, b: sqiftResult) -> Bool {
+public func !=(a: DatabaseResult, b: DatabaseResult) -> Bool {
     return (a == b) ? false : true
 }
 

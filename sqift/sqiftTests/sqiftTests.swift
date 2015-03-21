@@ -13,14 +13,14 @@ import Foundation
 
 class sqiftTests: XCTestCase {
     
-    var database: sqift!
-    var fiftyRowTableStatement: sqiftStatement!
+    var database: Database!
+    var fiftyRowTableStatement: Statement!
     
     override func setUp() {
         super.setUp()
 
-        database = sqift("/Users/dave/Desktop/sqift.db")
-        XCTAssert(database.open() == sqiftResult.Success, "Open failed")
+        database = Database("/Users/dave/Desktop/sqift.db")
+        XCTAssert(database.open() == DatabaseResult.Success, "Open failed")
     }
     
     override func tearDown() {
@@ -28,7 +28,7 @@ class sqiftTests: XCTestCase {
         super.tearDown()
 
         fiftyRowTableStatement = nil
-        XCTAssert(database.close() == sqiftResult.Success, "Close failed, \(database.lastErrorMessage())")
+        XCTAssert(database.close() == DatabaseResult.Success, "Close failed, \(database.lastErrorMessage())")
     }
     
     func testSqiftVersion()
@@ -49,12 +49,12 @@ class sqiftTests: XCTestCase {
     
     func testResult()
     {
-        let result1 = sqiftResult.Success
-        let result2 = sqiftResult.Success
-        let result3 = sqiftResult.Error("Foo")
-        let result4 = sqiftResult.Error("Bar")
-        let result5 = sqiftResult.Error("Bar")
-        let result6 = sqiftResult.Error(nil)
+        let result1 = DatabaseResult.Success
+        let result2 = DatabaseResult.Success
+        let result3 = DatabaseResult.Error("Foo")
+        let result4 = DatabaseResult.Error("Bar")
+        let result5 = DatabaseResult.Error("Bar")
+        let result6 = DatabaseResult.Error(nil)
         
         XCTAssert(result1 == result2, "Compare test failed")
         XCTAssert(result1 != result3, "Compare test failed")
@@ -78,20 +78,20 @@ class sqiftTests: XCTestCase {
     
     func testCreateTable()
     {
-        XCTAssertEqual(database.dropTable("table1"), sqiftResult.Success, "Drop table failed")
+        XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
         XCTAssertEqual(database.createTable("table1", columns: [
-            sqiftColumn(name: "A", type: .Integer),
-            sqiftColumn(name: "B", type: .String)
-            ]), sqiftResult.Success, "Create failed")
+            Column(name: "A", type: .Integer),
+            Column(name: "B", type: .String)
+            ]), DatabaseResult.Success, "Create failed")
     }
     
     func testCreateTableAttack()
     {
-        XCTAssertEqual(database.dropTable("table2"), sqiftResult.Success, "Drop table failed")
+        XCTAssertEqual(database.dropTable("table2"), DatabaseResult.Success, "Drop table failed")
         XCTAssertEqual(database.createTable("table2", columns: [
-            sqiftColumn(name: "A", type: .Integer),
-            sqiftColumn(name: "B\"; DROP TABLE table1;", type: .String)
-            ]), sqiftResult.Success, "Create failed")
+            Column(name: "A", type: .Integer),
+            Column(name: "B\"; DROP TABLE table1;", type: .String)
+            ]), DatabaseResult.Success, "Create failed")
     }
     
     func testTableExists()
@@ -104,32 +104,32 @@ class sqiftTests: XCTestCase {
     func testStuff()
     {
         oneRowTable()
-        XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == sqiftResult.Success, "Exec failed")
+        XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == DatabaseResult.Success, "Exec failed")
     }
     
     func oneRowTable()
     {
-        XCTAssertEqual(database.dropTable("table1"), sqiftResult.Success, "Drop table failed")
+        XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
         XCTAssertEqual(database.createTable("table1", columns: [
-            sqiftColumn(name: "A", type: .Integer),
-            sqiftColumn(name: "B", type: .String)
-            ]), sqiftResult.Success, "Create failed")
-        XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == sqiftResult.Success, "Exec failed")
-        XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == sqiftResult.Success, "Exec failed")
+            Column(name: "A", type: .Integer),
+            Column(name: "B", type: .String)
+            ]), DatabaseResult.Success, "Create failed")
+        XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == DatabaseResult.Success, "Exec failed")
+        XCTAssert(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');") == DatabaseResult.Success, "Exec failed")
     }
     
     func fiftyRowTable()
     {
         database.transaction { (database) -> TransactionResult in
-            XCTAssertEqual(database.dropTable("table1"), sqiftResult.Success, "Drop table failed")
+            XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
             XCTAssertEqual(database.createTable("table1", columns: [
-                sqiftColumn(name: "A", type: .Integer),
-                sqiftColumn(name: "B", type: .String)
-                ]), sqiftResult.Success, "Create failed")
+                Column(name: "A", type: .Integer),
+                Column(name: "B", type: .String)
+                ]), DatabaseResult.Success, "Create failed")
             
             if self.fiftyRowTableStatement == nil
             {
-                self.fiftyRowTableStatement = sqiftStatement(database: database, sqlStatement: "INSERT INTO table1(A, B) VALUES (?, ?);")
+                self.fiftyRowTableStatement = Statement(database: database, sqlStatement: "INSERT INTO table1(A, B) VALUES (?, ?);")
             }
             
             for index in 0 ..< 50
@@ -150,7 +150,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1")
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1")
         var rowCount = 0
         while statement.step() == .More
         {
@@ -167,9 +167,9 @@ class sqiftTests: XCTestCase {
             XCTAssert(statement.columnNameForIndex(1) == "B", "Column B has incorrect name")
             XCTAssert(statement.columnNameForIndex(2) == nil, "Column X has incorrect name")
             
-            XCTAssert(statement.columnTypeForIndex(0) == sqiftColumnType.Integer, "Column A has incorrect type")
-            XCTAssert(statement.columnTypeForIndex(1) == sqiftColumnType.String, "Column B has incorrect type")
-            XCTAssert(statement.columnTypeForIndex(2) == sqiftColumnType.Null, "Column X has incorrect name")
+            XCTAssert(statement.columnTypeForIndex(0) == ColumnType.Integer, "Column A has incorrect type")
+            XCTAssert(statement.columnTypeForIndex(1) == ColumnType.String, "Column B has incorrect type")
+            XCTAssert(statement.columnTypeForIndex(2) == ColumnType.Null, "Column X has incorrect name")
             rowCount++
         }
         
@@ -180,7 +180,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        let statement = sqiftStatement(database: database, table: "table1", columnNames: ["A", "B"])
+        let statement = Statement(database: database, table: "table1", columnNames: ["A", "B"])
         var rowCount = 0
         while statement.step() == .More
         {
@@ -197,8 +197,8 @@ class sqiftTests: XCTestCase {
             XCTAssertEqual(statement.columnNameForIndex(0)!, "A".sqiftSanitize(), "Column A has incorrect name")
             XCTAssertEqual(statement.columnNameForIndex(1)!, "B".sqiftSanitize(), "Column B has incorrect name")
             
-            XCTAssert(statement.columnTypeForIndex(0) == sqiftColumnType.Integer, "Column A has incorrect type")
-            XCTAssert(statement.columnTypeForIndex(1) == sqiftColumnType.String, "Column B has incorrect type")
+            XCTAssert(statement.columnTypeForIndex(0) == ColumnType.Integer, "Column A has incorrect type")
+            XCTAssert(statement.columnTypeForIndex(1) == ColumnType.String, "Column B has incorrect type")
             rowCount++
         }
         
@@ -209,7 +209,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        let statement = sqiftStatement(database: database, table: "table1", columnNames: ["A", "B\"; DROP TABLE table1;"])
+        let statement = Statement(database: database, table: "table1", columnNames: ["A", "B\"; DROP TABLE table1;"])
         var rowCount = 0
         while statement.step() == .More
         {
@@ -223,7 +223,7 @@ class sqiftTests: XCTestCase {
     {
         fiftyRowTable()
         
-        let statement = sqiftStatement(database: database, table: "table1", columnNames: ["A", "B"], orderByColumnNames: ["A"], limit: 25)
+        let statement = Statement(database: database, table: "table1", columnNames: ["A", "B"], orderByColumnNames: ["A"], limit: 25)
         var rowCount = 0
         while statement.step() == .More
         {
@@ -240,8 +240,8 @@ class sqiftTests: XCTestCase {
     {
         fiftyRowTable()
         
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A = ?;")
-        XCTAssertEqual(statement.bindParameters(42), sqiftResult.Success, "Bind failed")
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A = ?;")
+        XCTAssertEqual(statement.bindParameters(42), DatabaseResult.Success, "Bind failed")
         var rowCount = 0
         while statement.step() == .More
         {
@@ -259,8 +259,8 @@ class sqiftTests: XCTestCase {
     {
         fiftyRowTable()
         
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A = ?;")
-        XCTAssertEqual(statement.bindParameters(42), sqiftResult.Success, "Bind failed")
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A = ?;")
+        XCTAssertEqual(statement.bindParameters(42), DatabaseResult.Success, "Bind failed")
         var rowCount = 0
         while statement.step() == .More
         {
@@ -274,7 +274,7 @@ class sqiftTests: XCTestCase {
         XCTAssertEqual(rowCount, 1, "Incorrect number of rows")
         
         rowCount = 0;
-        XCTAssertEqual(statement.bindParameters(43), sqiftResult.Success, "Bind failed")
+        XCTAssertEqual(statement.bindParameters(43), DatabaseResult.Success, "Bind failed")
         while statement.step() == .More
         {
             let value = 43 + rowCount
@@ -291,7 +291,7 @@ class sqiftTests: XCTestCase {
     {
         database.transaction { (database) -> TransactionResult in
             var transactionResult = TransactionResult.Commit
-            var result = sqiftResult.Success
+            var result = DatabaseResult.Success
             
             result = database.executeSQLStatement("DELETE FROM table1;")
             XCTAssertEqual(result, .Success, "Exec failed")
@@ -310,7 +310,7 @@ class sqiftTests: XCTestCase {
             return transactionResult
         }
 
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1")
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1")
         var rowCount = 0
         while statement.step() == .More
         {
@@ -323,7 +323,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
 
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1")
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1")
         var rowCount = 0
         while statement.step() == .More
         {
@@ -337,7 +337,7 @@ class sqiftTests: XCTestCase {
             let result = database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(43, 'Bob 43');")
             XCTAssertEqual(result, .Success, "Exec failed")
             
-            transactionResult = TransactionResult.Rollback(sqiftResult.Error("Fake Error"))
+            transactionResult = TransactionResult.Rollback(DatabaseResult.Error("Fake Error"))
             
             return transactionResult
         }
@@ -354,9 +354,9 @@ class sqiftTests: XCTestCase {
     func testNumberedInsertParameters()
     {
         database.transaction { (database) -> TransactionResult in
-            XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == sqiftResult.Success, "Exec failed")
+            XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == DatabaseResult.Success, "Exec failed")
             
-            let statement = sqiftStatement(database: database, sqlStatement: "INSERT INTO table1 VALUES (?1, ?2);")
+            let statement = Statement(database: database, sqlStatement: "INSERT INTO table1 VALUES (?1, ?2);")
             
             for index in 0 ..< 50
             {
@@ -367,7 +367,7 @@ class sqiftTests: XCTestCase {
         }
         
         // Pull back in descending order, just for fun
-        let statement = sqiftStatement(database: database, table: "table1", columnNames: ["A", "B"], orderByColumnNames: ["A"], ascending: false)
+        let statement = Statement(database: database, table: "table1", columnNames: ["A", "B"], orderByColumnNames: ["A"], ascending: false)
         var rowCount = 50
         while statement.step() == .More
         {
@@ -392,7 +392,7 @@ class sqiftTests: XCTestCase {
     
     func validateTable(table: String, rowID: Int64, values: [Any])
     {
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM \(table) WHERE rowid == ?", parameters: rowID)
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM \(table) WHERE rowid == ?", parameters: rowID)
         
         var rowCount = 0
         while statement.step() == .More
@@ -440,7 +440,7 @@ class sqiftTests: XCTestCase {
         
         
         // Look for the row
-        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A == ?", parameters: 42)
+        let statement = Statement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A == ?", parameters: 42)
         
         var rowCount = 0
         while statement.step() == .More
