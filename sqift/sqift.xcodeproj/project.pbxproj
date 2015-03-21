@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550B478F1ABBDA4D00B047A1 /* sqiftHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550B478E1ABBDA4D00B047A1 /* sqiftHelpers.swift */; };
 		552D1BB21AB623EC007359B0 /* sqift.h in Headers */ = {isa = PBXBuildFile; fileRef = 552D1BB11AB623EC007359B0 /* sqift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		552D1BB81AB623EC007359B0 /* sqift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1BAC1AB623EC007359B0 /* sqift.framework */; };
 		552D1BBF1AB623EC007359B0 /* sqiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BBE1AB623EC007359B0 /* sqiftTests.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		550B478E1ABBDA4D00B047A1 /* sqiftHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = sqiftHelpers.swift; sourceTree = "<group>"; };
 		552D1BAC1AB623EC007359B0 /* sqift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sqift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		552D1BB01AB623EC007359B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		552D1BB11AB623EC007359B0 /* sqift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqift.h; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				552D1BDA1AB62548007359B0 /* sqift-Bridging-Header.h */,
 				552D1BB11AB623EC007359B0 /* sqift.h */,
 				552D1BC81AB6249D007359B0 /* sqift.swift */,
+				550B478E1ABBDA4D00B047A1 /* sqiftHelpers.swift */,
 				552D1BC91AB6249D007359B0 /* sqiftColumn.swift */,
 				552D1BCA1AB6249D007359B0 /* sqiftResult.swift */,
 				552D1BCB1AB6249D007359B0 /* sqiftStatement.swift */,
@@ -244,6 +247,7 @@
 			files = (
 				555AD5B81AB90253007961BC /* WeakSet.swift in Sources */,
 				552D1BD01AB6249D007359B0 /* sqiftResult.swift in Sources */,
+				550B478F1ABBDA4D00B047A1 /* sqiftHelpers.swift in Sources */,
 				552D1BCE1AB6249D007359B0 /* sqift.swift in Sources */,
 				552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */,
 				552D1BCF1AB6249D007359B0 /* sqiftColumn.swift in Sources */,

@@ -383,4 +383,82 @@ class sqiftTests: XCTestCase {
             }
         }
     }
+    
+    func validateTable(table: String, rowID: Int64, values: [Any])
+    {
+        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM \(table) WHERE rowid == ?", parameters: rowID)
+        
+        var rowCount = 0
+        while statement.step() == .More
+        {
+            XCTAssertEqual(statement.columnCount(), values.count, "Wrong number of columns")
+            XCTAssertEqual(statement[0] as String!, "\(values[0])", "Column A has incorrect value")
+            XCTAssertEqual(statement[1] as String!, "\(values[1])", "Column B has incorrect value")
+            rowCount++
+        }
+        
+        XCTAssertEqual(rowCount, 1, "Incorrect number of rows")
+    }
+    
+    func testInsertRow()
+    {
+        oneRowTable()
+        
+        // Insert, no column names
+        XCTAssertEqual(database.insertRowIntoTable(table: "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        var rowID = database.lastRowInserted()
+        XCTAssertEqual(rowID, 2, "unexpected row ID")
+        validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
+
+    
+        // Insert with columns mixed up
+        XCTAssertEqual(database.insertRowIntoTable(table: "table1", columns: ["B", "A"], values: [ "Row3", 44 ]), .Success, "Insert failed")
+        rowID = database.lastRowInserted()
+        XCTAssertEqual(rowID, 3, "unexpected row ID")
+        
+        validateTable("table1", rowID: rowID, values: [ 44, "Row3" ])
+    }
+    
+    func testDeleteRow()
+    {
+        oneRowTable()
+        
+        // Insert, no column names
+        XCTAssertEqual(database.insertRowIntoTable(table: "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        var rowID = database.lastRowInserted()
+        XCTAssertEqual(rowID, 2, "unexpected row ID")
+        validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
+        
+        // Delete row
+        XCTAssertEqual(database.deleteFromTable(table: "table1", whereExpression: "A == ?", values: [ 42 ]), .Success, "Delete failed")
+        
+        
+        // Look for the row
+        let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1 WHERE A == ?", parameters: 42)
+        
+        var rowCount = 0
+        while statement.step() == .More
+        {
+            rowCount++
+        }
+        
+        XCTAssertEqual(rowCount, 0, "Incorrect number of rows")
+    }
+    
+    func testDeleteAllRows()
+    {
+        fiftyRowTable()
+        
+        var count: Int64? = nil
+        count = database.numberOfRowsInTable(table: "table1")
+        XCTAssert(count != nil && count! == 50, "Incorrect row count")
+        
+        XCTAssertEqual(database.deleteAllRowsFromTable(table: "table1"), .Success, "Delete all failed")
+        
+        XCTAssertEqual(database.numberOfRowsInTable(table: "table1")!, 0, "Incorrect row count")
+        
+        XCTAssertEqual(database.dropTable("table1"), .Success, "Drop failed")
+        
+        XCTAssertEqual(database.numberOfRowsInTable(table: "table1") == nil, true, "Row count should be nil")
+    }
 }

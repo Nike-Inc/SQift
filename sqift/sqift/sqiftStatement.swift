@@ -36,10 +36,12 @@ public class sqiftStatement
     
     :returns: sqiftStatement object
     */
-    public init(database: sqift, sqlStatement: String)
+    public init(database: sqift, sqlStatement: String, parameters: Any...)
     {
         self.database = database
         self.sqlStatement = sqlStatement
+        self.parameters = parameters
+
         database.statements.addObject(self)
     }
     
