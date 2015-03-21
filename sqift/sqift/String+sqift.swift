@@ -24,3 +24,10 @@ public extension String
         return string
     }
 }
+
+public func sanitizeStrings(strings: [String]) -> [String]
+{
+    let newStrings = strings.map( { $0.sqiftSanitize() } )
+    
+    return newStrings
+}

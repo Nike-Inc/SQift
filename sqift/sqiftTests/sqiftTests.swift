@@ -120,7 +120,7 @@ class sqiftTests: XCTestCase {
     
     func fiftyRowTable()
     {
-        database.transaction { (database) -> sqiftResult in
+        database.transaction { (database) -> TransactionResult in
             XCTAssertEqual(database.dropTable("table1"), sqiftResult.Success, "Drop table failed")
             XCTAssertEqual(database.createTable("table1", columns: [
                 sqiftColumn(name: "A", type: .Integer),
@@ -137,7 +137,7 @@ class sqiftTests: XCTestCase {
                 XCTAssertEqual(self.fiftyRowTableStatement.bindParameters(index, "Bob \(index)"), .Success, "Bind failed")
                 XCTAssertEqual(self.fiftyRowTableStatement.step(), .Done, "Step failed")
             }
-            return .Success
+            return .Commit
         }
     }
     
@@ -289,19 +289,25 @@ class sqiftTests: XCTestCase {
     
     func testTransaction()
     {
-        database.transaction { (database) -> sqiftResult in
+        database.transaction { (database) -> TransactionResult in
+            var transactionResult = TransactionResult.Commit
             var result = sqiftResult.Success
             
             result = database.executeSQLStatement("DELETE FROM table1;")
-            XCTAssert(result == sqiftResult.Success, "Exec failed")
+            XCTAssertEqual(result, .Success, "Exec failed")
             
             if result == .Success
             {
                 result = database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(42, 'Bob');")
-                XCTAssert(result == sqiftResult.Success, "Exec failed")
+                XCTAssertEqual(result, .Success, "Exec failed")
             }
             
-            return result
+            if result != .Success
+            {
+                transactionResult = .Rollback(result)
+            }
+            
+            return transactionResult
         }
 
         let statement = sqiftStatement(database: database, sqlStatement: "SELECT * FROM table1")
@@ -325,15 +331,15 @@ class sqiftTests: XCTestCase {
         }
         XCTAssert(rowCount == 1, "Incorrect number of rows")
         
-        database.transaction { (database) -> sqiftResult in
-            var result = sqiftResult.Success
+        database.transaction { (database) -> TransactionResult in
+            var transactionResult = TransactionResult.Commit
             
-            result = database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(43, 'Bob 43');")
-            XCTAssert(result == sqiftResult.Success, "Exec failed")
+            let result = database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(43, 'Bob 43');")
+            XCTAssertEqual(result, .Success, "Exec failed")
             
-            result = .Error("Fake Error")
+            transactionResult = TransactionResult.Rollback(sqiftResult.Error("Fake Error"))
             
-            return result
+            return transactionResult
         }
 
         statement.reset()
@@ -347,7 +353,7 @@ class sqiftTests: XCTestCase {
     
     func testNumberedInsertParameters()
     {
-        database.transaction { (database) -> sqiftResult in
+        database.transaction { (database) -> TransactionResult in
             XCTAssert(database.executeSQLStatement("DELETE FROM table1;") == sqiftResult.Success, "Exec failed")
             
             let statement = sqiftStatement(database: database, sqlStatement: "INSERT INTO table1 VALUES (?1, ?2);")
@@ -357,7 +363,7 @@ class sqiftTests: XCTestCase {
                 XCTAssertEqual(statement.bindParameters(index, "Bob \(index)"), .Success, "Bind failed")
                 XCTAssertEqual(statement.step(), .Done, "Step failed")
             }
-            return .Success
+            return .Commit
         }
         
         // Pull back in descending order, just for fun
@@ -405,14 +411,14 @@ class sqiftTests: XCTestCase {
         oneRowTable()
         
         // Insert, no column names
-        XCTAssertEqual(database.insertRowIntoTable( "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable("table1", values: [ 43, "Row2"]), .Success, "Insert failed")
         var rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 2, "unexpected row ID")
         validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
 
     
         // Insert with columns mixed up
-        XCTAssertEqual(database.insertRowIntoTable( "table1", columns: ["B", "A"], values: [ "Row3", 44 ]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable("table1", columns: ["B", "A"], values: [ "Row3", 44 ]), .Success, "Insert failed")
         rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 3, "unexpected row ID")
         
@@ -424,7 +430,7 @@ class sqiftTests: XCTestCase {
         oneRowTable()
         
         // Insert, no column names
-        XCTAssertEqual(database.insertRowIntoTable( "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable("table1", values: [ 43, "Row2"]), .Success, "Insert failed")
         var rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 2, "unexpected row ID")
         validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
@@ -466,7 +472,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        XCTAssertEqual(database.updateTable( "table1", values: [ "A" : 44 ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
+        XCTAssertEqual(database.updateTable("table1", values: [ "A" : 44 ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
         
         validateTable("table1", rowID: 1, values: [ 44, "Bob"])
     }
@@ -475,7 +481,7 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        XCTAssertEqual(database.updateTable( "table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
+        XCTAssertEqual(database.updateTable("table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
         
         validateTable("table1", rowID: 1, values: [ 42, "Barfo"])
     }
@@ -484,8 +490,21 @@ class sqiftTests: XCTestCase {
     {
         oneRowTable()
         
-        XCTAssertEqual(database.updateTable( "table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 99), .Success, "Update failed")
+        XCTAssertEqual(database.updateTable("table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 99), .Success, "Update failed")
         
         validateTable("table1", rowID: 1, values: [ 42, "Bob"])
+    }
+    
+    func testCreateIndex()
+    {
+        fiftyRowTable()
+        
+        XCTAssertEqual(database.createIndex("MyIndex", table: "table1", columns: ["A"]), .Success, "Create index failed")
+        
+        XCTAssertEqual(database.dropIndex("MyIndex"), .Success, "Drop index failed")
+        
+        XCTAssertEqual(database.dropIndex("MyIndex"), .Success, "Drop index failed")
+        
+        XCTAssertEqual(database.dropIndex("Foobar"), .Success, "Drop index failed")
     }
 }

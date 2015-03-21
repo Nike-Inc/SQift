@@ -15,6 +15,12 @@ import Foundation
     #endif
 #endif
 
+public enum TransactionResult
+{
+    case Commit
+    case Rollback(sqiftResult)
+}
+
 /**
 *  Main sqift class
 */
@@ -134,6 +140,13 @@ public class sqift
     }
     
     
+    /**
+    Execute a SQL transaction.
+    
+    :param: statement SQL statement to execute. No sanitzation is performed.
+    
+    :returns: Result
+    */
     public func executeSQLStatement(statement: String) -> sqiftResult
     {
         var result = sqiftResult.Success
@@ -143,22 +156,37 @@ public class sqift
         return result
     }
     
-    public func transaction(transaction: (database: sqift) -> sqiftResult) -> sqiftResult
+    /**
+    Perform a closure within a database transaction.
+    
+    :param: transaction Closure to execute in a database transaction.
+    
+    :returns: Result
+    */
+    public func transaction(transaction: (database: sqift) -> TransactionResult) -> sqiftResult
     {
         var result = sqiftResult.Success
         
         result = sqResult(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil))
         if result == .Success
         {
-            result = transaction(database: self)
+            let transactionResult = transaction(database: self)
             
-            if result != .Error(nil)
+            switch transactionResult
             {
-                result = sqResult(sqlite3_exec(database, "COMMIT TRANSACTION;", nil, nil, nil))
-            }
-            else
-            {
-                result = sqResult(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil))
+                case .Commit:
+                    result = sqResult(sqlite3_exec(database, "COMMIT TRANSACTION;", nil, nil, nil))
+                
+                case let .Rollback(transactionError):
+                    let rollbackResult = sqResult(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil))
+                    if rollbackResult == .Success
+                    {
+                        result = transactionError
+                    }
+                    else
+                    {
+                        result = rollbackResult
+                    }
             }
         }
         

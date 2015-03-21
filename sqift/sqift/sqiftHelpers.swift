@@ -300,8 +300,9 @@ public extension sqift
         
         if let whereExpression = whereExpression
         {
-            string += " WHERE \(whereExpression);"
+            string += " WHERE \(whereExpression)"
         }
+        string += ";"
         
         let statement = sqiftStatement(database: self, sqlStatement: string)
         statement.parameters = parameters
@@ -313,6 +314,45 @@ public extension sqift
             result = .Success
         }
         
+        return result
+    }
+    
+    /**
+    Create a named index for a table
+
+    :param: name    Name of index to create. Name must be unique withiin the database.
+    :param: table   Table to create index on
+    :param: columns Columns to index
+
+    :returns: Result
+    */
+    public func createIndex(name: String, table: String,  columns: [String]) -> sqiftResult
+    {
+        var result = sqiftResult.Success
+        assert(database != nil, "database is nil")
+        assert(columns.count != 0, "values array is empty")
+        
+        let safeName = name.sqiftSanitize()
+        let safeTable = table.sqiftSanitize()
+        let safeColumns = ",".join(sanitizeStrings(columns))
+        result = executeSQLStatement("CREATE INDEX IF NOT EXISTS \(safeName) ON \(safeTable) (\(safeColumns));")
+        return result
+    }
+    
+    /**
+    Drop a named index
+    
+    :param: name Name of index to drop
+    
+    :returns: Result
+    */
+    public func dropIndex(name: String) -> sqiftResult
+    {
+        var result = sqiftResult.Success
+        assert(database != nil, "database is nil")
+        
+        let safeName = name.sqiftSanitize()
+        result = executeSQLStatement("DROP INDEX IF EXISTS \(safeName);")
         return result
     }
 }
