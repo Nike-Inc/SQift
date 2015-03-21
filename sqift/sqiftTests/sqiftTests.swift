@@ -405,14 +405,14 @@ class sqiftTests: XCTestCase {
         oneRowTable()
         
         // Insert, no column names
-        XCTAssertEqual(database.insertRowIntoTable(table: "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable( "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
         var rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 2, "unexpected row ID")
         validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
 
     
         // Insert with columns mixed up
-        XCTAssertEqual(database.insertRowIntoTable(table: "table1", columns: ["B", "A"], values: [ "Row3", 44 ]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable( "table1", columns: ["B", "A"], values: [ "Row3", 44 ]), .Success, "Insert failed")
         rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 3, "unexpected row ID")
         
@@ -424,13 +424,13 @@ class sqiftTests: XCTestCase {
         oneRowTable()
         
         // Insert, no column names
-        XCTAssertEqual(database.insertRowIntoTable(table: "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
+        XCTAssertEqual(database.insertRowIntoTable( "table1", values: [ 43, "Row2"]), .Success, "Insert failed")
         var rowID = database.lastRowInserted()
         XCTAssertEqual(rowID, 2, "unexpected row ID")
         validateTable("table1", rowID: rowID, values: [ 43, "Row2"])
         
         // Delete row
-        XCTAssertEqual(database.deleteFromTable(table: "table1", whereExpression: "A == ?", values: [ 42 ]), .Success, "Delete failed")
+        XCTAssertEqual(database.deleteFromTable("table1", whereExpression: "A == ?", values: [ 42 ]), .Success, "Delete failed")
         
         
         // Look for the row
@@ -450,15 +450,42 @@ class sqiftTests: XCTestCase {
         fiftyRowTable()
         
         var count: Int64? = nil
-        count = database.numberOfRowsInTable(table: "table1")
+        count = database.numberOfRowsInTable("table1")
         XCTAssert(count != nil && count! == 50, "Incorrect row count")
         
-        XCTAssertEqual(database.deleteAllRowsFromTable(table: "table1"), .Success, "Delete all failed")
+        XCTAssertEqual(database.deleteAllRowsFromTable("table1"), .Success, "Delete all failed")
         
-        XCTAssertEqual(database.numberOfRowsInTable(table: "table1")!, 0, "Incorrect row count")
+        XCTAssertEqual(database.numberOfRowsInTable("table1")!, 0, "Incorrect row count")
         
         XCTAssertEqual(database.dropTable("table1"), .Success, "Drop failed")
         
-        XCTAssertEqual(database.numberOfRowsInTable(table: "table1") == nil, true, "Row count should be nil")
+        XCTAssertEqual(database.numberOfRowsInTable("table1") == nil, true, "Row count should be nil")
+    }
+    
+    func testUpdateRow1()
+    {
+        oneRowTable()
+        
+        XCTAssertEqual(database.updateTable( "table1", values: [ "A" : 44 ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
+        
+        validateTable("table1", rowID: 1, values: [ 44, "Bob"])
+    }
+
+    func testUpdateRow2()
+    {
+        oneRowTable()
+        
+        XCTAssertEqual(database.updateTable( "table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 42), .Success, "Update failed")
+        
+        validateTable("table1", rowID: 1, values: [ 42, "Barfo"])
+    }
+
+    func testUpdateRowNoMatch()
+    {
+        oneRowTable()
+        
+        XCTAssertEqual(database.updateTable( "table1", values: [ "B" : "Barfo" ], whereExpression: "A = ?", parameters: 99), .Success, "Update failed")
+        
+        validateTable("table1", rowID: 1, values: [ 42, "Bob"])
     }
 }

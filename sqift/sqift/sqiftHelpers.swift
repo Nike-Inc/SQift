@@ -15,6 +15,25 @@ import Foundation
 #endif
 #endif
 
+/**
+The ON CONFLICT clause applies to UNIQUE, NOT NULL, CHECK, and PRIMARY KEY constraints
+https://www.sqlite.org/lang_conflict.html
+
+- Rollback: Rollback the current transaction or abort if not in a transaction
+- Abort:    Abort changes from this SQL statement. Default.
+- Replace:  Replace conflicting rows.
+- Fail:     Abort conflicting change. but not other changes in this SQL statement
+- Ignore:   Skip conflicting rows and keep going.
+*/
+public enum OnConflict : String
+{
+    case Rollback = " OR ROLLBACK "
+    case Abort = " OR ABORT "
+    case Replace = " OR REPLACE "
+    case Fail = " OR FAIL "
+    case Ignore = " OR IGNORE "
+}
+
 public extension sqift
 {
     /**
@@ -108,14 +127,24 @@ public extension sqift
         return exists
     }
     
-    public func insertRowIntoTable(table unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any]) -> sqiftResult
+    /**
+    Insert a row into a table
+    
+    :param: unsafeTableName Table name
+    :param: unsafeColumns   Optional list of column names. If nil, value array must match the column order
+    :param: values          Values to insert into the table. Must be in same order an the column list.
+    :param: onConflict      How to resolve conflicts
+    
+    :returns: Result
+    */
+    public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) -> sqiftResult
     {
         var result = sqiftResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
        
         let table = unsafeTableName.sqiftSanitize()
-        var string = "INSERT INTO \(table)"
+        var string = "INSERT \(onConflict.rawValue) INTO \(table)"
         
         if let unsafeColumns = unsafeColumns
         {
@@ -140,7 +169,16 @@ public extension sqift
         return result
     }
     
-    public func deleteFromTable(table unsafeTableName: String, whereExpression: String, values: [Any]) -> sqiftResult
+    /**
+    Delete matching rows from a table
+    
+    :param: unsafeTableName Table name
+    :param: whereExpression Expression to match rows. Use ? for expression parameters
+    :param: values          Values to bind to expression parameters
+    
+    :returns: Result
+    */
+    public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) -> sqiftResult
     {
         var result = sqiftResult.Success
         assert(database != nil, "database is nil")
@@ -164,7 +202,14 @@ public extension sqift
         return result
     }
     
-    public func deleteAllRowsFromTable(table unsafeTableName: String) -> sqiftResult
+    /**
+    Delete all rows from a table
+    
+    :param: unsafeTableName Table name
+    
+    :returns: Result
+    */
+    public func deleteAllRowsFromTable(unsafeTableName: String) -> sqiftResult
     {
         var result = sqiftResult.Success
         assert(database != nil, "database is nil")
@@ -184,7 +229,14 @@ public extension sqift
         return result
     }
     
-    public func numberOfRowsInTable(table unsafeTableName: String) -> Int64?
+    /**
+    Return the number of rows in a table
+    
+    :param: unsafeTableName Table name
+    
+    :returns: Number of rows, or nil if there was an error.
+    */
+    public func numberOfRowsInTable(unsafeTableName: String) -> Int64?
     {
         var result = sqiftResult.Success
         assert(database != nil, "database is nil")
@@ -200,5 +252,67 @@ public extension sqift
         }
         
         return count
+    }
+    
+    /**
+    Update rows in a table. Rows matching the where expression will have columns listed in
+    the values dictionary set to their correstponding values.
+    
+    :param: unsafeTableName Table name
+    :param: values          Dictonary of column names and values
+    :param: onConflict      How to resolve conflicts
+    :param: whereExpression Expression to match rows. Use ? for expression parameters
+    :param: values          Values to bind to expression parameters
+    
+    :returns: Result
+    */
+    public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) -> sqiftResult
+    {
+        var result = sqiftResult.Success
+        assert(database != nil, "database is nil")
+        assert(values.count != 0, "values array is empty")
+        
+        let table = unsafeTableName.sqiftSanitize()
+        var string = "UPDATE \(onConflict.rawValue) \(table) SET "
+        
+        var pairs = [String]()
+        for (columnName, value) in values
+        {
+            switch value
+            {
+            case is Int, is Int32, is Int64, is Double:
+                pairs.append("\(columnName.sqiftSanitize()) = \(value)")
+
+            case is Bool:
+                let boolValue = value as! Bool == true ? 1 : 0
+                pairs.append("\(columnName.sqiftSanitize()) = \(boolValue)")
+            
+            case is String:
+                let string = (value as! String).sqiftSanitize()
+                pairs.append("\(columnName.sqiftSanitize()) = \(string)")
+            
+            default:
+                ()
+            }
+        }
+        
+        string += ",".join(pairs)
+        
+        if let whereExpression = whereExpression
+        {
+            string += " WHERE \(whereExpression);"
+        }
+        
+        let statement = sqiftStatement(database: self, sqlStatement: string)
+        statement.parameters = parameters
+        
+        result = statement.step()
+        
+        if result == .Done
+        {
+            result = .Success
+        }
+        
+        return result
     }
 }
