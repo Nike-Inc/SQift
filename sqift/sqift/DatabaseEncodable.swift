@@ -10,10 +10,22 @@ import Foundation
 
 public protocol DatabaseEncodable
 {
+    /// Table name of this class
     static var tableName: String { get }
+    
+    /// Column definitions for this class
     static var columnDefinitions: [Column] { get }
+    
+    /// Object properites turned into an array of values corresponding in table column order
     var columnValues: [Any] { get }
     
+    /**
+    <#Description#>
+    
+    :param: statement <#statement description#>
+    
+    :returns: <#return value description#>
+    */
     static func objectFromStatement(statement: Statement) -> DatabaseEncodable?
 }
 

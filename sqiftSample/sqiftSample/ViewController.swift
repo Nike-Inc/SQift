@@ -9,85 +9,10 @@
 import UIKit
 import sqift
 
-struct Person : Printable, DebugPrintable
-{
-    let firstName: String
-    let lastName: String
-    let address: String
-    let zipcode: Int
-    
-    var description: String { return "\(firstName) \(lastName), \(address), \(zipcode)" }
-    var debugDescription: String { return "\(firstName) \(lastName), \(address), \(zipcode)" }
-}
-
-extension Person : DatabaseEncodable
-{
-    static var tableName: String { get { return "people" } }
-
-    static var columnDefinitions: [Column]
-        {
-            get
-            {
-                return [
-                    Column(name: "firstName", type: .String),
-                    Column(name: "lastName", type: .String),
-                    Column(name: "address", type: .String),
-                    Column(name: "zipcode", type: .Integer)
-                ]
-            }
-        }
-
-    var columnValues: [Any]
-        {
-            get
-            {
-                return [
-                    firstName,
-                    lastName,
-                    address,
-                    zipcode
-                ]
-            }
-        }
-    
-    static func objectFromStatement(statement: Statement) -> DatabaseEncodable?
-    {
-        var object: Person? = nil
-        var valid = statement.columnCount() == 4
-
-        if valid
-        {
-            if statement.columnTypeForIndex(0) != .String ||
-                statement.columnTypeForIndex(1) != .String ||
-                statement.columnTypeForIndex(2) != .String ||
-                statement.columnTypeForIndex(3) != .Integer
-            {
-                valid = false
-            }
-        }
-        
-        if valid
-        {
-            if let firstName = statement[0] as String?,
-                let lastName = statement[1] as String?,
-                let address = statement[2] as String?
-            {
-                let zipcode = statement[3] as Int
-                object = Person(firstName: firstName, lastName: lastName, address: address, zipcode: zipcode)
-            }
-            else
-            {
-                valid = false
-            }
-        }
-        
-        return object
-    }
-}
-
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
     var database: Database? = nil
+    var databaseQueue: DatabaseQueue? = nil
     var people: [Person] = [Person]()
 
     @IBOutlet weak var tableView: UITableView!
@@ -100,6 +25,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         database = Database("/Users/dave/Desktop/sqift.db")
         if database?.open() == .Success
         {
+            databaseQueue = DatabaseQueue(database: database!)
             insertSampleData(database!)
         }
         else
