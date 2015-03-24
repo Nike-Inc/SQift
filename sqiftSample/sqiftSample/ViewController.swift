@@ -11,7 +11,6 @@ import sqift
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate
 {
-    var database: Database? = nil
     var databaseQueue: DatabaseQueue? = nil
     var people: [Person] = [Person]()
 
@@ -22,17 +21,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        database = Database("/Users/dave/Desktop/sqift.db")
-        if database?.open() == .Success
-        {
-            databaseQueue = DatabaseQueue(database: database!)
-            insertSampleData(database!)
-        }
-        else
-        {
-            // Error handling goes here...
-            println("failed to opene database")
-        }
+        databaseQueue = DatabaseQueue(path: "/Users/dave/Desktop/sqift.db")
+        databaseQueue?.open()
+        insertSampleData()
     }
 
     override func didReceiveMemoryWarning()
@@ -41,60 +32,54 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Dispose of any resources that can be recreated.
     }
     
-    func insertSampleData(database: Database)
+    func insertSampleData()
     {
-        var addData = database.tableExists(Person.tableName) == false || database.numberOfRowsInTable(Person.tableName) == 0
-        
-        if addData
-        {
-            let people = [
-                Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 79929),
-                Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 79006)
-            ]
+        databaseQueue?.execute({ database in
+            var addData = database.tableExists(Person.tableName) == false || database.numberOfRowsInTable(Person.tableName) == 0
             
-            database.transaction({ (database) -> TransactionResult in
-                var result: DatabaseResult = .Success
-
-                result = database.createTable(Person)
+            if addData
+            {
+                let people = [
+                    Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 79929),
+                    Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 79006)
+                ]
                 
-                if result == .Success
-                {
-                    for person in people
+                // Perform a transaction
+                database.transaction( { database in
+                
+                    var result = database.createTable(Person)
+                    
+                    if result == .Success
                     {
-                        result = database.insertRowIntoTable(Person.self, person)
-                        if result != .Success
+                        for person in people
                         {
-                            break
+                            result = database.insertRowIntoTable(Person.self, person)
+                            if result != .Success
+                            {
+                                break
+                            }
                         }
                     }
-                }
-                
-                return .Commit
-            })
-        }
+                    return .Commit
+                })
+            }
+        })
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let database = database
-        {
+        databaseQueue?.execute({ database in
             // Query
             let statement = Statement(database: database, table: Person.tableName, orderByColumnNames: ["lastName"], ascending: true)
-            while statement.step() == .More
-            {
-                if let person = statement.objectForRow(Person)
-                {
-                    people.append(person)
-                }
-                else
-                {
-                    // Error handling goes here...
-                    println("failed to make a person object");
-                }
-            }
-            tableView.reloadData()
-        }
+            
+            var people = statement.objectsForRows(Person)
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.people = people
+                self.tableView.reloadData()
+            })
+        })
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {

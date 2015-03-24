@@ -27,6 +27,8 @@ public enum TransactionResult
 public class Database
 {
     public let path: String
+    public var isOpen: Bool { get { return database != nil } }
+
     var database: COpaquePointer = nil
     let statements = WeakSet<Statement>()
 

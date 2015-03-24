@@ -81,6 +81,8 @@ extension Person : DatabaseEncodable
             }
         }
         
+        assert(valid, "Unable to construct Person object from statement columns")
+        
         return object
     }
 }

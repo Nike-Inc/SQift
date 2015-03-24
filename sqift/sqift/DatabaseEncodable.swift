@@ -70,4 +70,24 @@ public extension Statement
     {
         return objectClass.objectFromStatement(self) as? T
     }
+    
+    /**
+    Create an array of objects for all rows
+    
+    :param: objectClass Object class to return
+    
+    :returns: Array of objects
+    */
+    public func objectsForRows<T: DatabaseEncodable>(objectClass: T.Type) -> [T]
+    {
+        var objects = [T]()
+        while step() == .More
+        {
+            if let object = objectForRow(T)
+            {
+                objects.append(object)
+            }
+        }
+        return objects
+    }
 }
