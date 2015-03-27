@@ -19,7 +19,9 @@
 		552D1BD51AB624CC007359B0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1BD41AB624CC007359B0 /* libsqlite3.dylib */; };
 		555AD5B81AB90253007961BC /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B71AB90253007961BC /* WeakSet.swift */; };
 		555AD5BA1AB90880007961BC /* WeakSetTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B91AB90880007961BC /* WeakSetTest.swift */; };
-		559259CC1ABE514A00151DD3 /* DatabaseEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559259CB1ABE514A00151DD3 /* DatabaseEncodable.swift */; };
+		559259CC1ABE514A00151DD3 /* DatabaseConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559259CB1ABE514A00151DD3 /* DatabaseConvertable.swift */; };
+		55A85C721AC516D5004366DC /* DatabaseTrace.h in Headers */ = {isa = PBXBuildFile; fileRef = 55A85C701AC516D5004366DC /* DatabaseTrace.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		55A85C731AC516D5004366DC /* DatabaseTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A85C711AC516D5004366DC /* DatabaseTrace.m */; };
 		55F706E31ABDFAC6005649F2 /* DatabaseQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F706E21ABDFAC6005649F2 /* DatabaseQueue.swift */; };
 /* End PBXBuildFile section */
 
@@ -51,7 +53,9 @@
 		552D1BDC1AB62AED007359B0 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.map; path = ModuleMaps/module.map; sourceTree = "<group>"; };
 		555AD5B71AB90253007961BC /* WeakSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
 		555AD5B91AB90880007961BC /* WeakSetTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSetTest.swift; sourceTree = "<group>"; };
-		559259CB1ABE514A00151DD3 /* DatabaseEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseEncodable.swift; sourceTree = "<group>"; };
+		559259CB1ABE514A00151DD3 /* DatabaseConvertable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseConvertable.swift; sourceTree = "<group>"; };
+		55A85C701AC516D5004366DC /* DatabaseTrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseTrace.h; sourceTree = "<group>"; };
+		55A85C711AC516D5004366DC /* DatabaseTrace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseTrace.m; sourceTree = "<group>"; };
 		55F706E21ABDFAC6005649F2 /* DatabaseQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseQueue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,7 +103,7 @@
 			children = (
 				552D1BC91AB6249D007359B0 /* Column.swift */,
 				552D1BC81AB6249D007359B0 /* Database.swift */,
-				559259CB1ABE514A00151DD3 /* DatabaseEncodable.swift */,
+				559259CB1ABE514A00151DD3 /* DatabaseConvertable.swift */,
 				550B478E1ABBDA4D00B047A1 /* DatabaseHelpers.swift */,
 				55F706E21ABDFAC6005649F2 /* DatabaseQueue.swift */,
 				552D1BCA1AB6249D007359B0 /* DatabaseResult.swift */,
@@ -110,6 +114,8 @@
 				552D1BAF1AB623EC007359B0 /* Supporting Files */,
 				552D1BCD1AB6249D007359B0 /* ToDo.rtf */,
 				555AD5B71AB90253007961BC /* WeakSet.swift */,
+				55A85C701AC516D5004366DC /* DatabaseTrace.h */,
+				55A85C711AC516D5004366DC /* DatabaseTrace.m */,
 			);
 			path = sqift;
 			sourceTree = "<group>";
@@ -148,6 +154,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				552D1BB21AB623EC007359B0 /* sqift.h in Headers */,
+				55A85C721AC516D5004366DC /* DatabaseTrace.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,13 +254,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55A85C731AC516D5004366DC /* DatabaseTrace.m in Sources */,
 				55F706E31ABDFAC6005649F2 /* DatabaseQueue.swift in Sources */,
 				555AD5B81AB90253007961BC /* WeakSet.swift in Sources */,
 				552D1BD01AB6249D007359B0 /* DatabaseResult.swift in Sources */,
 				550B478F1ABBDA4D00B047A1 /* DatabaseHelpers.swift in Sources */,
 				552D1BCE1AB6249D007359B0 /* Database.swift in Sources */,
 				552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */,
-				559259CC1ABE514A00151DD3 /* DatabaseEncodable.swift in Sources */,
+				559259CC1ABE514A00151DD3 /* DatabaseConvertable.swift in Sources */,
 				552D1BCF1AB6249D007359B0 /* Column.swift in Sources */,
 				552D1BD11AB6249D007359B0 /* Statement.swift in Sources */,
 			);
@@ -412,6 +420,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

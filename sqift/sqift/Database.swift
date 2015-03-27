@@ -105,6 +105,7 @@ public class Database
         if database == nil
         {
             result = sqResult(sqlite3_open(path, &database))
+            DatabaseTrace.enableTrace(database)
         }
         
         return result

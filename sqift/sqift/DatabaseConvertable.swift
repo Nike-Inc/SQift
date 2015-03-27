@@ -1,5 +1,5 @@
 //
-//  DatabaseEncodable.swift
+//  DatabaseConvertable.swift
 //  sqift
 //
 //  Created by Dave Camp on 3/21/15.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public protocol DatabaseEncodable
+public protocol DatabaseConvertable
 {
     /// Table name of this class
     static var tableName: String { get }
@@ -20,13 +20,13 @@ public protocol DatabaseEncodable
     var columnValues: [Any] { get }
     
     /**
-    <#Description#>
+    Return an object based on the current columns of a statement
     
-    :param: statement <#statement description#>
+    :param: statement Current statement
     
-    :returns: <#return value description#>
+    :returns: Object, or nil
     */
-    static func objectFromStatement(statement: Statement) -> DatabaseEncodable?
+    static func objectFromStatement(statement: Statement) -> DatabaseConvertable?
 }
 
 public extension Database
@@ -38,7 +38,7 @@ public extension Database
     
     :returns: Result
     */
-    public func createTable<T: DatabaseEncodable>(encodable: T.Type) -> DatabaseResult
+    public func createTable<T: DatabaseConvertable>(encodable: T.Type) -> DatabaseResult
     {
         return createTable(T.tableName, columns: T.columnDefinitions)
     }
@@ -51,7 +51,7 @@ public extension Database
     
     :returns: Result
     */
-    public func insertRowIntoTable<T: DatabaseEncodable>(encodable: T.Type, _ instance: T) -> DatabaseResult
+    public func insertRowIntoTable<T: DatabaseConvertable>(encodable: T.Type, _ instance: T) -> DatabaseResult
     {
         return insertRowIntoTable(encodable.tableName, values: instance.columnValues)
     }
@@ -60,13 +60,31 @@ public extension Database
 public extension Statement
 {
     /**
+    SELECT * FROM <objectClass.tableName> WHERE <whereExpression>
+    
+    :param: database        Database
+    :param: objectClass     Class whose table to select from
+    :param: whereExpression WHere expression. Use ? to bind parameters.
+    :param: parameters      Parameters to bind
+    
+    :returns: Statement object
+    */
+    public convenience init<T: DatabaseConvertable>(database: Database, objectClass: T.Type, whereExpression: String, parameters: Any...)
+    {
+        let tableName = T.tableName.sqiftSanitize()
+        let string = "SELECT * FROM \(tableName) WHERE \(whereExpression);"
+        self.init(database: database, sqlStatement: string)
+        self.parameters = parameters
+    }
+    
+    /**
     Create an object for the current row
     
     :param: objectClass Class to create from the current row
     
     :returns: Object created or nil
     */
-    public func objectForRow<T: DatabaseEncodable>(objectClass: T.Type) -> T?
+    public func objectForRow<T: DatabaseConvertable>(objectClass: T.Type) -> T?
     {
         return objectClass.objectFromStatement(self) as? T
     }
@@ -78,7 +96,7 @@ public extension Statement
     
     :returns: Array of objects
     */
-    public func objectsForRows<T: DatabaseEncodable>(objectClass: T.Type) -> [T]
+    public func objectsForRows<T: DatabaseConvertable>(objectClass: T.Type) -> [T]
     {
         var objects = [T]()
         while step() == .More

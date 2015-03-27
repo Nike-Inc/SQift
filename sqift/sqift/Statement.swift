@@ -109,6 +109,8 @@ public class Statement
             preparedStatement = nil
         }
         let result = database.sqResult(sqlite3_prepare_v2(database.database, sqlStatement, -1, &preparedStatement, nil))
+        
+        println("\(sqlStatement)")
         return result;
     }
     
@@ -156,33 +158,49 @@ public class Statement
             }
             else if statementParameterCount != 0
             {
+                var boundCount = 0
                 for (index, value) in enumerate(parameters)
                 {
                     let bindIndex = Int32(index + 1)
                     if let string = value as? String
                     {
                         result = database.sqResult(sqlite3_bind_text(preparedStatement, bindIndex, string, -1, SQLITE_TRANSIENT))
+                        boundCount++
                     }
                     else if let value = value as? Double
                     {
                         result = database.sqResult(sqlite3_bind_double(preparedStatement, bindIndex, value))
+                        boundCount++
                     }
                     else if let value = value as? Int32
                     {
                         result = database.sqResult(sqlite3_bind_int(preparedStatement, bindIndex, value))
+                        boundCount++
                     }
                     else if let value = value as? Int64
                     {
                         result = database.sqResult(sqlite3_bind_int64(preparedStatement, bindIndex, value))
+                        boundCount++
                     }
                     else if let value = value as? Bool
                     {
                         result = database.sqResult(sqlite3_bind_int(preparedStatement, bindIndex, value ? 1 : 0))
+                        boundCount++
                     }
                     else if let value = value as? Int
                     {
                         result = database.sqResult(sqlite3_bind_int64(preparedStatement, bindIndex, Int64(value)))
+                        boundCount++
                     }
+                    else
+                    {
+                        assert(false, "Unsupported parameter type")
+                    }
+                }
+                if boundCount != statementParameterCount
+                {
+                    println("parameters: \(parameters)")
+                    assert(false, "Failed to bind enough parameters");
                 }
             }
         }

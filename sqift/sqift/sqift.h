@@ -15,3 +15,5 @@ FOUNDATION_EXPORT double sqiftVersionNumber;
 FOUNDATION_EXPORT const unsigned char sqiftVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <sqift/PublicHeader.h>
+
+#import "DatabaseTrace.h"
