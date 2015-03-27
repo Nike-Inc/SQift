@@ -107,6 +107,8 @@
 				550B478E1ABBDA4D00B047A1 /* DatabaseHelpers.swift */,
 				55F706E21ABDFAC6005649F2 /* DatabaseQueue.swift */,
 				552D1BCA1AB6249D007359B0 /* DatabaseResult.swift */,
+				55A85C701AC516D5004366DC /* DatabaseTrace.h */,
+				55A85C711AC516D5004366DC /* DatabaseTrace.m */,
 				552D1BDC1AB62AED007359B0 /* module.map */,
 				552D1BB11AB623EC007359B0 /* sqift.h */,
 				552D1BCB1AB6249D007359B0 /* Statement.swift */,
@@ -114,8 +116,6 @@
 				552D1BAF1AB623EC007359B0 /* Supporting Files */,
 				552D1BCD1AB6249D007359B0 /* ToDo.rtf */,
 				555AD5B71AB90253007961BC /* WeakSet.swift */,
-				55A85C701AC516D5004366DC /* DatabaseTrace.h */,
-				55A85C711AC516D5004366DC /* DatabaseTrace.m */,
 			);
 			path = sqift;
 			sourceTree = "<group>";

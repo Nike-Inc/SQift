@@ -512,31 +512,65 @@ class sqiftTests: XCTestCase {
     
     func testQueue()
     {
-        XCTAssertEqual(database.dropTable("table1"), DatabaseResult.Success, "Drop table failed")
+        XCTAssertEqual(database.dropTable("table1"), .Success, "Drop table failed")
 
-        let queue = DatabaseQueue(database: database)
+        let queue = DatabaseQueue(path: database.path)
         let expect = expectationWithDescription("async")
         
-        queue.transaction({ (transactionDatabase) -> TransactionResult in
+        queue.open()
+        queue.execute( { transactionDatabase in
             XCTAssert(self.database !== transactionDatabase, "incorrect database")
             self.oneRowTable(transactionDatabase)
-            return .Commit
-        }, completion: { (result) -> () in
-            switch result
-            {
-            case let .Error(error):
-                println("\(error)")
-            default:
-                ()
-            }
-            XCTAssertEqual(result, .Success, "transaction failed")
-            self.validateTable("table1", rowID: 1, values: [ 42, "Bob"])
             expect.fulfill()
         })
         
         waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
             
         })
-
+        validateTable("table1", rowID: 1, values: [ 42, "Bob"])
+    }
+    
+    func testSavepointCommit()
+    {
+        XCTAssertEqual(database.dropTable("table1"), .Success, "Drop failed")
+        
+        database.executeInSavepoint("MySavepoint", transaction: { database in
+            self.oneRowTable(database)
+            return .Commit
+        })
+        
+        validateTable("table1", rowID: 1, values: [ 42, "Bob"])
+    }
+    
+    func testSavepointRollback()
+    {
+        XCTAssertEqual(database.dropTable("table1"), .Success, "Drop failed")
+        
+        database.executeInSavepoint("MySavepoint", transaction: { database in
+            self.oneRowTable(database)
+            return .Rollback(.Error("gave up"))
+        })
+        
+        XCTAssertFalse(database.tableExists("table1"), "Did not rollback")
+    }
+    
+    func testNestedSavepoint()
+    {
+        XCTAssertEqual(database.dropTable("table1"), .Success, "Drop failed")
+        XCTAssertFalse(database.tableExists("table1"), "Did not rollback")
+        
+        database.executeInSavepoint("MySavepoint", transaction: { transactionDatabase in
+            self.oneRowTable(transactionDatabase)
+            
+            transactionDatabase.executeInSavepoint("OtherSavepoint", transaction: { superNestedDatabase in
+                XCTAssertEqual(superNestedDatabase.dropTable("table1"), .Success, "Drop failed")
+                XCTAssertFalse(superNestedDatabase.tableExists("table1"), "Did not rollback")
+                return .Rollback(.Error("whatever"))
+                })
+            return .Commit
+        })
+        
+        XCTAssertTrue(database.tableExists("table1"), "Did not rollback")
+        validateTable("table1", rowID: 1, values: [ 42, "Bob"])
     }
 }

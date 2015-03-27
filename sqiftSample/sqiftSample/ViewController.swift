@@ -21,6 +21,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         contactManager.openDatabaseAtPath("/Users/dave/Desktop/sqift.db")
+        contactManager.insertSampleData { (result) -> Void in
+            self.tableView.reloadData()
+        }
     }
 
     override func didReceiveMemoryWarning()

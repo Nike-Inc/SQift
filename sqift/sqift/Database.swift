@@ -31,6 +31,7 @@ public class Database
 
     var database: COpaquePointer = nil
     let statements = WeakSet<Statement>()
+    var inTransaction = false
 
     /**
     Init
@@ -99,13 +100,16 @@ public class Database
     
     :returns: Result
     */
-    public func open() -> DatabaseResult
+    public func open(enableTracing: Bool = false) -> DatabaseResult
     {
         var result = DatabaseResult.Success
         if database == nil
         {
             result = sqResult(sqlite3_open(path, &database))
-            DatabaseTrace.enableTrace(database)
+            if enableTracing
+            {
+                DatabaseTrace.enableTrace(database)
+            }
         }
         
         return result
@@ -164,20 +168,24 @@ public class Database
     
     /**
     Perform a closure within a database transaction.
+    Note: You cannot nest transactions. For nestable operations, use named savepoints.
+    Note: You cannot start a transaction while within a named savepoint.
     
-    :param: transaction Closure to execute in a database transaction.
+    :param: transaction Closure to execute inside the database transaction.
     
     :returns: Result
     */
     public func transaction(transaction: (database: Database) -> TransactionResult) -> DatabaseResult
     {
         assert(database != nil, "database is not open")
+        assert(inTransaction == false, "Transactions cannot be nested")
 
         var result = DatabaseResult.Success
         
         result = sqResult(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil))
         if result == .Success
         {
+            inTransaction = true
             let transactionResult = transaction(database: self)
             
             switch transactionResult
@@ -195,6 +203,50 @@ public class Database
                     {
                         result = rollbackResult
                     }
+            }
+            inTransaction = false
+        }
+        
+        return result
+    }
+    
+    /**
+    Execute a closure within a SAVEPOINT.
+    Named savepoints can be nested. The results of inner savepoints are not saved unless enclosing
+    savepoints are committed.
+    
+    :param: savepoint   Name of savepoint to use
+    :param: transaction Closure to execute within the savepoint
+    
+    :returns: Result
+    */
+    public func executeInSavepoint(savepoint: String, transaction: (database: Database) -> TransactionResult) -> DatabaseResult
+    {
+        assert(database != nil, "database is not open")
+        assert(inTransaction == false, "Transactions cannot be nested")
+
+        var result = DatabaseResult.Success
+
+        result = sqResult(sqlite3_exec(database, "SAVEPOINT \(savepoint);", nil, nil, nil))
+        if result == .Success
+        {
+            let transactionResult = transaction(database: self)
+            
+            switch transactionResult
+            {
+            case .Commit:
+                result = sqResult(sqlite3_exec(database, "RELEASE SAVEPOINT \(savepoint);", nil, nil, nil))
+                
+            case let .Rollback(transactionError):
+                let rollbackResult = sqResult(sqlite3_exec(database, "ROLLBACK TO SAVEPOINT \(savepoint);", nil, nil, nil))
+                if rollbackResult == .Success
+                {
+                    result = transactionError
+                }
+                else
+                {
+                    result = rollbackResult
+                }
             }
         }
         
