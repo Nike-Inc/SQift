@@ -14,9 +14,11 @@ static NSMutableDictionary  *functions = nil;
 
 + (void)enableTrace:(sqlite3*)database
 {
-    if (sqlite3_trace(database, traceFunc, nil) != SQLITE_OK)
-    {
-        NSLog(@"Failed to register trace function");
+    @autoreleasepool {
+        if (sqlite3_trace(database, traceFunc, nil) != SQLITE_OK)
+        {
+            NSLog(@"Failed to register trace function");
+        }
     }
     
 }
@@ -30,14 +32,16 @@ static NSMutableDictionary  *functions = nil;
     
     int  result = SQLITE_OK;
     
-    // Unregister existing function
-    result = [self removeBlockForName:name inDatabase:database];
-    
-    if (block != nil && result == SQLITE_OK)
-    {
-        functions[name] = block;
-
-        result = sqlite3_create_function_v2(database, "sqliteFunction", 1, SQLITE_UTF8, NULL, sqliteFunction, NULL, NULL, NULL);
+    @autoreleasepool {
+        // Unregister existing function
+        result = [self removeBlockForName:name inDatabase:database];
+        
+        if (block != nil && result == SQLITE_OK)
+        {
+            functions[name] = block;
+            
+            result = sqlite3_create_function_v2(database, "sqliteFunction", -1, SQLITE_UTF8, NULL, sqliteFunction, NULL, NULL, NULL);
+        }
     }
     
     return result;
@@ -47,11 +51,13 @@ static NSMutableDictionary  *functions = nil;
 {
     int  result = SQLITE_OK;
     
-    // Unregister existing function
-    if (functions[name] != nil)
-    {
-        result = sqlite3_create_function_v2(database, "sqliteFunction", 1, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
-        [functions removeObjectForKey:name];
+    @autoreleasepool {
+        // Unregister existing function
+        if (functions[name] != nil)
+        {
+            result = sqlite3_create_function_v2(database, "sqliteFunction", -1, SQLITE_UTF8, NULL, NULL, NULL, NULL, NULL);
+            [functions removeObjectForKey:name];
+        }
     }
     
     return result;
@@ -60,24 +66,28 @@ static NSMutableDictionary  *functions = nil;
 
 void traceFunc(void *refcon ,const char* string)
 {
-    NSLog(@"sqlite trace: %s", string);
+    @autoreleasepool {
+        NSLog(@"sqlite trace: %s", string);
+    }
 }
 
 void sqliteFunction(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
-    if (argc == 1)
-    {
-        NSString *name = [NSString stringWithUTF8String:(const char *)sqlite3_value_text(argv[0])];
-        if ([name length] != 0)
+    @autoreleasepool {
+        if (argc == 1)
         {
-            FunctionBlock block = functions[name];
-            if (block != nil)
+            NSString *name = [NSString stringWithUTF8String:(const char *)sqlite3_value_text(argv[0])];
+            if ([name length] != 0)
             {
-                block();
-            }
-            else
-            {
-                NSLog(@"Trigger called for unknown name");
+                FunctionBlock block = functions[name];
+                if (block != nil)
+                {
+                    block();
+                }
+                else
+                {
+                    NSLog(@"Trigger called for unknown name");
+                }
             }
         }
     }
