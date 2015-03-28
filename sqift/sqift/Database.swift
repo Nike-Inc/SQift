@@ -21,6 +21,26 @@ public enum TransactionResult
     case Rollback(DatabaseResult)
 }
 
+public enum TableChange
+{
+    case Insert
+    case Update
+    case Delete
+    
+    func sql() -> String
+    {
+        switch self
+        {
+        case .Insert:
+            return "INSERT"
+        case .Update:
+            return "UPDATE"
+        case .Delete:
+            return "DELETE"
+        }
+    }
+}
+
 /**
 *  Main Database class
 */
@@ -90,7 +110,9 @@ public class Database
         }
         else
         {
-            return .Error(String.fromCString(sqlite3_errmsg(database)) ?? "Unknown error")
+            let string = String.fromCString(sqlite3_errmsg(database)) ?? "Unknown error"
+            println("Error: \(string)")
+            return .Error(string)
         }
     }
     
@@ -110,6 +132,7 @@ public class Database
             {
                 DatabaseTrace.enableTrace(database)
             }
+            DatabaseTrace.addBlock({ println("hello"); }, withName: "hello", toDatabase: database)
         }
         
         return result
@@ -264,6 +287,44 @@ public class Database
 
         let rowID = sqlite3_last_insert_rowid(database)
         return rowID
+    }
+    
+    public func whenTable(table: String, changes: TableChange, perform: (closureName: String, closure:(change: TableChange) -> ())) -> DatabaseResult
+    {
+        assert(database != nil, "database is not open")
+        
+        var result = DatabaseResult.Success
+        
+        let safeName = perform.closureName + "_sqift"
+        result = sqResult(DatabaseTrace.addBlock( { perform.closure(change: changes) }, withName: safeName, toDatabase: database))
+
+        if result == .Success
+        {
+            let safeTable = table.sqiftSanitize()
+            let statement = "CREATE TRIGGER IF NOT EXISTS \(safeName) AFTER \(changes.sql()) ON \(safeTable) BEGIN SELECT sqliteFunction(\"\(safeName)\"); END;"
+            result = executeSQLStatement(statement)
+        }
+
+        return result
+    }
+    
+    public func removeClosureWithName(name: String) -> DatabaseResult
+    {
+        assert(database != nil, "database is not open")
+        
+        var result = DatabaseResult.Success
+        
+        let safeName = name + "_sqift"
+        result = executeSQLStatement("DROP TRIGGER IF EXISTS \(safeName);")
+
+        // Only remove the function if the drop succeeded, otherwise there will be a trigger with no matching function
+        if result == .Success
+        {
+            DatabaseTrace.removeBlockForName(name, inDatabase: database)
+        }
+        
+        return result
+        
     }
 }
 

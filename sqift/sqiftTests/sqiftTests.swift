@@ -20,7 +20,7 @@ class sqiftTests: XCTestCase {
         super.setUp()
 
         database = Database("/Users/dave/Desktop/sqift.db")
-        XCTAssert(database.open() == DatabaseResult.Success, "Open failed")
+        XCTAssertEqual(database.open(enableTracing: true), .Success, "Open failed")
     }
     
     override func tearDown() {
@@ -28,7 +28,7 @@ class sqiftTests: XCTestCase {
         super.tearDown()
 
         fiftyRowTableStatement = nil
-        XCTAssert(database.close() == DatabaseResult.Success, "Close failed, \(database.lastErrorMessage())")
+        XCTAssertEqual(database.close(), .Success, "Close failed, \(database.lastErrorMessage())")
     }
     
     func testSqiftVersion()
@@ -573,4 +573,87 @@ class sqiftTests: XCTestCase {
         XCTAssertTrue(database.tableExists("table1"), "Did not rollback")
         validateTable("table1", rowID: 1, values: [ 42, "Bob"])
     }
+    
+    func testInsertTrigger()
+    {
+        oneRowTable(database)
+        
+        let expectInsert = expectationWithDescription("trigger")
+        
+        // Add the trigger
+        XCTAssertEqual(database.whenTable("table1", changes: .Insert, perform: ("Trigger", { (change) -> () in
+            XCTAssertEqual(change, .Insert, "change type is incorrect")
+            expectInsert.fulfill()
+        })), .Success, "Failed to add trigger")
+        
+        // Action
+        XCTAssertEqual(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(45, 'Bob');"), .Success, "Exec failed")
+        
+        // Wait...
+        waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
+            
+        })
+        
+        // Remove
+        XCTAssertEqual(database.removeClosureWithName("Trigger"), .Success, "Failed to remove trigger")
+        
+        // Action again
+        XCTAssertEqual(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(46, 'Bob');"), .Success, "Exec failed")
+    }
+
+    func testDeleteTrigger()
+    {
+        oneRowTable(database)
+        
+        let expectInsert = expectationWithDescription("trigger")
+        
+        // Add the trigger
+        XCTAssertEqual(database.whenTable("table1", changes: .Delete, perform: ("Trigger", { (change) -> () in
+            XCTAssertEqual(change, .Delete, "change type is incorrect")
+            expectInsert.fulfill()
+        })), .Success, "Failed to add trigger")
+        
+        // Action
+        XCTAssertEqual(database.executeSQLStatement("DELETE FROM table1 WHERE A == 42;"), .Success, "Exec failed")
+        
+        // Wait...
+        waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
+            
+        })
+        
+        // Remove
+        XCTAssertEqual(database.removeClosureWithName("Trigger"), .Success, "Failed to remove trigger")
+        
+        // Action again
+        XCTAssertEqual(database.executeSQLStatement("DELETE FROM table1 WHERE A == 42;"), .Success, "Exec failed")
+    }
+    
+    func testUpdateTrigger()
+    {
+        oneRowTable(database)
+        
+        let expectInsert = expectationWithDescription("trigger")
+        
+        // Add the trigger
+        XCTAssertEqual(database.whenTable("table1", changes: .Update, perform: ("Trigger", { (change) -> () in
+            XCTAssertEqual(change, .Update, "change type is incorrect")
+            expectInsert.fulfill()
+        })), .Success, "Failed to add trigger")
+        
+        // Action
+        XCTAssertEqual(database.executeSQLStatement("UPDATE table1 SET A = 43 WHERE A == 42;"), .Success, "Exec failed")
+        
+        // Wait...
+        waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
+            
+        })
+        
+        // Remove
+        XCTAssertEqual(database.removeClosureWithName("Trigger"), .Success, "Failed to remove trigger")
+        
+        // Action again
+        XCTAssertEqual(database.executeSQLStatement("DELETE FROM table1 WHERE A == 42;"), .Success, "Exec failed")
+    }
+    
+    
 }
