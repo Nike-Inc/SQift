@@ -132,7 +132,6 @@ public class Database
             {
                 DatabaseTrace.enableTrace(database)
             }
-            DatabaseTrace.addBlock({ println("hello"); }, withName: "hello", toDatabase: database)
         }
         
         return result
@@ -289,19 +288,22 @@ public class Database
         return rowID
     }
     
-    public func whenTable(table: String, changes: TableChange, perform: (closureName: String, closure:(change: TableChange) -> ())) -> DatabaseResult
+    public func whenTable(table: String, changes: TableChange, perform: (closureName: String, closure:(change: TableChange, rowid: Int64) -> ())) -> DatabaseResult
     {
         assert(database != nil, "database is not open")
         
         var result = DatabaseResult.Success
         
+        // Add the block
         let safeName = perform.closureName + "_sqift"
-        result = sqResult(DatabaseTrace.addBlock( { perform.closure(change: changes) }, withName: safeName, toDatabase: database))
+        result = sqResult(DatabaseTrace.addBlock( { rowid in perform.closure(change: changes, rowid: rowid) }, withName: safeName, toDatabase: database))
 
         if result == .Success
         {
+            // Create the sql trigger
             let safeTable = table.sqiftSanitize()
-            let statement = "CREATE TRIGGER IF NOT EXISTS \(safeName) AFTER \(changes.sql()) ON \(safeTable) BEGIN SELECT sqliteFunction(\"\(safeName)\"); END;"
+            let rowString = changes == .Delete ? "old.rowid" : "new.rowid"
+            let statement = "CREATE TRIGGER IF NOT EXISTS \(safeName) AFTER \(changes.sql()) ON \(safeTable) BEGIN SELECT sqliteFunction(\"\(safeName)\", \(rowString)); END;"
             result = executeSQLStatement(statement)
         }
 
@@ -324,7 +326,6 @@ public class Database
         }
         
         return result
-        
     }
 }
 

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
 
-typedef void (^FunctionBlock)(void);
+typedef void (^FunctionBlock)(int64_t rowid);
 
 @interface DatabaseTrace : NSObject
 

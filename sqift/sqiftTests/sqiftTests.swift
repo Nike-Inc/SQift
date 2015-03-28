@@ -581,8 +581,10 @@ class sqiftTests: XCTestCase {
         let expectInsert = expectationWithDescription("trigger")
         
         // Add the trigger
-        XCTAssertEqual(database.whenTable("table1", changes: .Insert, perform: ("Trigger", { (change) -> () in
+        XCTAssertEqual(database.whenTable("table1", changes: .Insert, perform: ("Trigger", { (change, rowid) -> () in
             XCTAssertEqual(change, .Insert, "change type is incorrect")
+            XCTAssertEqual(rowid, 2, "rowid is incorrect")
+            
             expectInsert.fulfill()
         })), .Success, "Failed to add trigger")
         
@@ -608,8 +610,9 @@ class sqiftTests: XCTestCase {
         let expectInsert = expectationWithDescription("trigger")
         
         // Add the trigger
-        XCTAssertEqual(database.whenTable("table1", changes: .Delete, perform: ("Trigger", { (change) -> () in
+        XCTAssertEqual(database.whenTable("table1", changes: .Delete, perform: ("Trigger", { (change, rowid) -> () in
             XCTAssertEqual(change, .Delete, "change type is incorrect")
+            XCTAssertEqual(rowid, 1, "rowid is incorrect")
             expectInsert.fulfill()
         })), .Success, "Failed to add trigger")
         
@@ -635,8 +638,9 @@ class sqiftTests: XCTestCase {
         let expectInsert = expectationWithDescription("trigger")
         
         // Add the trigger
-        XCTAssertEqual(database.whenTable("table1", changes: .Update, perform: ("Trigger", { (change) -> () in
+        XCTAssertEqual(database.whenTable("table1", changes: .Update, perform: ("Trigger", { (change, rowid) -> () in
             XCTAssertEqual(change, .Update, "change type is incorrect")
+            XCTAssertEqual(rowid, 1, "rowid is incorrect")
             expectInsert.fulfill()
         })), .Success, "Failed to add trigger")
         

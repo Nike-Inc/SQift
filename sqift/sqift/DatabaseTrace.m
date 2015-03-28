@@ -74,15 +74,17 @@ void traceFunc(void *refcon ,const char* string)
 void sqliteFunction(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     @autoreleasepool {
-        if (argc == 1)
+        if (argc == 2)
         {
             NSString *name = [NSString stringWithUTF8String:(const char *)sqlite3_value_text(argv[0])];
+            int64_t rowid = sqlite3_value_int64(argv[1]);
+            
             if ([name length] != 0)
             {
                 FunctionBlock block = functions[name];
                 if (block != nil)
                 {
-                    block();
+                    block(rowid);
                 }
                 else
                 {
