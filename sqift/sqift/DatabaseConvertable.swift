@@ -55,6 +55,31 @@ public extension Database
     {
         return insertRowIntoTable(encodable.tableName, values: instance.columnValues)
     }
+    
+    /**
+    Determine if a table for the given class exists
+    
+    :param: encodable Class to use as a template
+    
+    :returns: Result
+    */
+    public func tableExists<T: DatabaseConvertable>(encodable: T.Type) -> Bool
+    {
+        return tableExists(T.tableName)
+    }
+    
+    /**
+    Return the number of rows in a table
+    
+    :param: encodable Class to use as a template
+    
+    :returns: Result
+    */
+    public func numberOfRowsInTable<T: DatabaseConvertable>(encodable: T.Type) -> Int64?
+    {
+        return numberOfRowsInTable(T.tableName)
+    }
+    
 }
 
 public extension Statement
@@ -107,5 +132,30 @@ public extension Statement
             }
         }
         return objects
+    }
+    
+    public func validateColumnsForObject<T: DatabaseConvertable>(objectClass: T.Type) -> Bool
+    {
+        var result = false
+        let columnDefinitions = T.columnDefinitions
+        
+        // Column count must match
+        result = columnDefinitions.count == columnCount()
+        
+        // Column types must match
+        if result == true
+        {
+            for (index, column) in enumerate(columnDefinitions)
+            {
+                if column.type != columnTypeForIndex(index)
+                {
+                    result = false
+                    break
+                }
+            }
+        }
+        
+        
+        return result
     }
 }

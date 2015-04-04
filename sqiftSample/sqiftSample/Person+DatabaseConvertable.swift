@@ -42,21 +42,13 @@ extension Person : DatabaseConvertable
     public static func objectFromStatement(statement: Statement) -> DatabaseConvertable?
     {
         var object: Person? = nil
-        var valid = statement.columnCount() == 4
+        
+        // Make sure columns and types are correct
+        var valid = statement.validateColumnsForObject(Person.self)
         
         if valid
         {
-            if statement.columnTypeForIndex(0) != .String ||
-                statement.columnTypeForIndex(1) != .String ||
-                statement.columnTypeForIndex(2) != .String ||
-                statement.columnTypeForIndex(3) != .Integer
-            {
-                valid = false
-            }
-        }
-        
-        if valid
-        {
+            // Make sure we have valid data
             if let firstName = statement[0] as String?,
                 let lastName = statement[1] as String?,
                 let address = statement[2] as String?

@@ -122,16 +122,12 @@ public class Database
     
     :returns: Result
     */
-    public func open(enableTracing: Bool = false) -> DatabaseResult
+    public func open() -> DatabaseResult
     {
         var result = DatabaseResult.Success
         if database == nil
         {
             result = sqResult(sqlite3_open(path, &database))
-            if enableTracing
-            {
-                DatabaseTrace.enableTrace(database)
-            }
         }
         
         return result
@@ -155,6 +151,11 @@ public class Database
         }
         
         return result
+    }
+    
+    public func enableTracing(tracing: Bool)
+    {
+        DatabaseTrace.enableTrace(tracing, database: database)
     }
     
 

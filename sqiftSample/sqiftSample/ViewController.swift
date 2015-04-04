@@ -22,7 +22,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         // Do any additional setup after loading the view, typically from a nib.
         contactManager.openDatabaseAtPath("/Users/dave/Desktop/sqift.db")
         contactManager.insertSampleData { (result) -> Void in
-            self.tableView.reloadData()
+            self.getContacts()
         }
     }
 
@@ -34,7 +34,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-
+        getContacts()
+    }
+    
+    func getContacts()
+    {
         contactManager.contactsInZipcode(97229) { people in
             self.people = people
             self.tableView.reloadData()

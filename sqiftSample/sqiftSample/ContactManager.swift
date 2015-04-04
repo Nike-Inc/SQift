@@ -74,29 +74,23 @@ public class ContactManager
     public func insertSampleData(completion: (DatabaseResult) -> Void)
     {
         databaseQueue?.execute({ database in
-            var addData = database.tableExists(Person.tableName) == false || database.numberOfRowsInTable(Person.tableName) == 0
+            var addData = database.tableExists(Person.self) == false || database.numberOfRowsInTable(Person.self) == 0
             
             if addData
             {
-                // Perform a transaction
-                database.transaction( { database in
-                    
-                    var result = database.createTable(Person)
-                    
-                    if result == .Success
-                    {
-                    }
-                    return .Commit
-                })
+                var result = database.createTable(Person)
                 
-                let people = [
-                    Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 97229),
-                    Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 97006)
-                ]
+                if result == .Success
+                {
+                    let people = [
+                        Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 97229),
+                        Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 97006)
+                    ]
 
-                self.addPeople(people, completion: { (result) -> Void in
-                    completion(result)
-                })
+                    self.addPeople(people, completion: { (result) -> Void in
+                        completion(result)
+                    })
+                }
             }
             else
             {

@@ -55,7 +55,7 @@ public class DatabaseQueue
     /**
     Asynchronously execute a closure on this database queue.
     
-    :param: transaction Closure to execute on the queue.
+    :param: closure Closure to execute on the queue.
     */
     public func execute(closure: (database: Database) -> ())
     {

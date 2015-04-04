@@ -20,7 +20,7 @@ class sqiftTests: XCTestCase {
         super.setUp()
 
         database = Database("/Users/dave/Desktop/sqift.db")
-        XCTAssertEqual(database.open(enableTracing: true), .Success, "Open failed")
+        XCTAssertEqual(database.open(), .Success, "Open failed")
     }
     
     override func tearDown() {
@@ -659,5 +659,29 @@ class sqiftTests: XCTestCase {
         XCTAssertEqual(database.executeSQLStatement("DELETE FROM table1 WHERE A == 42;"), .Success, "Exec failed")
     }
     
-    
+    func testInsertTriggerOnQueue()
+    {
+        let expectInsert = self.expectationWithDescription("trigger")
+        let queue = DatabaseQueue(path: database.path)
+        queue.open()
+        queue.execute { (database) -> () in
+            self.oneRowTable(database)
+            
+            // Add the trigger
+            XCTAssertEqual(database.whenTable("table1", changes: .Insert, perform: ("Trigger", { (change, rowid) -> () in
+                XCTAssertEqual(change, .Insert, "change type is incorrect")
+                XCTAssertEqual(rowid, 2, "rowid is incorrect")
+                XCTAssertNotEqual(NSThread.mainThread(), NSThread.currentThread(), "Should not be running on main thread")
+                expectInsert.fulfill()
+            })), .Success, "Failed to add trigger")
+            
+            // Action
+            XCTAssertEqual(database.executeSQLStatement("INSERT INTO table1(A, B) VALUES(45, 'Bob');"), .Success, "Exec failed")
+        }
+        
+        // Wait...
+        self.waitForExpectationsWithTimeout(1.0, handler: { (error) -> Void in
+            
+        })
+    }
 }

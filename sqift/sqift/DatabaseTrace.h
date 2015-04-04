@@ -13,7 +13,7 @@ typedef void (^FunctionBlock)(int64_t rowid);
 
 @interface DatabaseTrace : NSObject
 
-+ (void)enableTrace:(sqlite3*)database;
++ (void)enableTrace:(BOOL)enable database:(sqlite3*)database;
 + (int)addBlock:(FunctionBlock)block withName:(NSString*)name toDatabase:(sqlite3*)database;
 + (int)removeBlockForName:(NSString*)name inDatabase:(sqlite3*)database;
 

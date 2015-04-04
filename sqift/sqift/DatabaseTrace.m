@@ -12,10 +12,10 @@ static NSMutableDictionary  *functions = nil;
 
 @implementation DatabaseTrace
 
-+ (void)enableTrace:(sqlite3*)database
++ (void)enableTrace:(BOOL)enable database:(sqlite3*)database
 {
     @autoreleasepool {
-        if (sqlite3_trace(database, traceFunc, nil) != SQLITE_OK)
+        if (sqlite3_trace(database, enable ? traceFunc : nil, nil) != SQLITE_OK)
         {
             NSLog(@"Failed to register trace function");
         }
