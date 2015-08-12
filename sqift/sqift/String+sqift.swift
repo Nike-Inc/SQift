@@ -8,12 +8,13 @@
 
 import Foundation
 
+// String extension to sanitize SQL data.
 public extension String
 {
     /**
     Sanitize a string for use in an sqlite statement
     
-    - returns: Sanitized string
+    :returns: Sanitized string
     */
     public func sqiftSanitize() -> String
     {
@@ -25,9 +26,18 @@ public extension String
     }
 }
 
-public func sanitizeStrings(strings: [String]) -> [String]
-{
-    let newStrings = strings.map( { $0.sqiftSanitize() } )
+// Array<String> extension to sanitize SQL data.
+public extension Array where Element : StringLiteralConvertible {
+    /**
+    Return a new array of sanitized strings
     
-    return newStrings
+    :returns: Array of strings
+    */
+    public func sanitize() -> [String]
+    {
+        let newStrings = self.map( { ($0 as! String).sqiftSanitize() } )
+        
+        return newStrings
+    }
 }
+

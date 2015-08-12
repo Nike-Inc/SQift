@@ -31,10 +31,10 @@ public class Statement
     /**
     Initialize a statement with the supplied SQL
     
-    - parameter database:     Database to query
-    - parameter sqlStatement: Valid SQL statement.
+    :param: database:     Database to query
+    :param: sqlStatement: Valid SQL statement.
     
-    - returns: Statement object
+    :returns: Statement object
     */
     public init(database: Database, sqlStatement: String, parameters: Any...)
     {
@@ -48,14 +48,14 @@ public class Statement
     /**
     Convenience initializer for SELECT with no WHERE clause (i.e. all rows)
     
-    - parameter database:                 Database to query
-    - parameter unsafeTable:              Table name to query
-    - parameter unsafeColumnNames:        Columns to return. nil will return all columns.
-    - parameter unsafeOrderByColumnNames: Columns to order by. nil will return unordered.
-    - parameter ascending:                Ascending or descending order. Ignored if unordered.
-    - parameter limit:                    Maximum number of rows to return. 0 = no limit.
+    :param: database                 Database to query.
+    :param: unsafeTable              Table name to query.
+    :param: unsafeColumnNames        Columns to return. nil will return all columns.
+    :param: unsafeOrderByColumnNames Columns to order by. nil will return unordered.
+    :param: ascending                Ascending or descending order. Ignored if unordered.
+    :param: limit                    Maximum number of rows to return. 0 = no limit.
     
-    - returns: Statement object
+    :returns: Statement object
     */
     public convenience init(database: Database, table unsafeTable: String, columnNames unsafeColumnNames: [String]? = nil, orderByColumnNames unsafeOrderByColumnNames: [String]? = nil, ascending: Bool = true, limit: Int32 = 0)
     {
@@ -117,8 +117,6 @@ public class Statement
     
     /**
     Reset the prepared SQL statement. Allows you to re-use frequetnly used SQL statements or statements with bindings.
-    
-    - returns: Result
     */
     public func reset() throws
     {
@@ -129,9 +127,7 @@ public class Statement
     Bind the passed parameters to the statement. Use this to pass in values to statements like
         SELECT * FROM myTable WHERE someColumn = ?
     
-    - parameter parameters: List of values to bind. Valid types are String, Int, Double, Bool, Int32, Int64.
-    
-    - returns: Result
+    :param: parameters: List of values to bind. Valid types are String, Int, Double, Bool, Int32, Int64.
     */
     public func bindParameters(parameters: Any...) throws
     {
@@ -201,7 +197,7 @@ public class Statement
     /**
     Step to next row.
     
-    - returns: Result. .More = there are more rows to process, .Done = No more rows to process
+    :returns: Result. .More = there are more rows to process, .Done = No more rows to process
     */
     public func step() throws -> DatabaseResult
     {
@@ -224,7 +220,7 @@ public class Statement
     /**
     Number of columns in the result set
     
-    - returns: Column count, may be zero for no results.
+    :returns: Column count, may be zero for no results.
     */
     public func columnCount() -> Int
     {
@@ -235,9 +231,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a String
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Result as a String, may be nil if NULL data or conversion to a String fails.
+    :returns: Result as a String, may be nil if NULL data or conversion to a String fails.
     */
     public subscript(index: Int) -> String?
     {
@@ -248,9 +244,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a Double
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Value as a Double
+    :returns: Value as a Double
     */
     public subscript(index: Int) -> Double
     {
@@ -261,9 +257,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Value as an Int
+    :returns: Value as an Int
     */
     public subscript(index: Int) -> Int
         {
@@ -274,9 +270,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int32
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Value as an Int32
+    :returns: Value as an Int32
     */
     public subscript(index: Int) -> Int32
     {
@@ -287,9 +283,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int64
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Value as an Int64
+    :returns: Value as an Int64
     */
     public subscript(index: Int) -> Int64
     {
@@ -300,9 +296,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a Bool
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Value as a Bool. Any value that is non-zero will return true.
+    :returns: Value as a Bool. Any value that is non-zero will return true.
     */
     public subscript(index: Int) -> Bool
     {
@@ -312,8 +308,6 @@ public class Statement
     
     /**
     Cache the column names for this statement if not already cached
-    
-    - returns: Result
     */
     internal func cacheColumnNames() throws
     {
@@ -349,9 +343,9 @@ public class Statement
     /**
     Name of the column at the specified index
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Name of the column, or nil.
+    :returns: Name of the column, or nil.
     */
     public func columnNameForIndex(index: Int) throws -> String?
     {
@@ -370,9 +364,9 @@ public class Statement
     /**
     Type of the column at the specified index
     
-    - parameter index: Column number.
+    :param: index: Column number.
     
-    - returns: Type of the column.
+    :returns: Type of the column.
     */
     public func columnTypeForIndex(index: Int) -> ColumnType
     {

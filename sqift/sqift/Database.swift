@@ -15,33 +15,40 @@ import Foundation
     #endif
 #endif
 
+/// Closure that is executed while within a SQL transaction or named savepoint.
+public typealias TransactionClosure = ((database: Database) -> (TransactionResult))
+
+/**
+TransactionClosure result type.
+
+- Commit:   Work performed by the closure should be committed.
+- Rollback: Work performed by the closure should be rolled back.
+*/
 public enum TransactionResult
 {
     case Commit
     case Rollback
 }
 
-public enum TableChange
-{
-    case Insert
-    case Update
-    case Delete
-    
-    func sql() -> String
-    {
-        switch self
-        {
-        case .Insert:
-            return "INSERT"
-        case .Update:
-            return "UPDATE"
-        case .Delete:
-            return "DELETE"
-        }
-    }
-}
-
-public typealias TransactionClosure = ((database: Database) -> (TransactionResult))
+//public enum TableChange
+//{
+//    case Insert
+//    case Update
+//    case Delete
+//    
+//    func sql() -> String
+//    {
+//        switch self
+//        {
+//        case .Insert:
+//            return "INSERT"
+//        case .Update:
+//            return "UPDATE"
+//        case .Delete:
+//            return "DELETE"
+//        }
+//    }
+//}
 
 /**
 *  Main Database class
@@ -58,9 +65,9 @@ public class Database
     /**
     Init
     
-    - parameter path: Path to database file
+    :param: path: Path to database file
     
-    - returns: Object
+    :returns: Object
     */
     public init(_ path: String)
     {
@@ -70,7 +77,7 @@ public class Database
     /**
     Return the version of Database being used
     
-    - returns: Version string
+    :returns: Version string
     */
     public func sqiftVersion() -> String
     {
@@ -81,21 +88,13 @@ public class Database
     /**
     Return the version of sqlite being used
     
-    - returns: Version string
+    :returns: Version string
     */
     public func sqlite3Version() -> String
     {
         return String.fromCString(sqlite3_libversion())!
     }
     
-
-    /**
-    Convert an sqlite result code to a sqifResult
-    
-    - parameter result: Result code from sqlite
-    
-    - returns: Result
-    */
     internal func sqResult(result: Int32) throws -> DatabaseResult
     {
         if result == SQLITE_ROW
@@ -127,8 +126,6 @@ public class Database
 
     /**
     Open a connection to the database
-    
-    - returns: Result
     */
     public func open() throws
     {
@@ -138,8 +135,6 @@ public class Database
 
     /**
     Close the connection to the database
-    
-    - returns: Result
     */
     public func close() throws
     {
@@ -149,6 +144,11 @@ public class Database
         try(sqError(sqlite3_close(database)))
     }
     
+    /**
+    Enabled database tracing. Useful for tracking down odd problems.
+    
+    :param: tracing true to enable tracing
+    */
     public func enableTracing(tracing: Bool)
     {
         DatabaseTrace.enableTrace(tracing, database: database)
@@ -158,7 +158,7 @@ public class Database
     /**
     Return the last error message from sqlite
     
-    - returns: Last error message
+    :returns: Last error message
     */
     public func lastErrorMessage() -> String?
     {
@@ -168,11 +168,13 @@ public class Database
     
     
     /**
-    Execute a SQL transaction.
+    Execute an SQL statement. This is the most basic level of database access.
+    Using a Statement object is the preferred method of executing SQL statements.
     
-    - parameter statement: SQL statement to execute. No sanitzation is performed.
+    :param: statement: SQL statement to execute. No sanitzation is performed.
     
-    - returns: Result
+    :returns: Result. Only useful for the results of a STEP or other statement that uses the more/done
+                pattern. Throws for any other result.
     */
     public func executeSQLStatement(statement: String) throws -> DatabaseResult
     {
@@ -188,9 +190,7 @@ public class Database
     Note: You cannot nest transactions. For nestable operations, use named savepoints.
     Note: You cannot start a transaction while within a named savepoint.
     
-    - parameter transaction: Closure to execute inside the database transaction.
-    
-    - returns: Result
+    :param: transaction: Closure to execute inside the database transaction.
     */
     public func transaction(transaction: TransactionClosure) throws
     {
@@ -217,10 +217,8 @@ public class Database
     Named savepoints can be nested. The results of inner savepoints are not saved unless enclosing
     savepoints are committed.
     
-    - parameter savepoint:   Name of savepoint to use
-    - parameter transaction: Closure to execute within the savepoint
-    
-    - returns: Result
+    :param: savepoint:   Name of savepoint to use
+    :param: transaction: Closure to execute within the savepoint
     */
     public func executeInSavepoint(savepoint: String, transaction: TransactionClosure) throws
     {
@@ -243,7 +241,7 @@ public class Database
     /**
     Row ID of the last successful INSERT
     
-    - returns: Row ID
+    :returns: Row ID
     */
     public func lastRowInserted() -> Int64
     {

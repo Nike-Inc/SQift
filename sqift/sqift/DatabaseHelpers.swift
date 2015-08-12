@@ -27,11 +27,26 @@ https://www.sqlite.org/lang_conflict.html
 */
 public enum OnConflict : String
 {
-    case Rollback = " OR ROLLBACK "
-    case Abort = " OR ABORT "
-    case Replace = " OR REPLACE "
-    case Fail = " OR FAIL "
-    case Ignore = " OR IGNORE "
+    case Rollback
+    case Abort
+    case Replace
+    case Fail
+    case Ignore
+    
+    internal func sql() -> String {
+        switch self {
+        case .Rollback:
+            return " OR ROLLBACK "
+        case .Abort:
+            return " OR ABORT "
+        case .Replace:
+            return " OR REPLACE "
+        case .Fail:
+            return " OR FAIL "
+        case .Ignore:
+            return " OR IGNORE "
+        }
+    }
 }
 
 public extension Database
@@ -39,10 +54,8 @@ public extension Database
     /**
     Create a new table from the array of column definitions
     
-    - parameter name:    Name of the table to create
-    - parameter columns: Array of column definitions
-    
-    - returns: Result
+    :param: name:    Name of the table to create
+    :param: columns: Array of column definitions
     */
     public func createTable(name: String, columns: [Column]) throws
     {
@@ -64,9 +77,7 @@ public extension Database
     /**
     Drop a table
     
-    - parameter name: Name of table to drop
-    
-    - returns: Result
+    :param: name: Name of table to drop
     */
     public func dropTable(name: String) throws
     {
@@ -79,9 +90,9 @@ public extension Database
     /**
     Determine if a table with the given name exists
     
-    - parameter name: Name of table
+    :param: name: Name of table
     
-    - returns: true if table exists
+    :returns: true if table exists
     */
     public func tableExists(name: String) -> Bool
     {
@@ -123,12 +134,10 @@ public extension Database
     /**
     Insert a row into a table
     
-    - parameter unsafeTableName: Table name
-    - parameter unsafeColumns:   Optional list of column names. If nil, value array must match the column order
-    - parameter values:          Values to insert into the table. Must be in same order an the column list.
-    - parameter onConflict:      How to resolve conflicts
-    
-    - returns: Result
+    :param: unsafeTableName: Table name
+    :param: unsafeColumns:   Optional list of column names. If nil, value array must match the column order
+    :param: values:          Values to insert into the table. Must be in same order an the column list.
+    :param: onConflict:      How to resolve conflicts
     */
     public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) throws
     {
@@ -136,7 +145,7 @@ public extension Database
         assert(values.count != 0, "values array is empty")
        
         let table = unsafeTableName.sqiftSanitize()
-        var string = "INSERT \(onConflict.rawValue) INTO \(table)"
+        var string = "INSERT \(onConflict.sql()) INTO \(table)"
         
         if let unsafeColumns = unsafeColumns
         {
@@ -157,11 +166,9 @@ public extension Database
     /**
     Delete matching rows from a table
     
-    - parameter unsafeTableName: Table name
-    - parameter whereExpression: Expression to match rows. Use ? for expression parameters
-    - parameter values:          Values to bind to expression parameters
-    
-    - returns: Result
+    :param: unsafeTableName: Table name
+    :param: whereExpression: Expression to match rows. Use ? for expression parameters
+    :param: values:          Values to bind to expression parameters
     */
     public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) throws
     {
@@ -182,9 +189,7 @@ public extension Database
     /**
     Delete all rows from a table
     
-    - parameter unsafeTableName: Table name
-    
-    - returns: Result
+    :param: unsafeTableName: Table name
     */
     public func deleteAllRowsFromTable(unsafeTableName: String) throws
     {
@@ -201,9 +206,9 @@ public extension Database
     /**
     Return the number of rows in a table
     
-    - parameter unsafeTableName: Table name
+    :param: unsafeTableName: Table name
     
-    - returns: Number of rows, or nil if there was an error.
+    :returns: Number of rows, or nil if there was an error.
     */
     public func numberOfRowsInTable(unsafeTableName: String) throws -> Int64?
     {
@@ -226,13 +231,11 @@ public extension Database
     Update rows in a table. Rows matching the where expression will have columns listed in
     the values dictionary set to their correstponding values.
     
-    - parameter unsafeTableName: Table name
-    - parameter values:          Dictonary of column names and values
-    - parameter onConflict:      How to resolve conflicts
-    - parameter whereExpression: Expression to match rows. Use ? for expression parameters
-    - parameter values:          Values to bind to expression parameters
-    
-    - returns: Result
+    :param: unsafeTableName: Table name
+    :param: values:          Dictonary of column names and values
+    :param: onConflict:      How to resolve conflicts
+    :param: whereExpression: Expression to match rows. Use ? for expression parameters
+    :param: values:          Values to bind to expression parameters
     */
     public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) throws
     {
@@ -240,7 +243,7 @@ public extension Database
         assert(values.count != 0, "values array is empty")
         
         let table = unsafeTableName.sqiftSanitize()
-        var string = "UPDATE \(onConflict.rawValue) \(table) SET "
+        var string = "UPDATE \(onConflict.sql()) \(table) SET "
         
         var pairs = [String]()
         for (columnName, value) in values
@@ -280,11 +283,11 @@ public extension Database
     /**
     Create a named index for a table
 
-    - parameter name:    Name of index to create. Name must be unique withiin the database.
-    - parameter table:   Table to create index on
-    - parameter columns: Columns to index
+    :param: name:    Name of index to create. Name must be unique withiin the database.
+    :param: table:   Table to create index on
+    :param: columns: Columns to index
 
-    - returns: Result
+    :returns: Result
     */
     public func createIndex(name: String, table: String,  columns: [String]) throws
     {
@@ -293,16 +296,14 @@ public extension Database
         
         let safeName = name.sqiftSanitize()
         let safeTable = table.sqiftSanitize()
-        let safeColumns = ",".join(sanitizeStrings(columns))
+        let safeColumns = ",".join(columns.sanitize())
         try(executeSQLStatement("CREATE INDEX IF NOT EXISTS \(safeName) ON \(safeTable) (\(safeColumns));"))
     }
     
     /**
     Drop a named index
     
-    - parameter name: Name of index to drop
-    
-    - returns: Result
+    :param: name: Name of index to drop
     */
     public func dropIndex(name: String) throws
     {

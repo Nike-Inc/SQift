@@ -15,12 +15,21 @@ import Foundation
 #endif
 #endif
 
+/**
+SQL STEP result.
+
+- More: There is more data to step through.
+- Done: No more data.
+*/
 public enum DatabaseResult
 {
     case More
     case Done
 }
 
+/**
+*  Error class thrown by sqift methods.
+*/
 public enum DatabaseError : ErrorType {
     case InternalError (string: String)
     case sqliteError (string: String, code: Int32)

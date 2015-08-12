@@ -22,9 +22,9 @@ public protocol DatabaseConvertable
     /**
     Return an object based on the current columns of a statement
     
-    - parameter statement: Current statement
+    :param: statement: Current statement
     
-    - returns: Object, or nil
+    :returns: Object, or nil
     */
     static func objectFromStatement(statement: Statement) -> DatabaseConvertable?
 }
@@ -34,9 +34,7 @@ public extension Database
     /**
     Create a table based on an encodable class
     
-    - parameter encodable: Class to use as a template
-    
-    - returns: Result
+    :param: encodable: Class to use as a template
     */
     public func createTable<T: DatabaseConvertable>(encodable: T.Type) throws
     {
@@ -46,10 +44,8 @@ public extension Database
     /**
     Insert a row with an encodable object
     
-    - parameter encodable: Class to encode
-    - parameter instance:  Instance of object to encode
-    
-    - returns: Result
+    :param: encodable: Class to encode
+    :param: instance:  Instance of object to encode
     */
     public func insertRowIntoTable<T: DatabaseConvertable>(encodable: T.Type, _ instance: T) throws
     {
@@ -59,9 +55,9 @@ public extension Database
     /**
     Determine if a table for the given class exists
     
-    - parameter encodable: Class to use as a template
+    :param: encodable: Class to use as a template
     
-    - returns: Result
+    :returns: Result
     */
     public func tableExists<T: DatabaseConvertable>(encodable: T.Type) -> Bool
     {
@@ -71,9 +67,9 @@ public extension Database
     /**
     Return the number of rows in a table
     
-    - parameter encodable: Class to use as a template
+    :param: encodable: Class to use as a template
     
-    - returns: Result
+    :returns: Result
     */
     public func numberOfRowsInTable<T: DatabaseConvertable>(encodable: T.Type) throws -> Int64?
     {
@@ -88,12 +84,12 @@ public extension Statement
     /**
     SELECT * FROM <objectClass.tableName> WHERE <whereExpression>
     
-    - parameter database:        Database
-    - parameter objectClass:     Class whose table to select from
-    - parameter whereExpression: WHere expression. Use ? to bind parameters.
-    - parameter parameters:      Parameters to bind
+    :param: database:        Database
+    :param: objectClass:     Class whose table to select from
+    :param: whereExpression: WHere expression. Use ? to bind parameters.
+    :param: parameters:      Parameters to bind
     
-    - returns: Statement object
+    :returns: Statement object
     */
     public convenience init<T: DatabaseConvertable>(database: Database, objectClass: T.Type, whereExpression: String, parameters: Any...)
     {
@@ -106,9 +102,9 @@ public extension Statement
     /**
     Create an object for the current row
     
-    - parameter objectClass: Class to create from the current row
+    :param: objectClass: Class to create from the current row
     
-    - returns: Object created or nil
+    :returns: Object created or nil
     */
     public func objectForRow<T: DatabaseConvertable>(objectClass: T.Type) -> T?
     {
@@ -118,9 +114,9 @@ public extension Statement
     /**
     Create an array of objects for all rows
     
-    - parameter objectClass: Object class to return
+    :param: objectClass: Object class to return
     
-    - returns: Array of objects
+    :returns: Array of objects
     */
     public func objectsForRows<T: DatabaseConvertable>(objectClass: T.Type) throws -> [T]
     {
@@ -135,6 +131,13 @@ public extension Statement
         return objects
     }
     
+    /**
+    Validate that the column definitions for the passed class match the statement.
+    
+    :param: objectClass Class to validate
+    
+    :returns: false if there is a mismatch.
+    */
     public func validateColumnsForObject<T: DatabaseConvertable>(objectClass: T.Type) -> Bool
     {
         var result = false
@@ -155,7 +158,6 @@ public extension Statement
                 }
             }
         }
-        
         
         return result
     }
