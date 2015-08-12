@@ -16,9 +16,9 @@ public class DatabaseQueue
     /**
     Create a database queue
     
-    :param: path            Path to database file
+    - parameter path:            Path to database file
     
-    :returns: DatabaseQueue
+    - returns: DatabaseQueue
     */
     public init(path: String)
     {
@@ -28,34 +28,40 @@ public class DatabaseQueue
     
     deinit
     {
-        database.close()
+        do {
+            try(database.close())
+
+        }
+        catch {
+            
+        }
     }
     
     /**
     Open a connection to the database
     
-    :returns: Result
+    - returns: Result
     */
-    public func open() -> DatabaseResult
+    public func open() throws
     {
-        return database.open()
+        try(database.open())
     }
     
     
     /**
     Close the connection to the database
     
-    :returns: Result
+    - returns: Result
     */
-    public func close() -> DatabaseResult
+    public func close() throws
     {
-        return database.close()
+        try(database.close())
     }
     
     /**
     Asynchronously execute a closure on this database queue.
     
-    :param: closure Closure to execute on the queue.
+    - parameter closure: Closure to execute on the queue.
     */
     public func execute(closure: (database: Database) -> ())
     {

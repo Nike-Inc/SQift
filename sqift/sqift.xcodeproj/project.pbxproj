@@ -14,11 +14,11 @@
 		552D1BCE1AB6249D007359B0 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BC81AB6249D007359B0 /* Database.swift */; };
 		552D1BCF1AB6249D007359B0 /* Column.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BC91AB6249D007359B0 /* Column.swift */; };
 		552D1BD01AB6249D007359B0 /* DatabaseResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BCA1AB6249D007359B0 /* DatabaseResult.swift */; };
-		552D1BD11AB6249D007359B0 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BCB1AB6249D007359B0 /* Statement.swift */; };
 		552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BCC1AB6249D007359B0 /* String+sqift.swift */; };
 		552D1BD51AB624CC007359B0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1BD41AB624CC007359B0 /* libsqlite3.dylib */; };
 		555AD5B81AB90253007961BC /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B71AB90253007961BC /* WeakSet.swift */; };
 		555AD5BA1AB90880007961BC /* WeakSetTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555AD5B91AB90880007961BC /* WeakSetTest.swift */; };
+		555E249B1B3DD7DB00BC5A50 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BCB1AB6249D007359B0 /* Statement.swift */; };
 		559259CC1ABE514A00151DD3 /* DatabaseConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559259CB1ABE514A00151DD3 /* DatabaseConvertable.swift */; };
 		55A85C721AC516D5004366DC /* DatabaseTrace.h in Headers */ = {isa = PBXBuildFile; fileRef = 55A85C701AC516D5004366DC /* DatabaseTrace.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55A85C731AC516D5004366DC /* DatabaseTrace.m in Sources */ = {isa = PBXBuildFile; fileRef = 55A85C711AC516D5004366DC /* DatabaseTrace.m */; };
@@ -203,7 +203,8 @@
 		552D1BA31AB623EC007359B0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = thinbits;
 				TargetAttributes = {
 					552D1BAB1AB623EC007359B0 = {
@@ -263,7 +264,7 @@
 				552D1BD21AB6249D007359B0 /* String+sqift.swift in Sources */,
 				559259CC1ABE514A00151DD3 /* DatabaseConvertable.swift in Sources */,
 				552D1BCF1AB6249D007359B0 /* Column.swift in Sources */,
-				552D1BD11AB6249D007359B0 /* Statement.swift in Sources */,
+				555E249B1B3DD7DB00BC5A50 /* Statement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +310,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -393,6 +395,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
@@ -417,6 +420,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
@@ -437,6 +441,7 @@
 				);
 				INFOPLIST_FILE = sqiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 			};
@@ -451,6 +456,7 @@
 				);
 				INFOPLIST_FILE = sqiftTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 			};

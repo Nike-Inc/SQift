@@ -99,7 +99,7 @@ public struct Column
     /**
     String needed to create the column in a CREATE TABLE statement
     
-    :returns: String for creating this column
+    - returns: String for creating this column
     */
     public func createString() -> String
     {

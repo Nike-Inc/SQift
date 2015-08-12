@@ -22,9 +22,9 @@ public protocol DatabaseConvertable
     /**
     Return an object based on the current columns of a statement
     
-    :param: statement Current statement
+    - parameter statement: Current statement
     
-    :returns: Object, or nil
+    - returns: Object, or nil
     */
     static func objectFromStatement(statement: Statement) -> DatabaseConvertable?
 }
@@ -34,34 +34,34 @@ public extension Database
     /**
     Create a table based on an encodable class
     
-    :param: encodable Class to use as a template
+    - parameter encodable: Class to use as a template
     
-    :returns: Result
+    - returns: Result
     */
-    public func createTable<T: DatabaseConvertable>(encodable: T.Type) -> DatabaseResult
+    public func createTable<T: DatabaseConvertable>(encodable: T.Type) throws
     {
-        return createTable(T.tableName, columns: T.columnDefinitions)
+        try(createTable(T.tableName, columns: T.columnDefinitions))
     }
     
     /**
     Insert a row with an encodable object
     
-    :param: encodable Class to encode
-    :param: instance  Instance of object to encode
+    - parameter encodable: Class to encode
+    - parameter instance:  Instance of object to encode
     
-    :returns: Result
+    - returns: Result
     */
-    public func insertRowIntoTable<T: DatabaseConvertable>(encodable: T.Type, _ instance: T) -> DatabaseResult
+    public func insertRowIntoTable<T: DatabaseConvertable>(encodable: T.Type, _ instance: T) throws
     {
-        return insertRowIntoTable(encodable.tableName, values: instance.columnValues)
+        try(insertRowIntoTable(encodable.tableName, values: instance.columnValues))
     }
     
     /**
     Determine if a table for the given class exists
     
-    :param: encodable Class to use as a template
+    - parameter encodable: Class to use as a template
     
-    :returns: Result
+    - returns: Result
     */
     public func tableExists<T: DatabaseConvertable>(encodable: T.Type) -> Bool
     {
@@ -71,13 +71,14 @@ public extension Database
     /**
     Return the number of rows in a table
     
-    :param: encodable Class to use as a template
+    - parameter encodable: Class to use as a template
     
-    :returns: Result
+    - returns: Result
     */
-    public func numberOfRowsInTable<T: DatabaseConvertable>(encodable: T.Type) -> Int64?
+    public func numberOfRowsInTable<T: DatabaseConvertable>(encodable: T.Type) throws -> Int64?
     {
-        return numberOfRowsInTable(T.tableName)
+        let count = try(numberOfRowsInTable(T.tableName))
+        return count
     }
     
 }
@@ -87,12 +88,12 @@ public extension Statement
     /**
     SELECT * FROM <objectClass.tableName> WHERE <whereExpression>
     
-    :param: database        Database
-    :param: objectClass     Class whose table to select from
-    :param: whereExpression WHere expression. Use ? to bind parameters.
-    :param: parameters      Parameters to bind
+    - parameter database:        Database
+    - parameter objectClass:     Class whose table to select from
+    - parameter whereExpression: WHere expression. Use ? to bind parameters.
+    - parameter parameters:      Parameters to bind
     
-    :returns: Statement object
+    - returns: Statement object
     */
     public convenience init<T: DatabaseConvertable>(database: Database, objectClass: T.Type, whereExpression: String, parameters: Any...)
     {
@@ -105,9 +106,9 @@ public extension Statement
     /**
     Create an object for the current row
     
-    :param: objectClass Class to create from the current row
+    - parameter objectClass: Class to create from the current row
     
-    :returns: Object created or nil
+    - returns: Object created or nil
     */
     public func objectForRow<T: DatabaseConvertable>(objectClass: T.Type) -> T?
     {
@@ -117,14 +118,14 @@ public extension Statement
     /**
     Create an array of objects for all rows
     
-    :param: objectClass Object class to return
+    - parameter objectClass: Object class to return
     
-    :returns: Array of objects
+    - returns: Array of objects
     */
-    public func objectsForRows<T: DatabaseConvertable>(objectClass: T.Type) -> [T]
+    public func objectsForRows<T: DatabaseConvertable>(objectClass: T.Type) throws -> [T]
     {
         var objects = [T]()
-        while step() == .More
+        while try(step()) == .More
         {
             if let object = objectForRow(T)
             {
@@ -145,7 +146,7 @@ public extension Statement
         // Column types must match
         if result == true
         {
-            for (index, column) in enumerate(columnDefinitions)
+            for (index, column) in columnDefinitions.enumerate()
             {
                 if column.type != columnTypeForIndex(index)
                 {

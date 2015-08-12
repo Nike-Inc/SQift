@@ -15,8 +15,8 @@ import Foundation
 #endif
 #endif
 
-internal let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
-internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
+internal let SQLITE_STATIC = unsafeBitCast(COpaquePointer(bitPattern: 0), sqlite3_destructor_type.self)
+internal let SQLITE_TRANSIENT = unsafeBitCast(COpaquePointer(bitPattern: -1), sqlite3_destructor_type.self)
 
 public class Statement
 {
@@ -31,10 +31,10 @@ public class Statement
     /**
     Initialize a statement with the supplied SQL
     
-    :param: database     Database to query
-    :param: sqlStatement Valid SQL statement.
+    - parameter database:     Database to query
+    - parameter sqlStatement: Valid SQL statement.
     
-    :returns: Statement object
+    - returns: Statement object
     */
     public init(database: Database, sqlStatement: String, parameters: Any...)
     {
@@ -48,14 +48,14 @@ public class Statement
     /**
     Convenience initializer for SELECT with no WHERE clause (i.e. all rows)
     
-    :param: database                 Database to query
-    :param: unsafeTable              Table name to query
-    :param: unsafeColumnNames        Columns to return. nil will return all columns.
-    :param: unsafeOrderByColumnNames Columns to order by. nil will return unordered.
-    :param: ascending                Ascending or descending order. Ignored if unordered.
-    :param: limit                    Maximum number of rows to return. 0 = no limit.
+    - parameter database:                 Database to query
+    - parameter unsafeTable:              Table name to query
+    - parameter unsafeColumnNames:        Columns to return. nil will return all columns.
+    - parameter unsafeOrderByColumnNames: Columns to order by. nil will return unordered.
+    - parameter ascending:                Ascending or descending order. Ignored if unordered.
+    - parameter limit:                    Maximum number of rows to return. 0 = no limit.
     
-    :returns: Statement object
+    - returns: Statement object
     */
     public convenience init(database: Database, table unsafeTable: String, columnNames unsafeColumnNames: [String]? = nil, orderByColumnNames unsafeOrderByColumnNames: [String]? = nil, ascending: Bool = true, limit: Int32 = 0)
     {
@@ -66,7 +66,7 @@ public class Statement
         if let unsafeColumnNames = unsafeColumnNames
         {
             tempColumnNames = unsafeColumnNames.map( { $0.sqiftSanitize() } )
-            columns = join(",", tempColumnNames!)
+            columns = ",".join(tempColumnNames!)
         }
 
         var statement = "SELECT \(columns) from \(table)"
@@ -101,17 +101,16 @@ public class Statement
     
     // MARK: Prepare
     
-    func prepare() -> DatabaseResult
+    internal func prepare() throws
     {
         if preparedStatement != nil
         {
             sqlite3_finalize(preparedStatement)
             preparedStatement = nil
         }
-        let result = database.sqResult(sqlite3_prepare_v2(database.database, sqlStatement, -1, &preparedStatement, nil))
+        try(database.sqError(sqlite3_prepare_v2(database.database, sqlStatement, -1, &preparedStatement, nil)))
         
-        println("\(sqlStatement)")
-        return result;
+        print("\(sqlStatement)")
     }
     
     // MARK: Bind
@@ -119,120 +118,104 @@ public class Statement
     /**
     Reset the prepared SQL statement. Allows you to re-use frequetnly used SQL statements or statements with bindings.
     
-    :returns: Result
+    - returns: Result
     */
-    public func reset() -> DatabaseResult
+    public func reset() throws
     {
-        let result = database.sqResult(sqlite3_reset(preparedStatement))
-        return result
+        try(database.sqResult(sqlite3_reset(preparedStatement)))
     }
     
     /**
     Bind the passed parameters to the statement. Use this to pass in values to statements like
         SELECT * FROM myTable WHERE someColumn = ?
     
-    :param: parameters List of values to bind. Valid types are String, Int, Double, Bool, Int32, Int64.
+    - parameter parameters: List of values to bind. Valid types are String, Int, Double, Bool, Int32, Int64.
     
-    :returns: Result
+    - returns: Result
     */
-    public func bindParameters(parameters: Any...) -> DatabaseResult
+    public func bindParameters(parameters: Any...) throws
     {
         self.parameters = parameters
-        let result = bind()
-        return result
+        try(bind())
     }
     
-    func bind() -> DatabaseResult
+    internal func bind() throws
     {
-        var result = DatabaseResult.Success
-        
         // Prepare or reset as needed
-        result = preparedStatement == nil ? prepare() : reset()
+        preparedStatement == nil ? try(prepare()) : try(reset())
         
-        if result == .Success
+        let statementParameterCount = Int(sqlite3_bind_parameter_count(preparedStatement))
+        if statementParameterCount != parameters.count
         {
-            let statementParameterCount = Int(sqlite3_bind_parameter_count(preparedStatement))
-            if statementParameterCount != parameters.count
+            throw DatabaseError.InternalError(string: "Mismatched statement parameter count")
+        }
+        else if statementParameterCount != 0
+        {
+            var boundCount = 0
+            for (index, value) in parameters.enumerate()
             {
-                result = .Error("Mismatched statement parameter count")
+                let bindIndex = Int32(index + 1)
+                if let string = value as? String
+                {
+                    try(database.sqError(sqlite3_bind_text(preparedStatement, bindIndex, string, -1, SQLITE_TRANSIENT)))
+                    boundCount++
+                }
+                else if let value = value as? Double
+                {
+                    try(database.sqError(sqlite3_bind_double(preparedStatement, bindIndex, value)))
+                    boundCount++
+                }
+                else if let value = value as? Int32
+                {
+                    try(database.sqError(sqlite3_bind_int(preparedStatement, bindIndex, value)))
+                    boundCount++
+                }
+                else if let value = value as? Int64
+                {
+                    try(database.sqError(sqlite3_bind_int64(preparedStatement, bindIndex, value)))
+                    boundCount++
+                }
+                else if let value = value as? Bool
+                {
+                    try(database.sqError(sqlite3_bind_int(preparedStatement, bindIndex, value ? 1 : 0)))
+                    boundCount++
+                }
+                else if let value = value as? Int
+                {
+                    try(database.sqError(sqlite3_bind_int64(preparedStatement, bindIndex, Int64(value))))
+                    boundCount++
+                }
+                else
+                {
+                    assert(false, "Unsupported parameter type")
+                }
             }
-            else if statementParameterCount != 0
+            if boundCount != statementParameterCount
             {
-                var boundCount = 0
-                for (index, value) in enumerate(parameters)
-                {
-                    let bindIndex = Int32(index + 1)
-                    if let string = value as? String
-                    {
-                        result = database.sqResult(sqlite3_bind_text(preparedStatement, bindIndex, string, -1, SQLITE_TRANSIENT))
-                        boundCount++
-                    }
-                    else if let value = value as? Double
-                    {
-                        result = database.sqResult(sqlite3_bind_double(preparedStatement, bindIndex, value))
-                        boundCount++
-                    }
-                    else if let value = value as? Int32
-                    {
-                        result = database.sqResult(sqlite3_bind_int(preparedStatement, bindIndex, value))
-                        boundCount++
-                    }
-                    else if let value = value as? Int64
-                    {
-                        result = database.sqResult(sqlite3_bind_int64(preparedStatement, bindIndex, value))
-                        boundCount++
-                    }
-                    else if let value = value as? Bool
-                    {
-                        result = database.sqResult(sqlite3_bind_int(preparedStatement, bindIndex, value ? 1 : 0))
-                        boundCount++
-                    }
-                    else if let value = value as? Int
-                    {
-                        result = database.sqResult(sqlite3_bind_int64(preparedStatement, bindIndex, Int64(value)))
-                        boundCount++
-                    }
-                    else
-                    {
-                        assert(false, "Unsupported parameter type")
-                    }
-                }
-                if boundCount != statementParameterCount
-                {
-                    println("parameters: \(parameters)")
-                    assert(false, "Failed to bind enough parameters");
-                }
+                print("parameters: \(parameters)")
+                assert(false, "Failed to bind enough parameters");
             }
         }
-        
-        return result
     }
     
     /**
     Step to next row.
     
-    :returns: Result. .More = there are more rows to process, .Done = No more rows to process
+    - returns: Result. .More = there are more rows to process, .Done = No more rows to process
     */
-    public func step() -> DatabaseResult
+    public func step() throws -> DatabaseResult
     {
-        var result = DatabaseResult.Success
+        var result = DatabaseResult.Done
         
         if preparedStatement == nil
         {
-            result = prepare()
-            
-            if result == .Success
-            {
-                result = bind()
-            }
+            try(prepare())
+            try(bind())
         }
         
         // Step
-        if result == .Success
-        {
-            result = database.sqResult(sqlite3_step(preparedStatement))
-        }
-
+        result = try(database.sqResult(sqlite3_step(preparedStatement)))
+        
         return result
     }
     
@@ -241,7 +224,7 @@ public class Statement
     /**
     Number of columns in the result set
     
-    :returns: Column count, may be zero for no results.
+    - returns: Column count, may be zero for no results.
     */
     public func columnCount() -> Int
     {
@@ -252,9 +235,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a String
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Result as a String, may be nil if NULL data or conversion to a String fails.
+    - returns: Result as a String, may be nil if NULL data or conversion to a String fails.
     */
     public subscript(index: Int) -> String?
     {
@@ -265,9 +248,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a Double
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Value as a Double
+    - returns: Value as a Double
     */
     public subscript(index: Int) -> Double
     {
@@ -278,9 +261,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Value as an Int
+    - returns: Value as an Int
     */
     public subscript(index: Int) -> Int
         {
@@ -291,9 +274,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int32
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Value as an Int32
+    - returns: Value as an Int32
     */
     public subscript(index: Int) -> Int32
     {
@@ -304,9 +287,9 @@ public class Statement
     /**
     Contents of the column at the specified index as an Int64
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Value as an Int64
+    - returns: Value as an Int64
     */
     public subscript(index: Int) -> Int64
     {
@@ -317,9 +300,9 @@ public class Statement
     /**
     Contents of the column at the specified index as a Bool
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Value as a Bool. Any value that is non-zero will return true.
+    - returns: Value as a Bool. Any value that is non-zero will return true.
     */
     public subscript(index: Int) -> Bool
     {
@@ -330,12 +313,10 @@ public class Statement
     /**
     Cache the column names for this statement if not already cached
     
-    :returns: Result
+    - returns: Result
     */
-    func cacheColumnNames() -> DatabaseResult
+    internal func cacheColumnNames() throws
     {
-        var result = DatabaseResult.Success
-        
         if columnNames == nil
         {
             var names = [String]()
@@ -352,8 +333,7 @@ public class Statement
                     else
                     {
                         // Something is wrong...
-                        result = .Error("Unable to load column names")
-                        break
+                        throw DatabaseError.InternalError(string: "Unable to load column names")
                     }
                 }
 
@@ -364,38 +344,35 @@ public class Statement
                 }
             }
         }
-        
-        return result
     }
     
     /**
     Name of the column at the specified index
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Name of the column, or nil.
+    - returns: Name of the column, or nil.
     */
-    public func columnNameForIndex(index: Int) -> String?
+    public func columnNameForIndex(index: Int) throws -> String?
     {
         var name: String? = nil
         
-        if cacheColumnNames() == .Success
+        try(cacheColumnNames())
+
+        if let columnNames = columnNames where index < columnNames.count
         {
-            if let columnNames = columnNames where index < columnNames.count
-            {
-                name = columnNames[index]
-            }
+            name = columnNames[index]
         }
-        
+
         return name
     }
     
     /**
     Type of the column at the specified index
     
-    :param: index Column number.
+    - parameter index: Column number.
     
-    :returns: Type of the column.
+    - returns: Type of the column.
     */
     public func columnTypeForIndex(index: Int) -> ColumnType
     {

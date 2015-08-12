@@ -15,46 +15,13 @@ import Foundation
 #endif
 #endif
 
-/**
-Enum wrapper for sqlite results
-
-- Success: Operation succeeded with no errors
-- Error:   Operation failed, error string is associated value
-*/
-public enum DatabaseResult : Equatable
+public enum DatabaseResult
 {
-    case Success
     case More
     case Done
-    case Error(String?)
-    
-    func isError() -> Bool
-    {
-        return self != .Error(nil)
-    }
 }
 
-public func ==(a: DatabaseResult, b: DatabaseResult) -> Bool {
-    switch (a, b)
-    {
-    case (.Success(), .Success()):
-        return true
-        
-    case (.More(), .More()):
-        return true
-        
-    case (.Done(), .Done()):
-        return true
-        
-    case (.Error(let a), .Error(let b)) where a == nil || b == nil || a! == b!:
-        return true
-        
-    default:
-        return false
-    }
+public enum DatabaseError : ErrorType {
+    case InternalError (string: String)
+    case sqliteError (string: String, code: Int32)
 }
-
-public func !=(a: DatabaseResult, b: DatabaseResult) -> Bool {
-    return (a == b) ? false : true
-}
-

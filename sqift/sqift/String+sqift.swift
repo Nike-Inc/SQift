@@ -13,7 +13,7 @@ public extension String
     /**
     Sanitize a string for use in an sqlite statement
     
-    :returns: Sanitized string
+    - returns: Sanitized string
     */
     public func sqiftSanitize() -> String
     {

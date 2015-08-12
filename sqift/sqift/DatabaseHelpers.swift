@@ -39,14 +39,13 @@ public extension Database
     /**
     Create a new table from the array of column definitions
     
-    :param: name    Name of the table to create
-    :param: columns Array of column definitions
+    - parameter name:    Name of the table to create
+    - parameter columns: Array of column definitions
     
-    :returns: Result
+    - returns: Result
     */
-    public func createTable(name: String, columns: [Column]) -> DatabaseResult
+    public func createTable(name: String, columns: [Column]) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         var createString = "CREATE TABLE IF NOT EXISTS \(name.sqiftSanitize())"
@@ -59,69 +58,63 @@ public extension Database
         
         createString += " (" + ",".join(columnStrings) + ");"
         
-        result = sqResult(sqlite3_exec(database, createString, nil, nil, nil))
-        
-        return result
+        try(sqError(sqlite3_exec(database, createString, nil, nil, nil)))
     }
     
     /**
     Drop a table
     
-    :param: name Name of table to drop
+    - parameter name: Name of table to drop
     
-    :returns: Result
+    - returns: Result
     */
-    public func dropTable(name: String) -> DatabaseResult
+    public func dropTable(name: String) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
-        var dropString = "DROP TABLE IF EXISTS \(name.sqiftSanitize());"
-        result = sqResult(sqlite3_exec(database, dropString, nil, nil, nil))
-        
-        return result
+        let dropString = "DROP TABLE IF EXISTS \(name.sqiftSanitize());"
+        try(sqError(sqlite3_exec(database, dropString, nil, nil, nil)))
     }
     
     /**
     Determine if a table with the given name exists
     
-    :param: name Name of table
+    - parameter name: Name of table
     
-    :returns: true if table exists
+    - returns: true if table exists
     */
     public func tableExists(name: String) -> Bool
     {
         var exists = false
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
-        let string = "SELECT name FROM sqlite_master WHERE type='table' AND name=\(name.sqiftSanitize());"
-        var preparedStatement: COpaquePointer = nil
-        
-        // Prepare the statement
-        result = sqResult(sqlite3_prepare_v2(database, string, -1, &preparedStatement, nil))
-        
-        // Step
-        if result == .Success
-        {
-            result = sqResult(sqlite3_step(preparedStatement))
-        }
-        
-        // Get the data
-        if result != .Error(nil)
-        {
+        do {
+            let string = "SELECT name FROM sqlite_master WHERE type='table' AND name=\(name.sqiftSanitize());"
+            var preparedStatement: COpaquePointer = nil
+            
+            // Prepare the statement
+            try(sqError(sqlite3_prepare_v2(database, string, -1, &preparedStatement, nil)))
+            defer {
+                // Release the prepared statement
+                if preparedStatement != nil
+                {
+                    sqlite3_finalize(preparedStatement)
+                    preparedStatement = nil
+                }
+            }
+            
+            // Step
+            try(sqResult(sqlite3_step(preparedStatement)))
+            
+            // Get the data
             let foundName = String.fromCString(UnsafePointer(sqlite3_column_text(preparedStatement, 0))) ?? ""
             if foundName == name
             {
                 exists = true
             }
         }
-        
-        // Release the prepared statement
-        if preparedStatement != nil
-        {
-            result = sqResult(sqlite3_finalize(preparedStatement))
-            preparedStatement = nil
+        catch {
+            
         }
         
         return exists
@@ -130,16 +123,15 @@ public extension Database
     /**
     Insert a row into a table
     
-    :param: unsafeTableName Table name
-    :param: unsafeColumns   Optional list of column names. If nil, value array must match the column order
-    :param: values          Values to insert into the table. Must be in same order an the column list.
-    :param: onConflict      How to resolve conflicts
+    - parameter unsafeTableName: Table name
+    - parameter unsafeColumns:   Optional list of column names. If nil, value array must match the column order
+    - parameter values:          Values to insert into the table. Must be in same order an the column list.
+    - parameter onConflict:      How to resolve conflicts
     
-    :returns: Result
+    - returns: Result
     */
-    public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) -> DatabaseResult
+    public func insertRowIntoTable(unsafeTableName: String, columns unsafeColumns: [String]? = nil, values: [Any], onConflict: OnConflict = .Abort) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
        
@@ -159,28 +151,20 @@ public extension Database
         let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = values
         
-        result = statement.step()
-        
-        if result == .Done
-        {
-            result = .Success
-        }
-        
-        return result
+        try(statement.step())
     }
     
     /**
     Delete matching rows from a table
     
-    :param: unsafeTableName Table name
-    :param: whereExpression Expression to match rows. Use ? for expression parameters
-    :param: values          Values to bind to expression parameters
+    - parameter unsafeTableName: Table name
+    - parameter whereExpression: Expression to match rows. Use ? for expression parameters
+    - parameter values:          Values to bind to expression parameters
     
-    :returns: Result
+    - returns: Result
     */
-    public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) -> DatabaseResult
+    public func deleteFromTable(unsafeTableName: String, whereExpression: String, values: [Any]) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
         
@@ -192,58 +176,42 @@ public extension Database
         let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = values
         
-        result = statement.step()
-        
-        if result == .Done
-        {
-            result = .Success
-        }
-        
-        return result
+        try(statement.step())
     }
     
     /**
     Delete all rows from a table
     
-    :param: unsafeTableName Table name
+    - parameter unsafeTableName: Table name
     
-    :returns: Result
+    - returns: Result
     */
-    public func deleteAllRowsFromTable(unsafeTableName: String) -> DatabaseResult
+    public func deleteAllRowsFromTable(unsafeTableName: String) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let table = unsafeTableName.sqiftSanitize()
-        var string = "DELETE FROM \(table)"
+        let string = "DELETE FROM \(table)"
         
         let statement = Statement(database: self, sqlStatement: string)
         
-        result = statement.step()
-        
-        if result == .Done
-        {
-            result = .Success
-        }
-        
-        return result
+        try(statement.step())
     }
     
     /**
     Return the number of rows in a table
     
-    :param: unsafeTableName Table name
+    - parameter unsafeTableName: Table name
     
-    :returns: Number of rows, or nil if there was an error.
+    - returns: Number of rows, or nil if there was an error.
     */
-    public func numberOfRowsInTable(unsafeTableName: String) -> Int64?
+    public func numberOfRowsInTable(unsafeTableName: String) throws -> Int64?
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let table = unsafeTableName.sqiftSanitize()
         let statement = Statement(database: self, sqlStatement: "SELECT count(*) FROM \(table);")
-        result = statement.step()
+        let result = try(statement.step())
         
         var count: Int64? = nil
         if result == .More
@@ -258,17 +226,16 @@ public extension Database
     Update rows in a table. Rows matching the where expression will have columns listed in
     the values dictionary set to their correstponding values.
     
-    :param: unsafeTableName Table name
-    :param: values          Dictonary of column names and values
-    :param: onConflict      How to resolve conflicts
-    :param: whereExpression Expression to match rows. Use ? for expression parameters
-    :param: values          Values to bind to expression parameters
+    - parameter unsafeTableName: Table name
+    - parameter values:          Dictonary of column names and values
+    - parameter onConflict:      How to resolve conflicts
+    - parameter whereExpression: Expression to match rows. Use ? for expression parameters
+    - parameter values:          Values to bind to expression parameters
     
-    :returns: Result
+    - returns: Result
     */
-    public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) -> DatabaseResult
+    public func updateTable(unsafeTableName: String,  values: [String : Any], onConflict: OnConflict = .Abort, whereExpression: String? = nil, parameters: Any...) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(values.count != 0, "values array is empty")
         
@@ -307,52 +274,41 @@ public extension Database
         let statement = Statement(database: self, sqlStatement: string)
         statement.parameters = parameters
         
-        result = statement.step()
-        
-        if result == .Done
-        {
-            result = .Success
-        }
-        
-        return result
+        try(statement.step())
     }
     
     /**
     Create a named index for a table
 
-    :param: name    Name of index to create. Name must be unique withiin the database.
-    :param: table   Table to create index on
-    :param: columns Columns to index
+    - parameter name:    Name of index to create. Name must be unique withiin the database.
+    - parameter table:   Table to create index on
+    - parameter columns: Columns to index
 
-    :returns: Result
+    - returns: Result
     */
-    public func createIndex(name: String, table: String,  columns: [String]) -> DatabaseResult
+    public func createIndex(name: String, table: String,  columns: [String]) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         assert(columns.count != 0, "values array is empty")
         
         let safeName = name.sqiftSanitize()
         let safeTable = table.sqiftSanitize()
         let safeColumns = ",".join(sanitizeStrings(columns))
-        result = executeSQLStatement("CREATE INDEX IF NOT EXISTS \(safeName) ON \(safeTable) (\(safeColumns));")
-        return result
+        try(executeSQLStatement("CREATE INDEX IF NOT EXISTS \(safeName) ON \(safeTable) (\(safeColumns));"))
     }
     
     /**
     Drop a named index
     
-    :param: name Name of index to drop
+    - parameter name: Name of index to drop
     
-    :returns: Result
+    - returns: Result
     */
-    public func dropIndex(name: String) -> DatabaseResult
+    public func dropIndex(name: String) throws
     {
-        var result = DatabaseResult.Success
         assert(database != nil, "database is nil")
         
         let safeName = name.sqiftSanitize()
-        result = executeSQLStatement("DROP INDEX IF EXISTS \(safeName);")
-        return result
+        try(executeSQLStatement("DROP INDEX IF EXISTS \(safeName);"))
     }
 }

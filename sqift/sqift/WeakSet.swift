@@ -45,16 +45,16 @@ public class WeakSet<T: AnyObject>
     
     public func dump()
     {
-        println("---")
+        print("---")
         if weakObjects.isEmpty
         {
-            println("WeakSet is empty")
+            print("WeakSet is empty")
         }
         else
         {
             for weakObject in weakObjects
             {
-                println("\(weakObject.value)")
+                print("\(weakObject.value)")
             }
         }
     }

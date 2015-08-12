@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 thinbits. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <sqlite3.h>
+@import Foundation;
+@import sqlite3_ios_simulator;
 
 typedef void (^FunctionBlock)(int64_t rowid);
 

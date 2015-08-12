@@ -18,7 +18,7 @@ import Foundation
 public enum TransactionResult
 {
     case Commit
-    case Rollback(DatabaseResult)
+    case Rollback
 }
 
 public enum TableChange
@@ -41,6 +41,8 @@ public enum TableChange
     }
 }
 
+public typealias TransactionClosure = ((database: Database) -> (TransactionResult))
+
 /**
 *  Main Database class
 */
@@ -56,9 +58,9 @@ public class Database
     /**
     Init
     
-    :param: path Path to database file
+    - parameter path: Path to database file
     
-    :returns: Object
+    - returns: Object
     */
     public init(_ path: String)
     {
@@ -68,7 +70,7 @@ public class Database
     /**
     Return the version of Database being used
     
-    :returns: Version string
+    - returns: Version string
     */
     public func sqiftVersion() -> String
     {
@@ -79,7 +81,7 @@ public class Database
     /**
     Return the version of sqlite being used
     
-    :returns: Version string
+    - returns: Version string
     */
     public func sqlite3Version() -> String
     {
@@ -90,29 +92,35 @@ public class Database
     /**
     Convert an sqlite result code to a sqifResult
     
-    :param: result Result code from sqlite
+    - parameter result: Result code from sqlite
     
-    :returns: Result
+    - returns: Result
     */
-    internal func sqResult(result: Int32) -> DatabaseResult
+    internal func sqResult(result: Int32) throws -> DatabaseResult
     {
-        if result == SQLITE_OK
-        {
-            return .Success
-        }
-        else if result == SQLITE_ROW
+        if result == SQLITE_ROW
         {
             return .More
         }
-        else if result == SQLITE_DONE
+        else if result == SQLITE_DONE || result == SQLITE_OK
         {
             return .Done
         }
         else
         {
             let string = String.fromCString(sqlite3_errmsg(database)) ?? "Unknown error"
-            println("Error: \(string)")
-            return .Error(string)
+            print("Error: \(string)")
+            throw DatabaseError.sqliteError(string: string, code: result)
+        }
+    }
+    
+    internal func sqError(result: Int32) throws
+    {
+        if result != SQLITE_OK
+        {
+            let string = String.fromCString(sqlite3_errmsg(database)) ?? "Unknown error"
+            print("Error: \(string)")
+            throw DatabaseError.sqliteError(string: string, code: result)
         }
     }
     
@@ -120,37 +128,25 @@ public class Database
     /**
     Open a connection to the database
     
-    :returns: Result
+    - returns: Result
     */
-    public func open() -> DatabaseResult
+    public func open() throws
     {
-        var result = DatabaseResult.Success
-        if database == nil
-        {
-            result = sqResult(sqlite3_open(path, &database))
-        }
-        
-        return result
+        try(sqError(sqlite3_open(path, &database)))
     }
     
 
     /**
     Close the connection to the database
     
-    :returns: Result
+    - returns: Result
     */
-    public func close() -> DatabaseResult
+    public func close() throws
     {
         assert(statements.isEmpty == true, "Closing database with active Statements")
         
-        var result = DatabaseResult.Success
-        if database != nil
-        {
-            result = sqResult(sqlite3_close(database))
-            database = nil
-        }
-        
-        return result
+        defer { database = nil }
+        try(sqError(sqlite3_close(database)))
     }
     
     public func enableTracing(tracing: Bool)
@@ -162,7 +158,7 @@ public class Database
     /**
     Return the last error message from sqlite
     
-    :returns: Last error message
+    - returns: Last error message
     */
     public func lastErrorMessage() -> String?
     {
@@ -174,17 +170,15 @@ public class Database
     /**
     Execute a SQL transaction.
     
-    :param: statement SQL statement to execute. No sanitzation is performed.
+    - parameter statement: SQL statement to execute. No sanitzation is performed.
     
-    :returns: Result
+    - returns: Result
     */
-    public func executeSQLStatement(statement: String) -> DatabaseResult
+    public func executeSQLStatement(statement: String) throws -> DatabaseResult
     {
         assert(database != nil, "database is not open")
 
-        var result = DatabaseResult.Success
-        
-        result = sqResult(sqlite3_exec(database, statement, nil, nil, nil))
+        let result = try(sqResult(sqlite3_exec(database, statement, nil, nil, nil)))
         
         return result
     }
@@ -194,43 +188,28 @@ public class Database
     Note: You cannot nest transactions. For nestable operations, use named savepoints.
     Note: You cannot start a transaction while within a named savepoint.
     
-    :param: transaction Closure to execute inside the database transaction.
+    - parameter transaction: Closure to execute inside the database transaction.
     
-    :returns: Result
+    - returns: Result
     */
-    public func transaction(transaction: (database: Database) -> TransactionResult) -> DatabaseResult
+    public func transaction(transaction: TransactionClosure) throws
     {
         assert(database != nil, "database is not open")
         assert(inTransaction == false, "Transactions cannot be nested")
 
-        var result = DatabaseResult.Success
+        try(sqError(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil)))
+        inTransaction = true
+        defer { inTransaction = false }
+        let result =  transaction(database: self)
         
-        result = sqResult(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil))
-        if result == .Success
+        switch result
         {
-            inTransaction = true
-            let transactionResult = transaction(database: self)
+            case .Commit:
+                try(sqError(sqlite3_exec(database, "COMMIT TRANSACTION;", nil, nil, nil)))
             
-            switch transactionResult
-            {
-                case .Commit:
-                    result = sqResult(sqlite3_exec(database, "COMMIT TRANSACTION;", nil, nil, nil))
-                
-                case let .Rollback(transactionError):
-                    let rollbackResult = sqResult(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil))
-                    if rollbackResult == .Success
-                    {
-                        result = transactionError
-                    }
-                    else
-                    {
-                        result = rollbackResult
-                    }
-            }
-            inTransaction = false
+            case .Rollback:
+                try(sqError(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil)))
         }
-        
-        return result
     }
     
     /**
@@ -238,48 +217,33 @@ public class Database
     Named savepoints can be nested. The results of inner savepoints are not saved unless enclosing
     savepoints are committed.
     
-    :param: savepoint   Name of savepoint to use
-    :param: transaction Closure to execute within the savepoint
+    - parameter savepoint:   Name of savepoint to use
+    - parameter transaction: Closure to execute within the savepoint
     
-    :returns: Result
+    - returns: Result
     */
-    public func executeInSavepoint(savepoint: String, transaction: (database: Database) -> TransactionResult) -> DatabaseResult
+    public func executeInSavepoint(savepoint: String, transaction: TransactionClosure) throws
     {
         assert(database != nil, "database is not open")
         assert(inTransaction == false, "Transactions cannot be nested")
 
-        var result = DatabaseResult.Success
-
-        result = sqResult(sqlite3_exec(database, "SAVEPOINT \(savepoint);", nil, nil, nil))
-        if result == .Success
-        {
-            let transactionResult = transaction(database: self)
-            
-            switch transactionResult
-            {
-            case .Commit:
-                result = sqResult(sqlite3_exec(database, "RELEASE SAVEPOINT \(savepoint);", nil, nil, nil))
-                
-            case let .Rollback(transactionError):
-                let rollbackResult = sqResult(sqlite3_exec(database, "ROLLBACK TO SAVEPOINT \(savepoint);", nil, nil, nil))
-                if rollbackResult == .Success
-                {
-                    result = transactionError
-                }
-                else
-                {
-                    result = rollbackResult
-                }
-            }
-        }
+        try(sqError(sqlite3_exec(database, "SAVEPOINT \(savepoint);", nil, nil, nil)))
+        let transactionResult = transaction(database: self)
         
-        return result
+        switch transactionResult
+        {
+        case .Commit:
+            try(sqError(sqlite3_exec(database, "RELEASE SAVEPOINT \(savepoint);", nil, nil, nil)))
+            
+        case .Rollback:
+            try(sqError(sqlite3_exec(database, "ROLLBACK TO SAVEPOINT \(savepoint);", nil, nil, nil)))
+        }
     }
     
     /**
     Row ID of the last successful INSERT
     
-    :returns: Row ID
+    - returns: Row ID
     */
     public func lastRowInserted() -> Int64
     {
@@ -289,44 +253,44 @@ public class Database
         return rowID
     }
     
-    public func whenTable(table: String, changes: TableChange, perform: (closureName: String, closure:(change: TableChange, rowid: Int64) -> ())) -> DatabaseResult
-    {
-        assert(database != nil, "database is not open")
-        
-        var result = DatabaseResult.Success
-        
-        // Add the block
-        let safeName = perform.closureName + "_sqift"
-        result = sqResult(DatabaseTrace.addBlock( { rowid in perform.closure(change: changes, rowid: rowid) }, withName: safeName, toDatabase: database))
-
-        if result == .Success
-        {
-            // Create the sql trigger
-            let safeTable = table.sqiftSanitize()
-            let rowString = changes == .Delete ? "old.rowid" : "new.rowid"
-            let statement = "CREATE TRIGGER IF NOT EXISTS \(safeName) AFTER \(changes.sql()) ON \(safeTable) BEGIN SELECT sqliteFunction(\"\(safeName)\", \(rowString)); END;"
-            result = executeSQLStatement(statement)
-        }
-
-        return result
-    }
-    
-    public func removeClosureWithName(name: String) -> DatabaseResult
-    {
-        assert(database != nil, "database is not open")
-        
-        var result = DatabaseResult.Success
-        
-        let safeName = name + "_sqift"
-        result = executeSQLStatement("DROP TRIGGER IF EXISTS \(safeName);")
-
-        // Only remove the function if the drop succeeded, otherwise there will be a trigger with no matching function
-        if result == .Success
-        {
-            DatabaseTrace.removeBlockForName(name, inDatabase: database)
-        }
-        
-        return result
-    }
+//    public func whenTable(table: String, changes: TableChange, perform: (closureName: String, closure:(change: TableChange, rowid: Int64) -> ())) -> DatabaseResult
+//    {
+//        assert(database != nil, "database is not open")
+//        
+//        var result = DatabaseResult.Success
+//        
+//        // Add the block
+//        let safeName = perform.closureName + "_sqift"
+//        result = sqResult(DatabaseTrace.addBlock( { rowid in perform.closure(change: changes, rowid: rowid) }, withName: safeName, toDatabase: database))
+//
+//        if result == .Success
+//        {
+//            // Create the sql trigger
+//            let safeTable = table.sqiftSanitize()
+//            let rowString = changes == .Delete ? "old.rowid" : "new.rowid"
+//            let statement = "CREATE TRIGGER IF NOT EXISTS \(safeName) AFTER \(changes.sql()) ON \(safeTable) BEGIN SELECT sqliteFunction(\"\(safeName)\", \(rowString)); END;"
+//            result = executeSQLStatement(statement)
+//        }
+//
+//        return result
+//    }
+//    
+//    public func removeClosureWithName(name: String) -> DatabaseResult
+//    {
+//        assert(database != nil, "database is not open")
+//        
+//        var result = DatabaseResult.Success
+//        
+//        let safeName = name + "_sqift"
+//        result = executeSQLStatement("DROP TRIGGER IF EXISTS \(safeName);")
+//
+//        // Only remove the function if the drop succeeded, otherwise there will be a trigger with no matching function
+//        if result == .Success
+//        {
+//            DatabaseTrace.removeBlockForName(name, inDatabase: database)
+//        }
+//        
+//        return result
+//    }
 }
 

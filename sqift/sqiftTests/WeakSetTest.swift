@@ -26,7 +26,7 @@ class WeakSetTest: XCTestCase {
     {
         let ws = WeakSet<Database>()
         var objectA: Database? = Database("")
-        var objectB: Database? = Database("")
+        let objectB: Database? = Database("")
         
         XCTAssertTrue(ws.isEmpty, "Empty is incorrect")
 
