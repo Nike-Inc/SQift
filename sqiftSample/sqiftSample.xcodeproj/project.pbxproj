@@ -365,6 +365,8 @@
 		552D1BE11AB6ABA2007359B0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = thinbits;
 				TargetAttributes = {

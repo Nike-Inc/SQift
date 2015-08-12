@@ -18,7 +18,7 @@ import Foundation
 internal let SQLITE_STATIC = unsafeBitCast(COpaquePointer(bitPattern: 0), sqlite3_destructor_type.self)
 internal let SQLITE_TRANSIENT = unsafeBitCast(COpaquePointer(bitPattern: -1), sqlite3_destructor_type.self)
 
-public class Statement
+public class Statement : CustomDebugStringConvertible
 {
     let database: Database
     let sqlStatement: String
@@ -98,6 +98,8 @@ public class Statement
             preparedStatement = nil
         }
     }
+    
+    public var debugDescription: String { get { return sqlStatement } }
     
     // MARK: Prepare
     

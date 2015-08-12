@@ -15,8 +15,9 @@ import Foundation
     #endif
 #endif
 
-/// Closure that is executed while within a SQL transaction or named savepoint.
-public typealias TransactionClosure = ((database: Database) -> (TransactionResult))
+// Closure that is executed while within a SQL transaction or named savepoint.
+// Throwing an error is an automatic .Rollback
+public typealias TransactionClosure = ((database: Database) throws -> (TransactionResult))
 
 /**
 TransactionClosure result type.
@@ -138,6 +139,9 @@ public class Database
     */
     public func close() throws
     {
+        if statements.isEmpty == false {
+            statements.dump()
+        }
         assert(statements.isEmpty == true, "Closing database with active Statements")
         
         defer { database = nil }
@@ -200,15 +204,20 @@ public class Database
         try(sqError(sqlite3_exec(database, "BEGIN TRANSACTION;", nil, nil, nil)))
         inTransaction = true
         defer { inTransaction = false }
-        let result =  transaction(database: self)
         
-        switch result
-        {
+        do {
+            let result =  try(transaction(database: self))
+            
+            switch result
+            {
             case .Commit:
                 try(sqError(sqlite3_exec(database, "COMMIT TRANSACTION;", nil, nil, nil)))
-            
+                
             case .Rollback:
                 try(sqError(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil)))
+            }
+        } catch {
+            try(sqError(sqlite3_exec(database, "ROLLBACK TRANSACTION;", nil, nil, nil)))
         }
     }
     
@@ -226,14 +235,18 @@ public class Database
         assert(inTransaction == false, "Transactions cannot be nested")
 
         try(sqError(sqlite3_exec(database, "SAVEPOINT \(savepoint);", nil, nil, nil)))
-        let transactionResult = transaction(database: self)
-        
-        switch transactionResult
-        {
-        case .Commit:
-            try(sqError(sqlite3_exec(database, "RELEASE SAVEPOINT \(savepoint);", nil, nil, nil)))
+        do {
+            let transactionResult = try(transaction(database: self))
             
-        case .Rollback:
+            switch transactionResult
+            {
+            case .Commit:
+                try(sqError(sqlite3_exec(database, "RELEASE SAVEPOINT \(savepoint);", nil, nil, nil)))
+                
+            case .Rollback:
+                try(sqError(sqlite3_exec(database, "ROLLBACK TO SAVEPOINT \(savepoint);", nil, nil, nil)))
+            }
+        } catch {
             try(sqError(sqlite3_exec(database, "ROLLBACK TO SAVEPOINT \(savepoint);", nil, nil, nil)))
         }
     }

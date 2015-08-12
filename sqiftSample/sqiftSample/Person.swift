@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Person : Printable, DebugPrintable
+public struct Person : CustomStringConvertible, CustomDebugStringConvertible
 {
     public let firstName: String
     public let lastName: String

@@ -141,14 +141,14 @@
 		552D1BBB1AB623EC007359B0 /* sqiftTests */ = {
 			isa = PBXGroup;
 			children = (
-				552D1BBE1AB623EC007359B0 /* sqiftTests.swift */,
-				552316021B7ADD4C00C50F54 /* DatabaseTests.swift */,
-				552316041B7ADE4B00C50F54 /* TestHelpers.swift */,
-				552D1BBC1AB623EC007359B0 /* Supporting Files */,
-				555AD5B91AB90880007961BC /* WeakSetTest.swift */,
 				552316061B7AEB4700C50F54 /* DatabaseHelperTests.swift */,
-				552316081B7AEC5000C50F54 /* StatementTests.swift */,
 				5523160A1B7AECE000C50F54 /* DatabaseQueueTests.swift */,
+				552316021B7ADD4C00C50F54 /* DatabaseTests.swift */,
+				552D1BBE1AB623EC007359B0 /* sqiftTests.swift */,
+				552316081B7AEC5000C50F54 /* StatementTests.swift */,
+				552D1BBC1AB623EC007359B0 /* Supporting Files */,
+				552316041B7ADE4B00C50F54 /* TestHelpers.swift */,
+				555AD5B91AB90880007961BC /* WeakSetTest.swift */,
 			);
 			path = sqiftTests;
 			sourceTree = "<group>";

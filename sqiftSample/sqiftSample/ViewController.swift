@@ -20,9 +20,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        contactManager.openDatabaseAtPath("/Users/dave/Desktop/sqift.db")
-        contactManager.insertSampleData { (result) -> Void in
-            self.getContacts()
+        do {
+            try(contactManager.openDatabaseAtPath("/Users/dave/Desktop/sqift.db"))
+            contactManager.insertSampleData { (result) -> Void in
+                self.getContacts()
+            }
+        } catch {
+            
         }
     }
 
@@ -39,7 +43,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func getContacts()
     {
-        contactManager.contactsInZipcode(97229) { people in
+        contactManager.allContacts() { people, error in
+            guard error == nil, let people = people else {return}
             self.people = people
             self.tableView.reloadData()
         }
@@ -54,7 +59,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell") as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
         let person = people[indexPath.row]
         
         cell.textLabel?.text = "\(person)"

@@ -11,14 +11,14 @@ import sqift
 
 public class ContactManager
 {
-    public typealias PeopleClosure = ([Person]) -> ()
+    public typealias PeopleClosure = ([Person]?, NSError?) -> ()
     
     var databaseQueue: DatabaseQueue? = nil
 
-    public func openDatabaseAtPath(path: String)
+    public func openDatabaseAtPath(path: String) throws
     {
         databaseQueue = DatabaseQueue(path: path)
-        databaseQueue?.open()
+        try(databaseQueue?.open())
     }
     
     public func allContacts(completion: PeopleClosure)
@@ -27,11 +27,16 @@ public class ContactManager
             // Query
             let statement = Statement(database: database, table: Person.tableName, orderByColumnNames: ["lastName"], ascending: true)
             
-            var people = statement.objectsForRows(Person)
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(people)
-            })
+            var finalClosure: dispatch_block_t!
+            do {
+                let people = try(statement.objectsForRows(Person))
+                finalClosure = { completion(people, nil) }
+            } catch let error as DatabaseError {
+                finalClosure = { completion(nil, error.nserror()) }
+            } catch {
+                finalClosure = { completion(nil, nil) }
+            }
+            dispatch_async(dispatch_get_main_queue(), finalClosure)
         })
     }
     
@@ -39,62 +44,68 @@ public class ContactManager
     {
         databaseQueue?.execute({ (database) -> () in
             let statement = Statement(database: database, objectClass: Person.self, whereExpression: "zipcode == ?", parameters: zipcode)
-            var people = statement.objectsForRows(Person)
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(people)
-            })
+
+            var finalClosure: dispatch_block_t!
+            do {
+                let people = try(statement.objectsForRows(Person))
+                finalClosure = { completion(people, nil) }
+            } catch let error as DatabaseError {
+                finalClosure = { completion(nil, error.nserror()) }
+            } catch {
+                finalClosure = { completion(nil, nil) }
+            }
+            dispatch_async(dispatch_get_main_queue(), finalClosure)
         })
     }
     
-    public func addPeople(people: [Person], completion: (DatabaseResult) -> Void)
+    public func addPeople(people: [Person], completion: (NSError?) -> Void)
     {
         databaseQueue?.execute({ database in
-            // Perform a transaction
-            let result = database.transaction( { database in
-                
-                var innerResult: DatabaseResult = .Success
-                for person in people
-                {
-                    innerResult = database.insertRowIntoTable(Person.self, person)
-                    if innerResult != .Success
+            var finalClosure: dispatch_block_t!
+            do {
+                // Perform a transaction
+                try(database.transaction( { database in
+                    
+                    for person in people
                     {
-                        break
+                        try(database.insertRowIntoTable(Person.self, person))
                     }
-                }
-                return innerResult == .Success ? TransactionResult.Commit : TransactionResult.Rollback(innerResult)
-            })
-            
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(result)
-            })
+                    return .Commit
+                }))
+                finalClosure = { completion(nil) }
+            } catch let error as DatabaseError {
+                finalClosure = { completion(error.nserror()) }
+            } catch {
+                finalClosure = { completion(nil) }
+            }
+            dispatch_async(dispatch_get_main_queue(), finalClosure)
         })
     }
 
-    public func insertSampleData(completion: (DatabaseResult) -> Void)
+    public func insertSampleData(completion: (NSError?) -> Void)
     {
         databaseQueue?.execute({ database in
-            var addData = database.tableExists(Person.self) == false || database.numberOfRowsInTable(Person.self) == 0
-            
-            if addData
-            {
-                var result = database.createTable(Person)
+            do {
+                let rowCount = try(database.numberOfRowsInTable(Person.self))
+                let addData = database.tableExists(Person.self) == false || rowCount == 0
                 
-                if result == .Success
+                if addData
                 {
+                    try(database.createTable(Person))
+                    
                     let people = [
                         Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 97229),
                         Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 97006)
                     ]
-
+                    
                     self.addPeople(people, completion: { (result) -> Void in
                         completion(result)
                     })
                 }
-            }
-            else
-            {
-                completion(.Success)
+            } catch let error as DatabaseError {
+                completion(error.nserror())
+            } catch {
+                completion(nil)
             }
         })
     }

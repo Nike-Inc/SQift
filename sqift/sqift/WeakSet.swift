@@ -26,7 +26,7 @@ public class WeakSet<T: AnyObject>
     {
         
     }
-    
+
     public func addObject(object: T!)
     {
         compact()
