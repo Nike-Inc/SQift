@@ -7,13 +7,6 @@
 //
 
 import Foundation
-#if os(iOS)
-    #if arch(i386) || arch(x86_64)
-        import sqlite3_ios_simulator
-    #else
-        import sqlite3_ios
-    #endif
-#endif
 
 // Closure that is executed while within a SQL transaction or named savepoint.
 // Throwing an error is an automatic .Rollback

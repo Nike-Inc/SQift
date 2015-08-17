@@ -13,6 +13,8 @@
 		552316071B7AEB4700C50F54 /* DatabaseHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552316061B7AEB4700C50F54 /* DatabaseHelperTests.swift */; };
 		552316091B7AEC5000C50F54 /* StatementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552316081B7AEC5000C50F54 /* StatementTests.swift */; };
 		5523160B1B7AECE000C50F54 /* DatabaseQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5523160A1B7AECE000C50F54 /* DatabaseQueueTests.swift */; };
+		552C73BF1B81B00500130535 /* sqift-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = 552C73BE1B81B00500130535 /* sqift-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		552C73C21B81B08300130535 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 552C73C11B81B08300130535 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		552D1BB21AB623EC007359B0 /* sqift.h in Headers */ = {isa = PBXBuildFile; fileRef = 552D1BB11AB623EC007359B0 /* sqift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		552D1BB81AB623EC007359B0 /* sqift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1BAC1AB623EC007359B0 /* sqift.framework */; };
 		552D1BBF1AB623EC007359B0 /* sqiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1BBE1AB623EC007359B0 /* sqiftTests.swift */; };
@@ -47,6 +49,8 @@
 		552316061B7AEB4700C50F54 /* DatabaseHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseHelperTests.swift; sourceTree = "<group>"; };
 		552316081B7AEC5000C50F54 /* StatementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementTests.swift; sourceTree = "<group>"; };
 		5523160A1B7AECE000C50F54 /* DatabaseQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseQueueTests.swift; sourceTree = "<group>"; };
+		552C73BE1B81B00500130535 /* sqift-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "sqift-Bridging.h"; sourceTree = "<group>"; };
+		552C73C11B81B08300130535 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = usr/include/sqlite3.h; sourceTree = SDKROOT; };
 		552D1BAC1AB623EC007359B0 /* sqift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sqift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		552D1BB01AB623EC007359B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		552D1BB11AB623EC007359B0 /* sqift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqift.h; sourceTree = "<group>"; };
@@ -60,7 +64,7 @@
 		552D1BCC1AB6249D007359B0 /* String+sqift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+sqift.swift"; sourceTree = "<group>"; };
 		552D1BCD1AB6249D007359B0 /* ToDo.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = ToDo.rtf; sourceTree = "<group>"; };
 		552D1BD41AB624CC007359B0 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		552D1BDC1AB62AED007359B0 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.map; path = ModuleMaps/module.map; sourceTree = "<group>"; };
+		552D1BDC1AB62AED007359B0 /* module.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = module.map; sourceTree = "<group>"; };
 		555AD5B71AB90253007961BC /* WeakSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
 		555AD5B91AB90880007961BC /* WeakSetTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSetTest.swift; sourceTree = "<group>"; };
 		559259CB1ABE514A00151DD3 /* DatabaseConvertable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseConvertable.swift; sourceTree = "<group>"; };
@@ -120,7 +124,9 @@
 				55A85C701AC516D5004366DC /* DatabaseTrace.h */,
 				55A85C711AC516D5004366DC /* DatabaseTrace.m */,
 				552D1BDC1AB62AED007359B0 /* module.map */,
+				552C73BE1B81B00500130535 /* sqift-Bridging.h */,
 				552D1BB11AB623EC007359B0 /* sqift.h */,
+				552C73C11B81B08300130535 /* sqlite3.h */,
 				552D1BCB1AB6249D007359B0 /* Statement.swift */,
 				552D1BCC1AB6249D007359B0 /* String+sqift.swift */,
 				552D1BAF1AB623EC007359B0 /* Supporting Files */,
@@ -168,8 +174,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				552C73BF1B81B00500130535 /* sqift-Bridging.h in Headers */,
 				552D1BB21AB623EC007359B0 /* sqift.h in Headers */,
 				55A85C721AC516D5004366DC /* DatabaseTrace.h in Headers */,
+				552C73C21B81B08300130535 /* sqlite3.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,7 +426,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -443,7 +450,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
@@ -463,7 +469,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 			};
 			name = Debug;
 		};
@@ -478,7 +483,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.thinbits.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_INCLUDE_PATHS = sqift/ModuleMaps;
 			};
 			name = Release;
 		};

@@ -21,7 +21,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         do {
-            try(contactManager.openDatabaseAtPath("/tmp/sqift.db"))
+            try(contactManager.openDatabaseAtPath("/tmp/sample-sqift.db"))
             contactManager.insertSampleData { (result) -> Void in
                 self.getContacts()
             }

@@ -86,13 +86,12 @@ public class ContactManager
     {
         databaseQueue?.execute({ database in
             do {
-                let rowCount = try(database.numberOfRowsInTable(Person.self))
-                let addData = database.tableExists(Person.self) == false || rowCount == 0
-                
-                if addData
+                if database.tableExists(Person.self) == false
                 {
                     try(database.createTable(Person))
-                    
+                }
+                
+                if try database.numberOfRowsInTable(Person.self) == 0 {
                     let people = [
                         Person(firstName: "Bob", lastName: "Smith", address: "123 Anywhere", zipcode: 97229),
                         Person(firstName: "Jane", lastName: "Doe", address: "111 Blahville", zipcode: 97006)

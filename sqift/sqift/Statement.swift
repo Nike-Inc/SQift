@@ -7,13 +7,6 @@
 //
 
 import Foundation
-#if os(iOS)
-#if arch(i386) || arch(x86_64)
-    import sqlite3_ios_simulator
-    #else
-    import sqlite3_ios
-#endif
-#endif
 
 internal let SQLITE_STATIC = unsafeBitCast(COpaquePointer(bitPattern: 0), sqlite3_destructor_type.self)
 internal let SQLITE_TRANSIENT = unsafeBitCast(COpaquePointer(bitPattern: -1), sqlite3_destructor_type.self)

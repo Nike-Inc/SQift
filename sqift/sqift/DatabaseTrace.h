@@ -7,7 +7,7 @@
 //
 
 @import Foundation;
-@import sqlite3_ios_simulator;
+#import "sqlite3.h"
 
 typedef void (^FunctionBlock)(int64_t rowid);
 

@@ -7,13 +7,6 @@
 //
 
 import Foundation
-#if os(iOS)
-#if arch(i386) || arch(x86_64)
-    import sqlite3_ios_simulator
-    #else
-    import sqlite3_ios
-#endif
-#endif
 
 /**
 The ON CONFLICT clause applies to UNIQUE, NOT NULL, CHECK, and PRIMARY KEY constraints
