@@ -30,7 +30,6 @@ public class DatabaseQueue
     {
         do {
             try(database.close())
-
         }
         catch {
             

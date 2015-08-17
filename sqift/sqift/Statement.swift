@@ -111,8 +111,6 @@ public class Statement : CustomDebugStringConvertible
             preparedStatement = nil
         }
         try(database.sqError(sqlite3_prepare_v2(database.database, sqlStatement, -1, &preparedStatement, nil)))
-        
-        print("\(sqlStatement)")
     }
     
     // MARK: Bind
@@ -149,6 +147,7 @@ public class Statement : CustomDebugStringConvertible
         }
         else if statementParameterCount != 0
         {
+            // Iterate the statement parameters and call the correct bind method for the type
             var boundCount = 0
             for (index, value) in parameters.enumerate()
             {
@@ -188,11 +187,8 @@ public class Statement : CustomDebugStringConvertible
                     assert(false, "Unsupported parameter type")
                 }
             }
-            if boundCount != statementParameterCount
-            {
-                print("parameters: \(parameters)")
-                assert(false, "Failed to bind enough parameters");
-            }
+
+            assert(boundCount == statementParameterCount, "Failed to bind enough parameters");
         }
     }
     
@@ -313,32 +309,26 @@ public class Statement : CustomDebugStringConvertible
     */
     internal func cacheColumnNames() throws
     {
-        if columnNames == nil
-        {
-            var names = [String]()
-            let count = columnCount()
-            
-            if count != 0
-            {
-                for index in 0 ..< count
-                {
-                    if let name = String.fromCString(UnsafePointer(sqlite3_column_name(preparedStatement, Int32(index))))
-                    {
-                        names.append(name)
-                    }
-                    else
-                    {
-                        // Something is wrong...
-                        throw DatabaseError.InternalError(string: "Unable to load column names")
-                    }
-                }
+        guard columnNames == nil else { return }
+        let count = columnCount()
+        guard count != 0 else { return }
 
-                // Save the names if the counts match
-                if names.count == count
-                {
-                    columnNames = names
-                }
+        var names = [String]()
+        for index in 0 ..< count
+        {
+            guard let name = String.fromCString(UnsafePointer(sqlite3_column_name(preparedStatement, Int32(index)))) else {
+                // Something is wrong...
+                throw DatabaseError.InternalError(string: "Unable to load column names")
             }
+            
+            // Cache the name
+            names.append(name)
+        }
+
+        // Save the names if the counts match
+        if names.count == count
+        {
+            columnNames = names
         }
     }
     
@@ -351,14 +341,11 @@ public class Statement : CustomDebugStringConvertible
     */
     public func columnNameForIndex(index: Int) throws -> String?
     {
-        var name: String? = nil
-        
         try(cacheColumnNames())
 
-        if let columnNames = columnNames where index < columnNames.count
-        {
-            name = columnNames[index]
-        }
+        guard let columnNames = columnNames where index < columnNames.count else { return nil }
+        
+        let name = columnNames[index]
 
         return name
     }

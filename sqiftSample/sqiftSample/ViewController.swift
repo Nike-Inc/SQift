@@ -21,7 +21,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         do {
-            try(contactManager.openDatabaseAtPath("/Users/dave/Desktop/sqift.db"))
+            try(contactManager.openDatabaseAtPath("/tmp/sqift.db"))
             contactManager.insertSampleData { (result) -> Void in
                 self.getContacts()
             }
@@ -30,12 +30,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
 
-    override func didReceiveMemoryWarning()
-    {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         getContacts()
