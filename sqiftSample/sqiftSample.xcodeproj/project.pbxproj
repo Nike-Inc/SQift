@@ -13,7 +13,6 @@
 		552D1BF61AB6ABA2007359B0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 552D1BF51AB6ABA2007359B0 /* Images.xcassets */; };
 		552D1BF91AB6ABA2007359B0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 552D1BF71AB6ABA2007359B0 /* LaunchScreen.xib */; };
 		552D1C051AB6ABA2007359B0 /* sqiftSampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 552D1C041AB6ABA2007359B0 /* sqiftSampleTests.swift */; };
-		552D1C191AB6AC04007359B0 /* sqift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1C141AB6ABC0007359B0 /* sqift.framework */; };
 		555B21881ABDF29F00AF4102 /* sqift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1C141AB6ABC0007359B0 /* sqift.framework */; };
 		555B21891ABDF29F00AF4102 /* sqift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 552D1C141AB6ABC0007359B0 /* sqift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55F80C0E1ABF852D009E88C1 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F80C0D1ABF852D009E88C1 /* Person.swift */; };
@@ -96,7 +95,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				555B21881ABDF29F00AF4102 /* sqift.framework in Frameworks */,
-				552D1C191AB6AC04007359B0 /* sqift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +226,7 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = thinbits;
 				TargetAttributes = {
 					552D1BE81AB6ABA2007359B0 = {
@@ -384,6 +382,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -451,6 +450,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = sqiftSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Nike.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "\"$(SRCROOT)/../sqift/sqift/ModuleMaps\"";
 			};
@@ -463,6 +463,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = sqiftSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Nike.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_INCLUDE_PATHS = "\"$(SRCROOT)/../sqift/sqift/ModuleMaps\"";
 			};
@@ -482,6 +483,7 @@
 				);
 				INFOPLIST_FILE = sqiftSampleTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Nike.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sqiftSample.app/sqiftSample";
 			};
@@ -497,6 +499,7 @@
 				);
 				INFOPLIST_FILE = sqiftSampleTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Nike.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sqiftSample.app/sqiftSample";
 			};

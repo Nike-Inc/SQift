@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "260ACCB522C0D9FAB13029A56C1E6BA31118DCA2",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "260ACCB522C0D9FAB13029A56C1E6BA31118DCA2" : 0,
+    "C0A206221F136DE9403C7DA19B0CE8028F0A3E2D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "B1A04309-7652-4616-9948-76B8EB142972",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "260ACCB522C0D9FAB13029A56C1E6BA31118DCA2" : "sqift\/",
+    "C0A206221F136DE9403C7DA19B0CE8028F0A3E2D" : "realsqift"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "sqiftSample",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "sqiftSample\/sqiftSample.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "bitbucket.org:thinbits\/sqift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "260ACCB522C0D9FAB13029A56C1E6BA31118DCA2"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/server.local\/git\/sqift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C0A206221F136DE9403C7DA19B0CE8028F0A3E2D"
+    }
+  ]
+}

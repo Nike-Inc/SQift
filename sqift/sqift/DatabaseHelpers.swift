@@ -3,7 +3,7 @@
 //  sqift
 //
 //  Created by Dave Camp on 3/19/15.
-//  Copyright (c) 2015 thinbits. All rights reserved.
+//  Copyright (c) 2015 Nike. All rights reserved.
 //
 
 import Foundation
@@ -62,7 +62,7 @@ public extension Database
             columnStrings.append(column.createString())
         }
         
-        createString += " (" + ",".join(columnStrings) + ");"
+        createString += " (" + columnStrings.joinWithSeparator(",") + ");"
         
         try(sqError(sqlite3_exec(database, createString, nil, nil, nil)))
     }
@@ -142,11 +142,11 @@ public extension Database
         
         if let unsafeColumns = unsafeColumns
         {
-            let columns = ",".join(unsafeColumns.map( { $0.sqiftSanitize() } ))
+            let columns = unsafeColumns.map( { $0.sqiftSanitize() } ).joinWithSeparator(",")
             string += "(\(columns))"
         }
         
-        let parameters = ",".join(values.map( { _ in "?" } ))
+        let parameters = values.map( { _ in "?" } ).joinWithSeparator(",")
         
         string += " VALUES(\(parameters));"
         
@@ -259,7 +259,7 @@ public extension Database
             }
         }
         
-        string += ",".join(pairs)
+        string += pairs.joinWithSeparator(",")
         
         if let whereExpression = whereExpression
         {
@@ -289,7 +289,7 @@ public extension Database
         
         let safeName = name.sqiftSanitize()
         let safeTable = table.sqiftSanitize()
-        let safeColumns = ",".join(columns.sanitize())
+        let safeColumns = columns.sanitize().joinWithSeparator(",")
         try(executeSQLStatement("CREATE INDEX IF NOT EXISTS \(safeName) ON \(safeTable) (\(safeColumns));"))
     }
     

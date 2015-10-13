@@ -3,7 +3,7 @@
 //  sqiftSample
 //
 //  Created by Dave Camp on 3/22/15.
-//  Copyright (c) 2015 thinbits. All rights reserved.
+//  Copyright (c) 2015 Nike. All rights reserved.
 //
 
 import Foundation

@@ -3,7 +3,7 @@
 //  sqift
 //
 //  Created by Dave Camp on 8/11/15.
-//  Copyright © 2015 thinbits. All rights reserved.
+//  Copyright © 2015 Nike. All rights reserved.
 //
 
 import XCTest
@@ -40,7 +40,7 @@ func fiftyRowTable(database: Database)
         for index in 0 ..< 50
         {
             try!(fiftyRowTableStatement.bindParameters(index, "Bob \(index)"))
-            XCTAssertEqual(try!(fiftyRowTableStatement.step()), .Done, "Step failed")
+            XCTAssertEqual(try!(fiftyRowTableStatement.step()), DatabaseResult.Done, "Step failed")
         }
         return .Commit
         })

@@ -3,7 +3,7 @@
 //  sqift
 //
 //  Created by Dave Camp on 3/21/15.
-//  Copyright (c) 2015 thinbits. All rights reserved.
+//  Copyright (c) 2015 Nike. All rights reserved.
 //
 
 import Foundation
@@ -23,7 +23,7 @@ public class DatabaseQueue
     public init(path: String)
     {
         self.database = Database(path)
-        self.transactionQueue = dispatch_queue_create("com.thinbits.sqift.queue", DISPATCH_QUEUE_SERIAL)
+        self.transactionQueue = dispatch_queue_create("com.Nike.sqift.queue", DISPATCH_QUEUE_SERIAL)
     }
     
     deinit

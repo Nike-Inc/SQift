@@ -3,7 +3,7 @@
 //  sqift
 //
 //  Created by Dave Camp on 3/14/15.
-//  Copyright (c) 2015 thinbits. All rights reserved.
+//  Copyright (c) 2015 Nike. All rights reserved.
 //
 
 import Foundation
@@ -30,9 +30,9 @@ public enum DatabaseError : ErrorType {
     public func nserror() -> NSError {
         switch self {
         case .InternalError(let string):
-            return NSError(domain: "com.thinbits.sqift", code: -1, userInfo: [NSLocalizedDescriptionKey : string])
+            return NSError(domain: "com.Nike.sqift", code: -1, userInfo: [NSLocalizedDescriptionKey : string])
         case .sqliteError(let string, let code):
-            return NSError(domain: "com.thinbits.sqift", code: Int(code), userInfo: [NSLocalizedDescriptionKey : string])
+            return NSError(domain: "com.Nike.sqift", code: Int(code), userInfo: [NSLocalizedDescriptionKey : string])
         }
     }
 }

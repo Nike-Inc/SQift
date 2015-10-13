@@ -1,9 +1,10 @@
+
 //
 //  Statement.swift
 //  sqift
 //
 //  Created by Dave Camp on 3/8/15.
-//  Copyright (c) 2015 thinbits. All rights reserved.
+//  Copyright (c) 2015 Nike. All rights reserved.
 //
 
 import Foundation
@@ -59,14 +60,14 @@ public class Statement : CustomDebugStringConvertible
         if let unsafeColumnNames = unsafeColumnNames
         {
             tempColumnNames = unsafeColumnNames.map( { $0.sqiftSanitize() } )
-            columns = ",".join(tempColumnNames!)
+            columns = tempColumnNames!.joinWithSeparator(",")
         }
 
         var statement = "SELECT \(columns) from \(table)"
         
         if let unsafeOrderByColumnNames = unsafeOrderByColumnNames
         {
-            let orderBy = ",".join(unsafeOrderByColumnNames.map( { $0.sqiftSanitize() } ))
+            let orderBy = unsafeOrderByColumnNames.map( { $0.sqiftSanitize() } ).joinWithSeparator(",")
             statement += " ORDER BY \(orderBy)"
             statement += ascending ? " ASC" : " DESC"
         }
