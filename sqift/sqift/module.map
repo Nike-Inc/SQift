@@ -1,8 +1,0 @@
-framework module sqift {
-    umbrella header "sqift.h"
-
-    header "/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/sqlite3.h"
-
-    export *
-    module * { export * }
-}
