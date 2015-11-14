@@ -13,13 +13,13 @@ public struct Error: ErrorType {
 
     // MARK: Properties
 
-    /// The code of the specific error encountered by SQLite: https://www.sqlite.org/c3ref/c_abort.html.
+    /// The code of the specific error encountered by SQLite: <https://www.sqlite.org/c3ref/c_abort.html>.
     public let code: Int32
 
-    /// The message of the specific error encountered by SQLite: https://www.sqlite.org/c3ref/errcode.html.
+    /// The message of the specific error encountered by SQLite: <https://www.sqlite.org/c3ref/errcode.html>.
     public var message: String
 
-    /// A textual description of the error code: https://www.sqlite.org/c3ref/errcode.html.
+    /// A textual description of the error code: <https://www.sqlite.org/c3ref/errcode.html>.
     public var codeDescription: String { return String.fromCString(sqlite3_errstr(code))! }
 
     private static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]

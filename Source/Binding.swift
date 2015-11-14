@@ -11,7 +11,7 @@ import Foundation
 /**
     Used to store a `Bindable` value representation prior to binding a parameter to a `Statement`.
 
-    For more information about parameter binding, please refer to: https://www.sqlite.org/c3ref/bind_blob.html.
+    For more information about parameter binding, please refer to <https://www.sqlite.org/c3ref/bind_blob.html>.
 
     - Null:    Represents a `NULL` value to bind to a `Statement` using `sqlite3_bind_null`.
     - Integer: Represents a `INTEGER` value to bind to a `Statement` using `sqlite3_bind_int64`.
@@ -308,7 +308,7 @@ extension NSDate: Binding {
 
 /// Global date formatter to allow the `NSDate` binding to read and write dates as strings in the database. This makes
 /// dates much more human readable and also works with all SQLite date functionality. For more information, please refer
-/// to the following: https://www.sqlite.org/lang_datefunc.html.
+/// to the following link: <https://www.sqlite.org/lang_datefunc.html>.
 public var BindingDateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
