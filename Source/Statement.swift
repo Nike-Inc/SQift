@@ -36,7 +36,7 @@ public class Statement {
         let parameterCount = Int(sqlite3_bind_parameter_count(handle))
 
         guard bindables.count == parameterCount else {
-            var error = Error(code: SQLITE_MISUSE, database: database, statement: self)!
+            var error = Error(code: SQLITE_MISUSE, database: database)!
             error.message = "Bind expected \(parameterCount) parameters, instead received \(bindables.count)"
             throw error
         }
@@ -55,7 +55,7 @@ public class Statement {
             let index = Int32(sqlite3_bind_parameter_index(handle, key))
 
             guard index > 0 else {
-                var error = Error(code: SQLITE_MISUSE, database: database, statement: self)!
+                var error = Error(code: SQLITE_MISUSE, database: database)!
                 error.message = "Bind could not find index for key: '\(key)'"
                 throw error
             }
