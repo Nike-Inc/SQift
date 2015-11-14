@@ -39,7 +39,7 @@ class MigratorTestCase: XCTestCase {
             let exists: Bool = try database.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
-                MigrationTableName
+                "schema_migrations"
             )
 
             // Then
@@ -62,7 +62,7 @@ class MigratorTestCase: XCTestCase {
             let exists: Bool = try database.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
-                MigrationTableName
+                "schema_migrations"
             )
 
             // Then
@@ -79,7 +79,7 @@ class MigratorTestCase: XCTestCase {
             let migrator = Migrator(database: database, desiredSchemaVersion: 1)
 
             // When
-            try database.execute("DROP TABLE IF EXISTS \(MigrationTableName)")
+            try database.execute("DROP TABLE IF EXISTS schema_migrations")
             let tableExists = migrator.migrationsTableExists
 
             // Then
