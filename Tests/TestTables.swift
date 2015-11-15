@@ -6,8 +6,8 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import SQift
 import Foundation
+import SQift
 
 struct TestTables {
     static func createAndPopulateAgentsTableInDatabase(database: Database) throws {

@@ -6,8 +6,8 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import SQift
 import Foundation
+import SQift
 import XCTest
 
 class QueryTestCase: XCTestCase {
