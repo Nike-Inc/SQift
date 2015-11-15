@@ -1,5 +1,5 @@
 //
-//  DatabaseQueue.swift
+//  ConnectionQueue.swift
 //  SQift
 //
 //  Created by Dave Camp on 3/21/15.
@@ -8,27 +8,27 @@
 
 import Foundation
 
-/// The `DatabaseQueue` class creates a thread-safe way to access a `Database` connection across multiple threads using
-/// a serial dispatch queue. For maximum thread-safety, use a single `Database` connection which is always accessed
-/// through a single `DatabaseQueue`.
-public class DatabaseQueue {
-    private let database: Database
+/// The `ConnectionQueue` class creates a thread-safe way to access a database `Connection` across multiple threads
+/// using a serial dispatch queue. For maximum thread-safety, use a single database `Connection` which is always
+/// accessed through a single `ConnectionQueue`.
+public class ConnectionQueue {
+    private let connection: Connection
     private let id: String
     private let queue: dispatch_queue_t
 
     // MARK: - Initialization
 
     /**
-        Initializes the `DatabaseQueue` instance with the specified database.
+        Initializes the `ConnectionQueue` instance with the specified connection.
 
-        - parameter database: The database to be accessed solely through the database queue.
+        - parameter connection: The database connection to be accessed solely through the connection queue.
 
-        - returns: The new `DatabaseQueue` instance.
+        - returns: The new `ConnectionQueue` instance.
     */
-    public init(database: Database) {
-        self.database = database
+    public init(connection: Connection) {
+        self.connection = connection
         self.id = NSUUID().UUIDString
-        self.queue = dispatch_queue_create("com.nike.sqift.database-queue-\(id)", DISPATCH_QUEUE_SERIAL)
+        self.queue = dispatch_queue_create("com.nike.sqift.connection-queue-\(id)", DISPATCH_QUEUE_SERIAL)
     }
 
     // MARK: - Execution
@@ -40,12 +40,12 @@ public class DatabaseQueue {
 
         - throws: An `Error` if executing the closure encounters an error.
     */
-    public func execute(closure: Database throws -> Void) throws {
+    public func execute(closure: Connection throws -> Void) throws {
         var executionError: ErrorType?
 
         dispatch_sync(queue) {
             do {
-                try closure(self.database)
+                try closure(self.connection)
             } catch {
                 executionError = error
             }
@@ -64,16 +64,16 @@ public class DatabaseQueue {
          - throws: An `Error` if executing the transaction or closure encounters an error.
      */
     public func executeInTransaction(
-        transactionType: Database.TransactionType = .Deferred,
-        closure: Database throws -> Void)
+        transactionType: Connection.TransactionType = .Deferred,
+        closure: Connection throws -> Void)
         throws
     {
         var executionError: ErrorType?
 
         dispatch_sync(queue) {
             do {
-                try self.database.transaction(transactionType) {
-                    try closure(self.database)
+                try self.connection.transaction(transactionType) {
+                    try closure(self.connection)
                 }
             } catch {
                 executionError = error
@@ -92,13 +92,13 @@ public class DatabaseQueue {
 
          - throws: An `Error` if executing the transaction or closure encounters an error.
      */
-    public func executeInSavepoint(name: String, closure: Database throws -> Void) throws {
+    public func executeInSavepoint(name: String, closure: Connection throws -> Void) throws {
         var executionError: ErrorType?
 
         dispatch_sync(queue) {
             do {
-                try self.database.savepoint(name) {
-                    try closure(self.database)
+                try self.connection.savepoint(name) {
+                    try closure(self.connection)
                 }
             } catch {
                 executionError = error
@@ -113,14 +113,14 @@ public class DatabaseQueue {
 
 // MARK: - Hashable
 
-extension DatabaseQueue: Hashable {
+extension ConnectionQueue: Hashable {
     public var hashValue: Int { return id.hashValue }
 }
 
 // MARK: - Equatable
 
-extension DatabaseQueue: Equatable {}
+extension ConnectionQueue: Equatable {}
 
-public func ==(lhs: DatabaseQueue, rhs: DatabaseQueue) -> Bool {
+public func ==(lhs: ConnectionQueue, rhs: ConnectionQueue) -> Bool {
     return lhs.id == rhs.id
 }

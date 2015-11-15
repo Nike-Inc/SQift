@@ -31,16 +31,16 @@ public class ConnectionPool {
 
     // MARK: - Internal - Properties
 
-    var availableConnections: Set<DatabaseQueue>
-    var busyConnections: Set<DatabaseQueue>
+    var availableConnections: Set<ConnectionQueue>
+    var busyConnections: Set<ConnectionQueue>
 
-    var busyConnectionClosureCounts: [DatabaseQueue: Int]
+    var busyConnectionClosureCounts: [ConnectionQueue: Int]
 
     var currentConnectionCount: Int { return availableConnections.count + busyConnections.count }
     var openConnectionIsAvailable: Bool { return availableConnections.count > 0 }
     var connectionLimitHasBeenReached: Bool { return currentConnectionCount == maxConnectionCount }
 
-    let databaseType: Database.DatabaseType
+    let connectionType: Connection.ConnectionType
     let flags: Int32
 
     // MARK: - Private - Properties
@@ -50,17 +50,17 @@ public class ConnectionPool {
     // MARK: - Initialization
 
     /**
-        Initializes the `ConnectionPool` instance with the specified database type and maximum connection count.
+        Initializes the `ConnectionPool` instance with the specified connection type and maximum connection count.
 
-        - parameter databaseType:       The database type to initialize.
+        - parameter connectionType:     The connection type to initialize.
         - parameter maxConnectionCount: The maximum number of connections the pool can create.
 
         - throws: An `Error` if SQLite fails to initialize the default connection.
 
         - returns: The new `ConnectionPool` instance.
     */
-    public init(databaseType: Database.DatabaseType, maxConnectionCount: Int = 64) throws {
-        self.databaseType = databaseType
+    public init(connectionType: Connection.ConnectionType, maxConnectionCount: Int = 64) throws {
+        self.connectionType = connectionType
         self.flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE
         self.queue = dispatch_queue_create("com.nike.sqift.connection-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
         self.maxConnectionCount = max(maxConnectionCount, 1)
@@ -69,7 +69,7 @@ public class ConnectionPool {
         self.busyConnections = []
         self.busyConnectionClosureCounts = [:]
 
-        let connection = try DatabaseQueue(database: Database(databaseType: databaseType, flags: flags))
+        let connection = try ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
         availableConnections.insert(connection)
     }
 
@@ -82,8 +82,8 @@ public class ConnectionPool {
 
         - throws: An `Error` if SQLite encounters an error executing the closure.
     */
-    public func execute(closure: Database throws -> Void) throws {
-        var connection: DatabaseQueue!
+    public func execute(closure: Connection throws -> Void) throws {
+        var connection: ConnectionQueue!
 
         dispatch_sync(queue) { connection = self.dequeueConnectionForUse() }
         try connection.execute { database in try closure(database) }
@@ -92,13 +92,13 @@ public class ConnectionPool {
 
     // MARK: - Internal - Pool Dequeue and Enqueue
 
-    func dequeueConnectionForUse() -> DatabaseQueue {
-        let connection: DatabaseQueue
+    func dequeueConnectionForUse() -> ConnectionQueue {
+        let connection: ConnectionQueue
 
         if openConnectionIsAvailable {
             connection = availableConnections.removeFirst()
         } else if !connectionLimitHasBeenReached {
-            connection = try! DatabaseQueue(database: Database(databaseType: databaseType, flags: flags))
+            connection = try! ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
         } else {
             connection = busyConnectionWithLowestClosureCount()!
         }
@@ -114,7 +114,7 @@ public class ConnectionPool {
         return connection
     }
 
-    func enqueueConnectionForReuse(connection: DatabaseQueue) {
+    func enqueueConnectionForReuse(connection: ConnectionQueue) {
         let closureCount = busyConnectionClosureCounts[connection] ?? 1
 
         guard closureCount == 1 else {
@@ -128,8 +128,8 @@ public class ConnectionPool {
         availableConnections.insert(connection)
     }
 
-    func busyConnectionWithLowestClosureCount() -> DatabaseQueue? {
-        var lowestConnection: DatabaseQueue?
+    func busyConnectionWithLowestClosureCount() -> ConnectionQueue? {
+        var lowestConnection: ConnectionQueue?
         var lowestCount = Int.max
 
         for (databaseQueue, count) in busyConnectionClosureCounts {

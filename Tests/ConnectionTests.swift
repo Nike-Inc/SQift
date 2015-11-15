@@ -1,5 +1,5 @@
 //
-//  DatabaseTests.swift
+//  ConnectionTests.swift
 //  SQift
 //
 //  Created by Dave Camp on 8/11/15.
@@ -10,8 +10,8 @@ import Foundation
 import SQift
 import XCTest
 
-class DatabaseTestCase: XCTestCase {
-    let databaseType: Database.DatabaseType = {
+class ConnectionTestCase: XCTestCase {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/database_tests.db")
         return .OnDisk(path)
     }()
@@ -20,7 +20,7 @@ class DatabaseTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Open and Close Tests
@@ -28,9 +28,9 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanOpenDatabase() {
         // Given, When, Then
         do {
-            let _ = try Database(databaseType: databaseType)
-            let _ = try Database(databaseType: .InMemory)
-            let _ = try Database(databaseType: .Temporary)
+            let _ = try Connection(connectionType: connectionType)
+            let _ = try Connection(connectionType: .InMemory)
+            let _ = try Connection(connectionType: .Temporary)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -39,11 +39,11 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseInitializationDefaultFlagsMatchDatabasePropertyValues() {
         do {
             // Given, When
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // Then
-            XCTAssertFalse(database.readOnly)
-            XCTAssertTrue(database.threadSafe)
+            XCTAssertFalse(connection.readOnly)
+            XCTAssertTrue(connection.threadSafe)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -52,16 +52,16 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseInitializationCustomFlagsMatchDatabasePropertyValues() {
         do {
             // Given
-            var writableDatabase: Database? = try Database(databaseType: databaseType)
-            try writableDatabase?.execute("PRAGMA foreign_keys = true")
-            writableDatabase = nil
+            var writableConnection: Connection? = try Connection(connectionType: connectionType)
+            try writableConnection?.execute("PRAGMA foreign_keys = true")
+            writableConnection = nil
 
             // When
-            let readOnlyDatabase = try Database(databaseType: databaseType, readOnly: true, multiThreaded: false)
+            let readOnlyConnection = try Connection(connectionType: connectionType, readOnly: true, multiThreaded: false)
 
             // Then
-            XCTAssertTrue(readOnlyDatabase.readOnly)
-            XCTAssertTrue(readOnlyDatabase.threadSafe)
+            XCTAssertTrue(readOnlyConnection.readOnly)
+            XCTAssertTrue(readOnlyConnection.threadSafe)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -70,19 +70,19 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanCloseDatabase() {
         do {
             // Given
-            var onDiskDatabase: Database? = try Database(databaseType: databaseType)
-            var inMemoryDatabase: Database? = try Database(databaseType: .InMemory)
-            var temporaryDatabase: Database? = try Database(databaseType: .Temporary)
+            var onDiskConnection: Connection? = try Connection(connectionType: connectionType)
+            var inMemoryConnection: Connection? = try Connection(connectionType: .InMemory)
+            var temporaryConnection: Connection? = try Connection(connectionType: .Temporary)
 
             // When, Then
-            try onDiskDatabase?.execute("PRAGMA foreign_keys = true")
-            onDiskDatabase = nil
+            try onDiskConnection?.execute("PRAGMA foreign_keys = true")
+            onDiskConnection = nil
 
-            try inMemoryDatabase?.execute("PRAGMA foreign_keys = true")
-            inMemoryDatabase = nil
+            try inMemoryConnection?.execute("PRAGMA foreign_keys = true")
+            inMemoryConnection = nil
 
-            try temporaryDatabase?.execute("PRAGMA foreign_keys = true")
-            temporaryDatabase = nil
+            try temporaryConnection?.execute("PRAGMA foreign_keys = true")
+            temporaryConnection = nil
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -93,11 +93,11 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanExecutePragmaStatements() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When, Then
-            try database.execute("PRAGMA foreign_keys = true")
-            try database.execute("PRAGMA journal_mode = WAL")
+            try connection.execute("PRAGMA foreign_keys = true")
+            try connection.execute("PRAGMA journal_mode = WAL")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -106,10 +106,10 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanCreateTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When, Then
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -118,11 +118,11 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanDropTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When, Then
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("DROP TABLE cars")
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("DROP TABLE cars")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -131,13 +131,13 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanInsertRowsIntoTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When, Then
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
-            try database.execute("INSERT INTO cars VALUES(3, 'Skoda', 9000)")
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+            try connection.execute("INSERT INTO cars VALUES(3, 'Skoda', 9000)")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -146,10 +146,10 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanInsertThousandsOfRowsIntoTableUnderOneSecond() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("PRAGMA synchronous = NORMAL")
-            try database.execute("PRAGMA journal_mode = WAL")
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("PRAGMA synchronous = NORMAL")
+            try connection.execute("PRAGMA journal_mode = WAL")
+            try TestTables.createAndPopulateAgentsTable(connection)
 
             // NOTE: Most machines can insert ~25_000 rows per second with these settings. May need to decrease the
             // number of rows on CI machines due to running inside a VM.
@@ -157,9 +157,9 @@ class DatabaseTestCase: XCTestCase {
             // When
             let start = NSDate()
 
-            try database.transaction {
+            try connection.transaction {
                 let jobTitle = "Superman".dataUsingEncoding(NSUTF8StringEncoding)!
-                let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
+                let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
 
                 for index in 1...20_000 {
                     try insert.bind("Sterling Archer-\(index)", "2015-10-02T08:20:00.000", 485, 240_000.10, jobTitle, "Charger").run()
@@ -178,12 +178,12 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanUpdateRowsInTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When, Then
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("UPDATE cars SET price=89400 WHERE id=1")
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("UPDATE cars SET price=89400 WHERE id=1")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -192,12 +192,12 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanDeleteRowsInTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("DELETE FROM cars")
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("DELETE FROM cars")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -206,15 +206,15 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanSelectRowsInTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 
             var rows: [[Any?]] = []
 
             // When
-            for row in try database.prepare("SELECT * FROM cars") {
+            for row in try connection.prepare("SELECT * FROM cars") {
                 rows.append(row.values)
             }
 
@@ -238,15 +238,15 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanSelectColumnValuesFromRowUsingColumnNames() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 
             var cars: [(String, UInt64)] = []
 
             // When
-            for row in try database.prepare("SELECT * FROM cars") {
+            for row in try connection.prepare("SELECT * FROM cars") {
                 let name: String = row["name"]
                 let price: UInt64 = row["price"]
 
@@ -271,15 +271,15 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanSelectRowsInTableAndCaptureTheRowDescription() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 
             var descriptions: [String] = []
 
             // When
-            for row in try database.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
+            for row in try connection.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
                 descriptions.append(row.description)
             }
 
@@ -298,15 +298,15 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanFetchFirstRowOfSelectStatement() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 
             var car: (String, UInt64)?
 
             // When
-            let row = try database.fetch("SELECT * FROM cars WHERE name='Audi'")
+            let row = try connection.fetch("SELECT * FROM cars WHERE name='Audi'")
 
             if let name: String = row["name"], let price: UInt64 = row["price"] {
                 car = (name, price)
@@ -325,8 +325,8 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanBindParametersToStatement() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, date TEXT)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, date TEXT)")
 
             let date: NSDate = {
                 let components = NSDateComponents()
@@ -340,11 +340,11 @@ class DatabaseTestCase: XCTestCase {
             }()
 
             // When
-            try database.prepare("INSERT INTO cars VALUES(?, ?, ?, ?)").bind(1, "Audi", 52642, date).run()
+            try connection.prepare("INSERT INTO cars VALUES(?, ?, ?, ?)").bind(1, "Audi", 52642, date).run()
 
             var row: [Any?] = []
 
-            for insertedRow in try database.prepare("SELECT * FROM cars") {
+            for insertedRow in try connection.prepare("SELECT * FROM cars") {
                 row = insertedRow.values
             }
 
@@ -371,17 +371,17 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanBindNamedParametersToStatement() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, dup_name TEXT)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, dup_name TEXT)")
 
             // When
             let parameters1: [String: Bindable?] = ["?1": 1, "?2": "Audi", "?3": 52642]
-            try database.prepare("INSERT INTO cars VALUES(?1, ?2, ?3, ?2)").bind(parameters1).run()
+            try connection.prepare("INSERT INTO cars VALUES(?1, ?2, ?3, ?2)").bind(parameters1).run()
 
             let parameters2: [String: Bindable?] = [":id": 2, ":name": "Mercedes", ":price": 57127]
-            try database.prepare("INSERT INTO cars VALUES(:id, :name, :price, :name)").bind(parameters2).run()
+            try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price, :name)").bind(parameters2).run()
 
-            let rows = try database.prepare("SELECT * FROM cars").map { $0.values }
+            let rows = try connection.prepare("SELECT * FROM cars").map { $0.values }
 
             // Then
             if rows.count == 2 {
@@ -405,16 +405,16 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanExecuteTransaction() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
-            try database.transaction {
-                try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
-                try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
+            try connection.transaction {
+                try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+                try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
             }
 
-            let rows = try database.prepare("SELECT * FROM cars").map { $0.values }
+            let rows = try connection.prepare("SELECT * FROM cars").map { $0.values }
 
             // Then
             if rows.count == 2 {
@@ -436,20 +436,20 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanRollbackTransactionExecutionWhenTransactionThrows() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
             do {
-                try database.transaction {
-                    try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
-                    try database.prepare("INSERT IN cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
+                try connection.transaction {
+                    try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+                    try connection.prepare("INSERT IN cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
                 }
             } catch {
                 // No-op: this is expected due to invalid SQL in second prepare statement
             }
 
-            let count: Int = try database.query("SELECT count(*) FROM cars")
+            let count: Int = try connection.query("SELECT count(*) FROM cars")
 
             // Then
             XCTAssertEqual(count, 0, "count should be zero")
@@ -461,20 +461,20 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanExecuteSavepoint() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
-            try database.savepoint("'savepoint-1'") {
-                try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+            try connection.savepoint("'savepoint-1'") {
+                try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
 
-                try database.savepoint("'savepoint    2") {
-                    try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
+                try connection.savepoint("'savepoint    2") {
+                    try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
                 }
             }
 
             // When
-            let rows = try database.prepare("SELECT * FROM cars").map { $0.values }
+            let rows = try connection.prepare("SELECT * FROM cars").map { $0.values }
 
             // Then
             if rows.count == 2 {
@@ -496,20 +496,20 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanRollbackToSavepointWhenSavepointExecutionThrows() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
             do {
-                try database.savepoint("save-it-up") {
-                    try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
-                    try database.prepare("INSERT IN cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
+                try connection.savepoint("save-it-up") {
+                    try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+                    try connection.prepare("INSERT IN cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
                 }
             } catch {
                 // No-op: this is expected due to invalid SQL in second prepare statement
             }
 
-            let count: Int = try database.query("SELECT count(*) FROM cars")
+            let count: Int = try connection.query("SELECT count(*) FROM cars")
 
             // Then
             XCTAssertEqual(count, 0, "count should be zero")
@@ -526,22 +526,22 @@ class DatabaseTestCase: XCTestCase {
 
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try database.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+            let connection1 = try Connection(connectionType: connectionType)
+            try connection1.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try connection1.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
 
-            var connection2: Database? = try Database(databaseType: .OnDisk(personDBPath))
+            var connection2: Connection? = try Connection(connectionType: .OnDisk(personDBPath))
             try connection2?.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT)")
             try connection2?.prepare("INSERT INTO person VALUES(?, ?)").bind(1, "Sterling Archer").run()
 
             connection2 = nil
 
             // When
-            try database.attachDatabase(.OnDisk(personDBPath), withName: "personDB")
-            try database.prepare("INSERT INTO person VALUES(?, ?)").bind(2, "Lana Kane").run()
-            let rows = try database.prepare("SELECT * FROM person").map { $0.values }
+            try connection1.attachDatabase(.OnDisk(personDBPath), withName: "personDB")
+            try connection1.prepare("INSERT INTO person VALUES(?, ?)").bind(2, "Lana Kane").run()
+            let rows = try connection1.prepare("SELECT * FROM person").map { $0.values }
 
-            try database.detachDatabase("personDB")
+            try connection1.detachDatabase("personDB")
 
             // Then
             if rows.count == 2 {
@@ -563,20 +563,20 @@ class DatabaseTestCase: XCTestCase {
     func testThatDatabaseCanTraceStatementExecution() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             var statements: [String] = []
 
             // When
-            database.trace { SQL in
+            connection.trace { SQL in
                 statements.append(SQL)
             }
 
-            try database.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
-            try database.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
-            try database.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
+            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+            try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
+            try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
 
-            try database.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
+            try connection.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
 
             // Then
             if statements.count == 4 {

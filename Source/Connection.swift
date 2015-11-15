@@ -1,5 +1,5 @@
 //
-//  Database.swift
+//  Connection.swift
 //  SQift
 //
 //  Created by Dave Camp on 3/7/15.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-/// The `Database` class represents a single connection to a SQLite database. For more details about using multiple
+/// The `Connection` class represents a single connection to a SQLite database. For more details about using multiple
 /// database connections to improve concurrency, see <https://www.sqlite.org/isolation.html>.
-public class Database {
+public class Connection {
 
     // MARK: - Helper Types
 
@@ -21,7 +21,7 @@ public class Database {
         - InMemory:  Creates an in-memory database: <https://www.sqlite.org/inmemorydb.html#sharedmemdb>.
         - Temporary: Creates a temporary database: <https://www.sqlite.org/inmemorydb.html#temp_db>.
     */
-    public enum DatabaseType {
+    public enum ConnectionType {
         case OnDisk(String)
         case InMemory
         case Temporary
@@ -85,21 +85,21 @@ public class Database {
     // MARK: - Initialization
 
     /**
-        Initializes the `Database` connection with the specified database type and initialization flags.
+        Initializes the database `Connection` with the specified connection type and initialization flags.
 
         For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
 
-        - parameter databaseType:  The database type to initialize.
-        - parameter readOnly:      Whether the database should be read-only.
-        - parameter multiThreaded: Whether the database should be multi-threaded.
-        - parameter sharedCache:   Whether the database should use a shared cache.
+        - parameter connectionType:  The connection type to initialize.
+        - parameter readOnly:        Whether the database should be read-only.
+        - parameter multiThreaded:   Whether the database should be multi-threaded.
+        - parameter sharedCache:     Whether the database should use a shared cache.
 
         - throws: An `Error` if SQLite encounters an error when opening the database connection.
 
-        - returns: The new `Database` connection.
+        - returns: The new database `Connection` instance.
     */
     public convenience init(
-        databaseType: DatabaseType = .InMemory,
+        connectionType: ConnectionType = .InMemory,
         readOnly: Bool = false,
         multiThreaded: Bool = true,
         sharedCache: Bool = true)
@@ -111,7 +111,7 @@ public class Database {
         flags |= multiThreaded ? SQLITE_OPEN_NOMUTEX : SQLITE_OPEN_FULLMUTEX
         flags |= sharedCache ? SQLITE_OPEN_SHAREDCACHE : SQLITE_OPEN_PRIVATECACHE
 
-        try self.init(databaseType: databaseType, flags: flags)
+        try self.init(connectionType: connectionType, flags: flags)
     }
 
     /**
@@ -119,15 +119,15 @@ public class Database {
 
         For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
 
-        - parameter databaseType: The database type to initialize.
-        - parameter flags:        The bitmask flags to use when initializing the database.
+        - parameter connectionType:  The connection type to initialize.
+        - parameter flags:           The bitmask flags to use when initializing the database.
 
         - throws: An `Error` if SQLite encounters an error when opening the database connection.
 
-        - returns: The new `Database` connection.
+        - returns: The new database `Connection` instance.
     */
-    public init(databaseType: DatabaseType, flags: Int32) throws {
-        try check(sqlite3_open_v2(databaseType.path, &handle, flags, nil))
+    public init(connectionType: ConnectionType, flags: Int32) throws {
+        try check(sqlite3_open_v2(connectionType.path, &handle, flags, nil))
     }
 
     deinit {
@@ -151,7 +151,7 @@ public class Database {
         - returns: The new `Statement` instance.
     */
     public func prepare(SQL: String, _ parameters: Bindable?...) throws -> Statement {
-        let statement = try Statement(database: self, SQL: SQL)
+        let statement = try Statement(connection: self, SQL: SQL)
 
         if !parameters.isEmpty {
             try statement.bind(parameters)
@@ -175,7 +175,7 @@ public class Database {
         - returns: The new `Statement` instance.
     */
     public func prepare(SQL: String, _ parameters: [String: Bindable?]) throws -> Statement {
-        let statement = try Statement(database: self, SQL: SQL)
+        let statement = try Statement(connection: self, SQL: SQL)
 
         if !parameters.isEmpty {
             try statement.bind(parameters)
@@ -411,8 +411,8 @@ public class Database {
 
         - throws: An `Error` if SQLite encounters an error attaching the database.
     */
-    public func attachDatabase(databaseType: DatabaseType, withName name: String) throws {
-        try execute("ATTACH DATABASE \(databaseType.path.escape()) AS \(name.escape())")
+    public func attachDatabase(connectionType: ConnectionType, withName name: String) throws {
+        try execute("ATTACH DATABASE \(connectionType.path.escape()) AS \(name.escape())")
     }
 
     /**
@@ -453,7 +453,7 @@ public class Database {
     // MARK: - Internal - Check Result Code
 
     func check(code: Int32) throws -> Int32 {
-        guard let error = Error(code: code, database: self) else { return code }
+        guard let error = Error(code: code, connection: self) else { return code }
         throw error
     }
 }

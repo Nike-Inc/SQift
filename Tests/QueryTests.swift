@@ -11,9 +11,9 @@ import SQift
 import XCTest
 
 class QueryTestCase: XCTestCase {
-    var database: Database!
+    var connection: Connection!
 
-    let databaseType: Database.DatabaseType = {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/query_tests.db")
         return .OnDisk(path)
     }()
@@ -24,8 +24,8 @@ class QueryTestCase: XCTestCase {
         super.setUp()
 
         do {
-            database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
         } catch {
             // No-op
         }
@@ -33,7 +33,7 @@ class QueryTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Tests
@@ -41,11 +41,11 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryRowsMatchingExactText() {
         do {
             // Given, When
-            let exactCount: Int = try database.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
-            let exactBool: Bool = try database.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
+            let exactCount: Int = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
+            let exactBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
 
-            let partialCount: Int64 = try database.query("SELECT count(*) FROM agents WHERE name='Sterling'")
-            let partialBool: Bool = try database.query("SELECT count(*) FROM agents WHERE name='Sterling'")
+            let partialCount: Int64 = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling'")
+            let partialBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling'")
 
             // Then
             XCTAssertEqual(exactCount, 1, "exact count should be 1")
@@ -61,11 +61,11 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryRowsContainingText() {
         do {
             // Given, When
-            let likeCount: Int8 = try database.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
-            let likeBool: Bool = try database.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
+            let likeCount: Int8 = try connection.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
+            let likeBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
 
-            let instrCount: Int16 = try database.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
-            let instrBool: Bool = try database.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
+            let instrCount: Int16 = try connection.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
+            let instrBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
 
             // Then
             XCTAssertEqual(likeCount, 1, "like count should be 1")
@@ -81,8 +81,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryRowsWithinIntegerRange() {
         do {
             // Given, When
-            let belowSalaryCount: UInt8 = try database.query("SELECT count(*) FROM agents WHERE salary < 3000000.12")
-            let aboveSalaryCount: UInt16 = try database.query("SELECT count(*) FROM agents WHERE salary >= 1000000")
+            let belowSalaryCount: UInt8 = try connection.query("SELECT count(*) FROM agents WHERE salary < 3000000.12")
+            let aboveSalaryCount: UInt16 = try connection.query("SELECT count(*) FROM agents WHERE salary >= 1000000")
 
             // Then
             XCTAssertEqual(belowSalaryCount, 1, "below salary count should be 1")
@@ -95,8 +95,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryRowsWithinRealRange() {
         do {
             // Given, When
-            let belowMissionsCount: UInt = try database.query("SELECT count(*) FROM agents WHERE missions <= 485")
-            let aboveMissionsCount: UInt64 = try database.query("SELECT count(*) FROM agents WHERE salary >= 486")
+            let belowMissionsCount: UInt = try connection.query("SELECT count(*) FROM agents WHERE missions <= 485")
+            let aboveMissionsCount: UInt64 = try connection.query("SELECT count(*) FROM agents WHERE salary >= 486")
 
             // Then
             XCTAssertEqual(belowMissionsCount, 1, "below missions count should be 1")
@@ -139,13 +139,13 @@ class QueryTestCase: XCTestCase {
             }()
 
             // When
-            let hiredInOctoberCount: UInt = try database.query(
+            let hiredInOctoberCount: UInt = try connection.query(
                 "SELECT count(*) FROM agents WHERE date >= date(?) AND date <= date(?)",
                 firstOfOctober,
                 endOfOctober
             )
 
-            let hiredInOctoberOrNovemberCount: UInt64 = try database.query(
+            let hiredInOctoberOrNovemberCount: UInt64 = try connection.query(
                 "SELECT count(*) FROM agents WHERE date >= date(?) AND date <= date(?)",
                 firstOfOctober,
                 endOfNovember
@@ -162,8 +162,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryRowsMatchingBlobData() {
         do {
             // Given, When
-            let archersJobTitleData: NSData = try database.query("SELECT job_title FROM agents WHERE name='Sterling Archer'")
-            let lanasJobTitleData: NSData = try database.query("SELECT job_title FROM agents WHERE name='Lana Kane'")
+            let archersJobTitleData: NSData = try connection.query("SELECT job_title FROM agents WHERE name='Sterling Archer'")
+            let lanasJobTitleData: NSData = try connection.query("SELECT job_title FROM agents WHERE name='Lana Kane'")
 
             let archersJobTitle = String(data: archersJobTitleData, encoding: NSUTF8StringEncoding)
             let lanasJobTitle = String(data: lanasJobTitleData, encoding: NSUTF8StringEncoding)
@@ -179,8 +179,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanSafelyQueryRowsWithNullValues() {
         do {
             // Given, When
-            let archersCar: String? = try database.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")["car"]
-            let lanasCar: String? = try database.fetch("SELECT * FROM agents WHERE name='Lana Kane'")["car"]
+            let archersCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")["car"]
+            let lanasCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")["car"]
 
             // Then
             XCTAssertEqual(archersCar, "Charger", "archers car should be 'Charger'")
@@ -193,8 +193,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanQueryPRAGMAValues() {
         do {
             // Given, When
-            let synchronous: Int = try database.query("PRAGMA synchronous")
-            let journalMode: String = try database.query("PRAGMA journal_mode")
+            let synchronous: Int = try connection.query("PRAGMA synchronous")
+            let journalMode: String = try connection.query("PRAGMA journal_mode")
 
             // Then
             XCTAssertEqual(synchronous, 2, "synchronous PRAGMA should be 2")

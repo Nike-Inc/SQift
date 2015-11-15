@@ -11,7 +11,7 @@ import SQift
 import XCTest
 
 class ErrorTestCase: XCTestCase {
-    let databaseType: Database.DatabaseType = {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/error_tests.db")
         return .OnDisk(path)
     }()
@@ -19,7 +19,7 @@ class ErrorTestCase: XCTestCase {
     func testThatInitializingDatabaseWithInvalidFilePathThrowsError() {
         do {
             // Given, When
-            let _ = try Database(databaseType: .OnDisk("/path/does/not/exist"))
+            let _ = try Connection(connectionType: .OnDisk("/path/does/not/exist"))
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then
@@ -32,10 +32,10 @@ class ErrorTestCase: XCTestCase {
     func testThatExecutingInvalidSQLThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.execute("CREATE TABE testing(id)")
+            try connection.execute("CREATE TABE testing(id)")
 
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
@@ -49,10 +49,10 @@ class ErrorTestCase: XCTestCase {
     func testThatPreparingStatementWithInvalidSQLThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            let _ = try database.prepare("INSERT IN table")
+            let _ = try connection.prepare("INSERT IN table")
 
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
@@ -66,11 +66,11 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithIncorrectNumberOfParametersThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(?, ?, ?)")
+            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(?, ?, ?)")
             try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485)
 
             XCTFail("Execution should not reach this point")
@@ -85,11 +85,11 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithParameterOfIncorrectTypeThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(?, ?, ?, ?, ?)")
+            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(?, ?, ?, ?, ?)")
             try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485, 10_000, "job_title_value")
 
             XCTFail("Execution should not reach this point")
@@ -104,11 +104,11 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithUnmatchedParameterNameThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(:n, :d, :m, :s, :j)")
+            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(:n, :d, :m, :s, :j)")
             try insert.bind([":n": "NAME", ":d": "DATE", ":m": 1, ":s": 2, ":f": 5])
 
             XCTFail("Execution should not reach this point")
@@ -123,11 +123,11 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithParameterNameOfIncorrectTypeThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(:n, :d, :m, :s, :j)")
+            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(:n, :d, :m, :s, :j)")
             try insert.bind([":n": "NAME", ":d": "DATE", ":m": 1, ":s": 2, ":j": 6])
 
             XCTFail("Execution should not reach this point")
@@ -142,11 +142,11 @@ class ErrorTestCase: XCTestCase {
     func testThatRunningTransactionWithInvalidSQLThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.transaction {
-                try database.execute("CREATE TABE testing(id)")
+            try connection.transaction {
+                try connection.execute("CREATE TABE testing(id)")
             }
 
             XCTFail("Execution should not reach this point")
@@ -161,11 +161,11 @@ class ErrorTestCase: XCTestCase {
     func testThatRunningSavepointWithInvalidSQLThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.savepoint("save it good") {
-                try database.execute("CREATE TABE testing(id)")
+            try connection.savepoint("save it good") {
+                try connection.execute("CREATE TABE testing(id)")
             }
 
             XCTFail("Execution should not reach this point")
@@ -180,10 +180,10 @@ class ErrorTestCase: XCTestCase {
     func testThatAttachingDatabaseWithInvalidFilePathThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.attachDatabase(.OnDisk("/path/does/not/exist"), withName: "not_gonna_work")
+            try connection.attachDatabase(.OnDisk("/path/does/not/exist"), withName: "not_gonna_work")
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then
@@ -196,10 +196,10 @@ class ErrorTestCase: XCTestCase {
     func testThatDetachingDatabaseThatIsNotAttachedThrowsError() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
 
             // When
-            try database.detachDatabase("not_attached")
+            try connection.detachDatabase("not_attached")
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then

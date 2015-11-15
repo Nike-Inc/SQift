@@ -11,7 +11,7 @@ import Foundation
 /// The `Statement` class represents a prepared SQL statement to bind parameters to and execute.
 public class Statement {
     var handle: COpaquePointer = nil
-    private let database: Database
+    private let connection: Connection
 
     // MARK: - Initialization
 
@@ -20,16 +20,16 @@ public class Statement {
 
         For more details, please refer to: <https://www.sqlite.org/c3ref/prepare.html>.
 
-        - parameter database: The database to create a statement for.
-        - parameter SQL:      The SQL string to create the statement with.
+        - parameter connection: The database connection to create a statement for.
+        - parameter SQL:        The SQL string to create the statement with.
 
         - throws: An `Error` if SQLite encounters and error compiling the SQL statement.
 
         - returns: The new `Statement` instance.
     */
-    public init(database: Database, SQL: String) throws {
-        self.database = database
-        try database.check(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
+    public init(connection: Connection, SQL: String) throws {
+        self.connection = connection
+        try connection.check(sqlite3_prepare_v2(connection.handle, SQL, -1, &handle, nil))
     }
 
     deinit {
@@ -93,7 +93,7 @@ public class Statement {
         let parameterCount = Int(sqlite3_bind_parameter_count(handle))
 
         guard parameters.count == parameterCount else {
-            var error = Error(code: SQLITE_MISUSE, database: database)!
+            var error = Error(code: SQLITE_MISUSE, connection: connection)!
             error.message = "Bind expected \(parameterCount) parameters, instead received \(parameters.count)"
             throw error
         }
@@ -135,7 +135,7 @@ public class Statement {
             let index = Int32(sqlite3_bind_parameter_index(handle, key))
 
             guard index > 0 else {
-                var error = Error(code: SQLITE_MISUSE, database: database)!
+                var error = Error(code: SQLITE_MISUSE, connection: connection)!
                 error.message = "Bind could not find index for key: '\(key)'"
                 throw error
             }
@@ -256,31 +256,31 @@ public class Statement {
     // MARK: - Private - Execution and Binding
 
     private func reset() throws {
-        try database.check(sqlite3_reset(handle))
-        try database.check(sqlite3_clear_bindings(handle))
+        try connection.check(sqlite3_reset(handle))
+        try connection.check(sqlite3_clear_bindings(handle))
     }
 
     private func step() throws -> Bool {
-        return try database.check(sqlite3_step(handle)) == SQLITE_ROW
+        return try connection.check(sqlite3_step(handle)) == SQLITE_ROW
     }
 
     private func bind(parameter: Bindable?, atIndex index: Int32) throws {
         guard let parameter = parameter else {
-            try database.check(sqlite3_bind_null(handle, index))
+            try connection.check(sqlite3_bind_null(handle, index))
             return
         }
 
         switch parameter.bindingValue {
         case .Null:
-            try database.check(sqlite3_bind_null(handle, index))
+            try connection.check(sqlite3_bind_null(handle, index))
         case .Integer(let value):
-            try database.check(sqlite3_bind_int64(handle, index, value))
+            try connection.check(sqlite3_bind_int64(handle, index, value))
         case .Real(let value):
-            try database.check(sqlite3_bind_double(handle, index, value))
+            try connection.check(sqlite3_bind_double(handle, index, value))
         case .Text(let value):
-            try database.check(sqlite3_bind_text(handle, index, value, -1, SQLITE_TRANSIENT))
+            try connection.check(sqlite3_bind_text(handle, index, value, -1, SQLITE_TRANSIENT))
         case .Blob(let value):
-            try database.check(sqlite3_bind_blob(handle, index, value.bytes, Int32(value.length), SQLITE_TRANSIENT))
+            try connection.check(sqlite3_bind_blob(handle, index, value.bytes, Int32(value.length), SQLITE_TRANSIENT))
         }
     }
 }

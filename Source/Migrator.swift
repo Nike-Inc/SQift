@@ -8,21 +8,22 @@
 
 import Foundation
 
-/// The `Migrator` class handles data migrations between schema versions for an attached database. The migrations MUST
-/// be numerically ordered by integers starting by 1, and incrementing by one each migration. i.e. [1, 2, 3, 4, etc.].
+/// The `Migrator` class handles data migrations between schema versions for an attached database connection.
+/// The migrations MUST be numerically ordered by integers starting by 1, and incrementing by one each 
+/// migration. i.e. [1, 2, 3, 4, etc.].
 public class Migrator {
 
     // MARK: - Properties
 
-    /// The desired schema version of the attached database the migrator will attempt to update to when run.
+    /// The desired schema version of the attached database connection the migrator will attempt to update to when run.
     public let desiredSchemaVersion: UInt64
 
-    /// The current schema version of the attached database.
+    /// The current schema version of the attached database connection.
     public var currentSchemaVersion: UInt64 {
         var version: UInt64 = 0
 
         do {
-            if let tableVersion: UInt64 = try database.query("SELECT MAX(version) FROM \(Migrator.MigrationTableName)") {
+            if let tableVersion: UInt64 = try connection.query("SELECT MAX(version) FROM \(Migrator.MigrationTableName)") {
                 version = tableVersion
             }
         } catch {
@@ -32,14 +33,14 @@ public class Migrator {
         return version
     }
 
-    /// Whether a migration is required to update the attached database to the desired schema version.
+    /// Whether a migration is required to update the attached database connection to the desired schema version.
     public var migrationRequired: Bool { return currentSchemaVersion < desiredSchemaVersion }
 
     var migrationsTableExists: Bool {
         var exists = false
 
         do {
-            exists = try database.query(
+            exists = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
                 Migrator.MigrationTableName
@@ -51,22 +52,22 @@ public class Migrator {
         return exists
     }
 
-    let database: Database
+    let connection: Connection
 
     private static let MigrationTableName = "schema_migrations"
 
     // MARK: - Initialization
 
     /**
-        Initializes the `Migrator` instance with the given database and desired schema version.
+        Initializes the `Migrator` instance with the specified database connection and desired schema version.
 
-        - parameter database:             The database to attach to the migrator.
+        - parameter connection:           The database connection to attach to the migrator.
         - parameter desiredSchemaVersion: The desired schema version the migrator will use when run.
 
         - returns: The new `Migrator` instance.
     */
-    public init(database: Database, desiredSchemaVersion: UInt64) {
-        self.database = database
+    public init(connection: Connection, desiredSchemaVersion: UInt64) {
+        self.connection = connection
         self.desiredSchemaVersion = desiredSchemaVersion
     }
 
@@ -103,9 +104,9 @@ public class Migrator {
 
             willMigrate?(schemaVersion)
 
-            try database.transaction {
-                try self.database.execute(SQL)
-                try self.database.run(
+            try connection.transaction {
+                try self.connection.execute(SQL)
+                try self.connection.run(
                     "INSERT INTO \(Migrator.MigrationTableName) VALUES(?, ?)",
                     schemaVersion,
                     BindingDateFormatter.stringFromDate(NSDate())
@@ -128,6 +129,6 @@ public class Migrator {
             "(version INTEGER UNIQUE NOT NULL, migration_timestamp TEXT NOT NULL)"
         ]
 
-        try database.execute(SQL.joinWithSeparator(""))
+        try connection.execute(SQL.joinWithSeparator(""))
     }
 }

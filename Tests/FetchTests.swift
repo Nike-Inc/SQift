@@ -11,9 +11,9 @@ import SQift
 import XCTest
 
 class FetchTestCase: XCTestCase {
-    var database: Database!
+    var connection: Connection!
 
-    let databaseType: Database.DatabaseType = {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/fetch_tests.db")
         return .OnDisk(path)
     }()
@@ -24,8 +24,8 @@ class FetchTestCase: XCTestCase {
         super.setUp()
 
         do {
-            database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
+            connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
         } catch {
             // No-op
         }
@@ -33,7 +33,7 @@ class FetchTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Tests
@@ -41,7 +41,7 @@ class FetchTestCase: XCTestCase {
     func testThatDatabaseCanFetchFirstRowForSelectStatement() {
         do {
             // Given, When
-            let row = try database.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
 
             // Then
             if let
@@ -69,7 +69,7 @@ class FetchTestCase: XCTestCase {
     func testThatDatabaseCanFetchFirstRowForSelectStatementEvenWhenSelectFailsToFindAnyRows() {
         do {
             // Given, When
-            let rowValues = try database.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
+            let rowValues = try connection.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
 
             // Then
             XCTAssertEqual(rowValues.count, 7, "row values count should be 7")
@@ -85,7 +85,7 @@ class FetchTestCase: XCTestCase {
     func testThatFetchFirstRowOnDatabaseReturnsAllNilValuesWhenNoRowsAreFoundInSelectStatement() {
         do {
             // Given, When
-            let rowValues = try database.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
+            let rowValues = try connection.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
 
             // Then
             XCTAssertEqual(rowValues.count, 7, "row values count should be 7")
@@ -104,7 +104,7 @@ class FetchTestCase: XCTestCase {
             var rows: [[Any?]] = []
 
             // When
-            for row in try database.prepare("SELECT * FROM agents") {
+            for row in try connection.prepare("SELECT * FROM agents") {
                 rows.append(row.values)
             }
 

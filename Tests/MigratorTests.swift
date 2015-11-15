@@ -13,7 +13,7 @@ import XCTest
 class MigratorTestCase: XCTestCase {
     let timeout = 10.0
 
-    let databaseType: Database.DatabaseType = {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/migrator_tests.db")
         print(path)
         return .OnDisk(path)
@@ -23,7 +23,7 @@ class MigratorTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Tests
@@ -31,12 +31,12 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanCreateMigrationsTable() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
             try migrator.createMigrationsTable()
-            let exists: Bool = try database.query(
+            let exists: Bool = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
                 "schema_migrations"
@@ -52,14 +52,14 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorDoesNotThrowWhenCreatingMigrationsTableWhenTableAlreadyExists() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
             try migrator.createMigrationsTable()
             try migrator.createMigrationsTable()
 
-            let exists: Bool = try database.query(
+            let exists: Bool = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
                 "schema_migrations"
@@ -75,11 +75,11 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorMigrationsTableExistsPropertyReturnsFalseIfTableDoesNotExists() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
-            try database.execute("DROP TABLE IF EXISTS schema_migrations")
+            try connection.execute("DROP TABLE IF EXISTS schema_migrations")
             let tableExists = migrator.migrationsTableExists
 
             // Then
@@ -92,8 +92,8 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorMigrationsTableExistsPropertyReturnsTrueIfTableExists() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
             try migrator.createMigrationsTable()
@@ -109,8 +109,8 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunInitialMigration() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
 
@@ -134,7 +134,7 @@ class MigratorTestCase: XCTestCase {
                         }
                     )
 
-                    agentsTableExists = try database.query(
+                    agentsTableExists = try connection.query(
                         "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                         "table",
                         "agents"
@@ -161,8 +161,8 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunMultipleMigrations() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 2)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
 
@@ -197,12 +197,12 @@ class MigratorTestCase: XCTestCase {
                         }
                     )
 
-                    agentsTableExists = try database.query("SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                    agentsTableExists = try connection.query("SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                         "table",
                         "agents"
                     )
 
-                    agentCount = try database.query("SELECT count(*) FROM agents")
+                    agentCount = try connection.query("SELECT count(*) FROM agents")
                 } catch {
                     migrationError = error as? Error
                 }
@@ -234,8 +234,8 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunMigrationsBeyondTheInitialMigration() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            var migrator: Migrator? = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            var migrator: Migrator? = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             try migrator?.runMigrationsIfNecessary(
                 migrationSQLForSchemaVersion: { version in
@@ -244,7 +244,7 @@ class MigratorTestCase: XCTestCase {
             )
 
             migrator = nil
-            migrator = Migrator(database: database, desiredSchemaVersion: 3)
+            migrator = Migrator(connection: connection, desiredSchemaVersion: 3)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
 
@@ -280,9 +280,9 @@ class MigratorTestCase: XCTestCase {
                         }
                     )
 
-                    agentCount = try database.query("SELECT count(*) FROM agents")
+                    agentCount = try connection.query("SELECT count(*) FROM agents")
 
-                    missionsTableExists = try database.query(
+                    missionsTableExists = try connection.query(
                         "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                         "table",
                         "missions"
@@ -318,8 +318,8 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorGracefullyHandlesErrorEncounteredDuringMigration() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            let migrator = Migrator(database: database, desiredSchemaVersion: 1)
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
 

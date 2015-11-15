@@ -11,7 +11,7 @@ import Foundation
 import XCTest
 
 class ConnectionPoolTestCase: XCTestCase {
-    let databaseType: Database.DatabaseType = {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/connection_pool_tests.db")
         return .OnDisk(path)
     }()
@@ -24,7 +24,7 @@ class ConnectionPoolTestCase: XCTestCase {
         // Initialize read / write database before opening connection pool. Otherwise connection pool will fail
         // to initialize because it only opens readonly connections.
         do {
-            let _ = try Database(databaseType: databaseType)
+            let _ = try Connection(connectionType: connectionType)
         } catch {
             // No-op
         }
@@ -32,7 +32,7 @@ class ConnectionPoolTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Tests
@@ -40,7 +40,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolInitializationSucceeds() {
         do {
             // Given, When, Then
-            let _ = try ConnectionPool(databaseType: databaseType)
+            let _ = try ConnectionPool(connectionType: connectionType)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -49,7 +49,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolInitializationFailsWithInvalidOnDiskPath() {
         do {
             // Given, When
-            let _ = try ConnectionPool(databaseType: .OnDisk("/path/does/not/exist"))
+            let _ = try ConnectionPool(connectionType: .OnDisk("/path/does/not/exist"))
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then
@@ -62,7 +62,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatDequeueingConnectionReturnsAvailableConnection() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType)
+            let pool = try ConnectionPool(connectionType: connectionType)
 
             let beforeDequeueAvailableConnections = pool.availableConnections
             let beforeDequeueBusyConnections = pool.busyConnections
@@ -88,7 +88,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatDequeueingConnectionCreatesNewConnection() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType)
+            let pool = try ConnectionPool(connectionType: connectionType)
             pool.availableConnections.removeAll()
             let beforeBusyCount = pool.busyConnectionClosureCounts.count
 
@@ -109,7 +109,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatDequeueingConnectionReusesBusyConnectionIfNecessary() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
 
             // When
             let connection1 = pool.dequeueConnectionForUse()
@@ -129,7 +129,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatEnqueueConnectionRemovesBusyConnectionAndInsertsAvailableConnection() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType)
+            let pool = try ConnectionPool(connectionType: connectionType)
             let connection = pool.dequeueConnectionForUse()
 
             let beforeClosureCount = pool.busyConnectionClosureCounts[connection]
@@ -155,7 +155,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatEnqueueConnectionDecrementsBusyConnectionWhenClosureCountIsLargerThanOne() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
             pool.dequeueConnectionForUse()
             let connection = pool.dequeueConnectionForUse()
 
@@ -182,15 +182,13 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatBusyConnectionWithLowestClosureCountWorksUnderNormalConditions() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 8)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 8)
 
-            pool.availableConnections.insert(
-                try DatabaseQueue(database: Database(databaseType: pool.databaseType, flags: pool.flags))
-            )
-
-            pool.availableConnections.insert(
-                try DatabaseQueue(database: Database(databaseType: pool.databaseType, flags: pool.flags))
-            )
+            for _ in 0..<2 {
+                pool.availableConnections.insert(
+                    try ConnectionQueue(connection: Connection(connectionType: pool.connectionType, flags: pool.flags))
+                )
+            }
 
             let connection1 = pool.dequeueConnectionForUse()
             let connection2 = pool.dequeueConnectionForUse()
@@ -217,7 +215,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatBusyConnectionWithLowestClosureCountReturnsNilWhenThereAreNoBusyConnections() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
 
             // When
             let lowestConnection = pool.busyConnectionWithLowestClosureCount()
@@ -232,7 +230,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolCanExecuteReadOnlyClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
 
             var count = -1
 
@@ -251,7 +249,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolFailsToExecuteWriteClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(databaseType: databaseType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
 
             // When
             try pool.execute { connection in
@@ -270,9 +268,9 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolCanExecuteMultipleClosuresInParallel() {
         do {
             // Given
-            let database = try Database(databaseType: databaseType)
-            try TestTables.createAndPopulateAgentsTableInDatabase(database)
-            let pool = try ConnectionPool(databaseType: databaseType)
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
+            let pool = try ConnectionPool(connectionType: connectionType)
 
             let range = 0..<pool.maxConnectionCount
             let expectations: [XCTestExpectation] = range.map { expectationWithDescription("read: \($0)") }

@@ -26,11 +26,11 @@ public struct Error: ErrorType {
 
     // MARK: Initialization
 
-    init?(code: Int32, database: Database) {
+    init?(code: Int32, connection: Connection) {
         guard !Error.successCodes.contains(code) else { return nil }
 
         self.code = code
-        self.message = String.fromCString(sqlite3_errmsg(database.handle))!
+        self.message = String.fromCString(sqlite3_errmsg(connection.handle))!
     }
 }
 

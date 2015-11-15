@@ -10,9 +10,9 @@ import Foundation
 import SQift
 
 struct TestTables {
-    static func createAndPopulateAgentsTableInDatabase(database: Database) throws {
-        try database.transaction {
-            try database.run(
+    static func createAndPopulateAgentsTable(connection: Connection) throws {
+        try connection.transaction {
+            try connection.run(
                 "CREATE TABLE agents(" +
                     "  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     "  name TEXT NOT NULL," +
@@ -24,7 +24,7 @@ struct TestTables {
                 ")"
             )
 
-            let insert = try database.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
+            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
 
             let archersJobTitleData = "The world's greatest secret agent".dataUsingEncoding(NSUTF8StringEncoding)
             try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485, 2_500_000.56, archersJobTitleData, "Charger").run()

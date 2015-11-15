@@ -1,5 +1,5 @@
 //
-//  DatabaseQueueTests.swift
+//  ConnectionQueueTests.swift
 //  SQift
 //
 //  Created by Dave Camp on 8/11/15.
@@ -10,8 +10,8 @@ import Foundation
 import SQift
 import XCTest
 
-class DatabaseQueueTestCase: XCTestCase {
-    let databaseType: Database.DatabaseType = {
+class ConnectionQueueTestCase: XCTestCase {
+    let connectionType: Connection.ConnectionType = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/database_queue_tests.db")
         return .OnDisk(path)
     }()
@@ -20,7 +20,7 @@ class DatabaseQueueTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(databaseType.path)
+        NSFileManager.removeItemAtPath(connectionType.path)
     }
 
     // MARK: - Tests
@@ -28,7 +28,7 @@ class DatabaseQueueTestCase: XCTestCase {
     func testThatDatabaseQueueCanExecuteStatements() {
         do {
             // Given
-            let queue = try DatabaseQueue(database: Database(databaseType: databaseType))
+            let queue = try ConnectionQueue(connection: Connection(connectionType: connectionType))
 
             var rowCount: Int64 = 0
 
@@ -52,7 +52,7 @@ class DatabaseQueueTestCase: XCTestCase {
     func testThatDatabaseQueueCanExecuteStatementsInTransaction() {
         do {
             // Given
-            let queue = try DatabaseQueue(database: Database(databaseType: databaseType))
+            let queue = try ConnectionQueue(connection: Connection(connectionType: connectionType))
 
             var rowCount: Int64 = 0
 
@@ -76,7 +76,7 @@ class DatabaseQueueTestCase: XCTestCase {
     func testThatDatabaseQueueCanExecuteStatementsInSavepoint() {
         do {
             // Given
-            let queue = try DatabaseQueue(database: Database(databaseType: databaseType))
+            let queue = try ConnectionQueue(connection: Connection(connectionType: connectionType))
 
             var rowCount: Int64 = 0
 
