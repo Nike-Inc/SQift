@@ -8,10 +8,25 @@
 
 import Foundation
 
+/// The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a
+/// thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available
+/// and ones that are currently busy executing SQL logic. The pool will reuse available connections when they
+/// are available, and initializes new connections when all available connections are busy until the max
+/// connection count is reached.
+///
+/// If the max connection count is reached, the pool will start to append additional SQL closures to the already
+/// busy connections. This could result in blocking behavior. SQLite does not have a limit on the maximumn number
+/// of open connections to a single database. With that said, the default limit of 64 is set to a reasonable value
+/// that most likely will never be exceeded.
+///
+/// The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a
+/// connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus
+/// guaranteeing the thread-safety of each connection.
 public class ConnectionPool {
 
     // MARK: - Public - Properties
 
+    /// The maximum number of connections the pool can create.
     public let maxConnectionCount: Int
 
     // MARK: - Internal - Properties
@@ -34,10 +49,20 @@ public class ConnectionPool {
 
     // MARK: - Initialization
 
-    public init(databaseType: Database.DatabaseType, maxConnectionCount: Int = 16) throws {
+    /**
+        Initializes the `ConnectionPool` instance with the specified database type and maximum connection count.
+
+        - parameter databaseType:       The database type to initialize.
+        - parameter maxConnectionCount: The maximum number of connections the pool can create.
+
+        - throws: An `Error` if SQLite fails to initialize the default connection.
+
+        - returns: The new `ConnectionPool` instance.
+    */
+    public init(databaseType: Database.DatabaseType, maxConnectionCount: Int = 64) throws {
         self.databaseType = databaseType
         self.flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE
-        self.queue = dispatch_queue_create("com.nike.fetch.database-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
+        self.queue = dispatch_queue_create("com.nike.sqift.connection-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
         self.maxConnectionCount = max(maxConnectionCount, 1)
 
         self.availableConnections = []
@@ -50,6 +75,13 @@ public class ConnectionPool {
 
     // MARK: - Execution
 
+    /**
+        Executes the specified closure on the first available connection inside a connection queue.
+
+        - parameter closure: The closure to execute.
+
+        - throws: An `Error` if SQLite encounters an error executing the closure.
+    */
     public func execute(closure: Database throws -> Void) throws {
         var connection: DatabaseQueue!
 
