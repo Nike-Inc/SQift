@@ -13,7 +13,8 @@ import Foundation
 /// through a single `DatabaseQueue`.
 public class DatabaseQueue {
     private let database: Database
-    private let queue = dispatch_queue_create("com.nike.fetch.database-queue-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
+    private let id: String
+    private let queue: dispatch_queue_t
 
     // MARK: - Initialization
 
@@ -26,6 +27,8 @@ public class DatabaseQueue {
     */
     public init(database: Database) {
         self.database = database
+        self.id = NSUUID().UUIDString
+        self.queue = dispatch_queue_create("com.nike.fetch.database-queue-\(id)", DISPATCH_QUEUE_SERIAL)
     }
 
     // MARK: - Execution
@@ -106,4 +109,18 @@ public class DatabaseQueue {
             throw executionError
         }
     }
+}
+
+// MARK: - Hashable
+
+extension DatabaseQueue: Hashable {
+    public var hashValue: Int { return id.hashValue }
+}
+
+// MARK: - Equatable
+
+extension DatabaseQueue: Equatable {}
+
+public func ==(lhs: DatabaseQueue, rhs: DatabaseQueue) -> Bool {
+    return lhs.id == rhs.id
 }
