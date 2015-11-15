@@ -45,7 +45,7 @@ class DatabaseQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Queue execute failed: \(error)")
+            XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
 
@@ -69,7 +69,7 @@ class DatabaseQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Queue execute failed: \(error)")
+            XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
 
@@ -93,7 +93,7 @@ class DatabaseQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Queue execute failed: \(error)")
+            XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
 }
