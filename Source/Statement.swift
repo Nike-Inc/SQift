@@ -27,7 +27,7 @@ public class Statement {
 
         - returns: The new `Statement` instance.
     */
-    init(database: Database, SQL: String) throws {
+    public init(database: Database, SQL: String) throws {
         self.database = database
         try database.check(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
     }

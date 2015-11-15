@@ -137,20 +137,51 @@ public class Database {
     // MARK: - Execution
 
     /**
-        Prepares a `Statement` instance by compiling the SQL statement on the database connection.
+        Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
 
             let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)")
 
-        For more details, please refer to: <https://www.sqlite.org/c3ref/prepare.html>.
+        For more details, please refer to documentation in the `Statement` class.
 
-        - parameter SQL: The SQL string to compile.
+        - parameter SQL:        The SQL string to compile.
+        - parameter parameters: The parameters to bind to the statement.
 
-        - throws: An `Error` if SQLite encounters and error compiling the SQL statement.
+        - throws: An `Error` if SQLite encounters and error compiling the SQL statement or binding the parameters.
 
         - returns: The new `Statement` instance.
     */
-    public func prepare(SQL: String) throws -> Statement {
-        return try Statement(database: self, SQL: SQL)
+    public func prepare(SQL: String, _ parameters: Bindable?...) throws -> Statement {
+        let statement = try Statement(database: self, SQL: SQL)
+
+        if !parameters.isEmpty {
+            try statement.bind(parameters)
+        }
+
+        return statement
+    }
+
+    /**
+        Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
+
+            let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)")
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to compile.
+        - parameter parameters: A dictionary of key/value pairs to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error compiling the SQL statement or binding the parameters.
+
+        - returns: The new `Statement` instance.
+    */
+    public func prepare(SQL: String, _ parameters: [String: Bindable?]) throws -> Statement {
+        let statement = try Statement(database: self, SQL: SQL)
+
+        if !parameters.isEmpty {
+            try statement.bind(parameters)
+        }
+
+        return statement
     }
 
     /**
@@ -199,7 +230,7 @@ public class Database {
 
         - throws: An `Error` if SQLite encounters and error when running the SQL statement.
     */
-    public func run(SQL: String, parameters: [String: Bindable?]) throws {
+    public func run(SQL: String, _ parameters: [String: Bindable?]) throws {
         try prepare(SQL).bind(parameters).run()
     }
 
@@ -291,7 +322,7 @@ public class Database {
 
         - returns: The first column value of the first row of the query.
     */
-    public func query<T: Binding>(SQL: String, parameters: [String: Bindable?]) throws -> T {
+    public func query<T: Binding>(SQL: String, _ parameters: [String: Bindable?]) throws -> T {
         return try prepare(SQL).bind(parameters).query()
     }
 
@@ -312,7 +343,7 @@ public class Database {
 
         - returns: The first column value of the first row of the query.
     */
-    public func query<T: Binding>(SQL: String, parameters: [String: Bindable?]) throws -> T? {
+    public func query<T: Binding>(SQL: String, _ parameters: [String: Bindable?]) throws -> T? {
         return try prepare(SQL).bind(parameters).query()
     }
 

@@ -58,7 +58,7 @@ public protocol Bindable {
     var bindingValue: BindingValue { get }
 }
 
-/// The `Extractable` protocol represents any type that can be extracted from the Database.
+/// The `Extractable` protocol represents any type that can be extracted from the `Database`.
 public protocol Extractable {
     /// The binding type of a parameter to bind to a statement.
     typealias BindingType
