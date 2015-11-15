@@ -10,7 +10,8 @@ SQift is a lightweight Swift wrapper for SQLite.
 - [X] Simple Row Iteration through `SequenceType` Protocol
 - [X] Fetch a Single Row without Iteration
 - [X] Query a Single Column Value from a Single Row
-- [X] DatabaseQueue for Serial Execution per Database Connection
+- [X] ConnectionQueue for Serial Execution per Database Connection
+- [X] ConnectionPool for Parallel Execution of Read-Only Connections
 - [X] Database Migrations Support
 - [x] Comprehensive Unit Test Coverage
 - [x] Complete Documentation
@@ -79,39 +80,44 @@ SQift heavily leverages the new error handling model released with Swift 2.0. It
 Creating a database connection is simple.
 
 ```swift
-let onDiskDB = try Database(databaseType: .OnDisk("path_to_db"))
-let inMemoryDB = try Database(databaseType: .InMemory)
-let tempDB = try Database(databaseType: .Temporary)
+let onDiskConnection = try Connection(connectionType: .OnDisk("path_to_db"))
+let inMemoryConnection = try Connection(connectionType: .InMemory)
+let tempConnection = try Connection(connectionType: .Temporary)
 ```
 
 There are also convenience parameters to make it easy to customize the flags when initializing the database connection:
 
 ```swift
-let database = try Database(databaseType: .OnDisk("path_to_db"), readOnly: true, multiThreaded: false, sharedCache: false)
+let connection = try Connection(
+	connectionType: .OnDisk("path_to_db"),
+	readOnly: true,
+	multiThreaded: false,
+	sharedCache: false
+)
 ```
 
 > In most cases, the default values are preferred. For more details about creating a database connection, please refer to the SQLite [documentation](https://www.sqlite.org/c3ref/open.html).
 
 ### Executing Statements
 
-To execute a SQL statement on the `Database`, you need to first create a `Database`, then call `execute`.
+To execute a SQL statement on the `Connection`, you need to first create a `Connection`, then call `execute`.
 
 ```swift
-let db = try Database(databaseType: .OnDisk("path_to_db"))
+let connection = try Connection(connectionType: .OnDisk("path_to_db"))
 
-try db.execute("PRAGMA foreign_keys = true")
-try db.execute("PRAGMA journal_mode = WAL")
+try connection.execute("PRAGMA foreign_keys = true")
+try connection.execute("PRAGMA journal_mode = WAL")
 
-try db.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
-try db.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-try db.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 
-try db.execute("UPDATE cars SET name = 'Honda' where id = 1")
-try db.execute("UPDATE cars SET price = 61_999 where name = 'Mercedes'")
+try connection.execute("UPDATE cars SET name = 'Honda' where id = 1")
+try connection.execute("UPDATE cars SET price = 61_999 where name = 'Mercedes'")
 
-try db.execute("DELETE FROM cars where name = 'Mercedes'")
-try db.execute("DROP TABLE cars")
+try connection.execute("DELETE FROM cars where name = 'Mercedes'")
+try connection.execute("DROP TABLE cars")
 ```
 
 ### Bindings
@@ -130,7 +136,7 @@ public protocol Bindable {
 
 #### Extractable Protocol
 
-While the `Bindable` protocol helps move Swift data types into the `Database`, the `Extractable` protocol allows SQift to extract the values from the `Database` and convert them back to the requested Swift data type.
+While the `Bindable` protocol helps move Swift data types into the database, the `Extractable` protocol allows SQift to extract the values from the database `Connection` and convert them back to the requested Swift data type.
 
 ```swift
 public protocol Extractable {
@@ -163,19 +169,19 @@ In order to make it as easy as possible to use SQift, SQift extends the followin
 Safely binding parameters to a `Statement` is easy thanks to the `Binding` protocol. First you need to `prepare` a `Statement` object, then `bind` the parameters and `run` it using method chaining.
 
 ```swift
-let db = try Database(databaseType: .OnDisk("path_to_db"))
+let connection = try Connection(connectionType: .OnDisk("path_to_db"))
 
-try db.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52_642).run()
-try db.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id": 1, ":name": "Audi", ":price": 52_642]).run()
+try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52_642).run()
+try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id": 1, ":name": "Audi", ":price": 52_642]).run()
 ```
 
-There are also convenience methods on the `Database` for preparing a `Statement`, binding parameters and running it all in a single method named `run`.
+There are also convenience methods on the `Connection` for preparing a `Statement`, binding parameters and running it all in a single method named `run`.
 
 ```swift
-let db = try Database(databaseType: .OnDisk("path_to_db"))
+let connection = try Connection(connectionType: .OnDisk("path_to_db"))
 
-try db.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52_642)
-try db.run("INSERT INTO cars VALUES(:id, :name, :price)", parameters: [":id": 1, ":name": "Audi", ":price": 52_642])
+try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52_642)
+try connection.run("INSERT INTO cars VALUES(:id, :name, :price)", parameters: [":id": 1, ":name": "Audi", ":price": 52_642])
 ```
 
 > It is very important to properly esacpe all parameter values provided in a SQL statement. When in doubt, always use the provided bind functionality.
@@ -189,7 +195,7 @@ Fetching data from the database also leverages the `Binding` protocol extensivel
 To iterate through all the rows of a `Statement`, the `Statement` class conforms to the `SequenceType` protocol. This allows you to iterate through a `Statement` using fast enumeration.
 
 ```swift
-for row in try db.prepare("SELECT * FROM cars") {
+for row in try connection.prepare("SELECT * FROM cars") {
     print(row)
 }
 ```
@@ -206,7 +212,7 @@ struct Car {
 
 var cars: [Car] = []
 
-for row in try db.prepare("SELECT * FROM cars") {
+for row in try connection.prepare("SELECT * FROM cars") {
     let car = Car(name: row[1], price: row[2])
     cars.append(car)
 }
@@ -215,13 +221,13 @@ for row in try db.prepare("SELECT * FROM cars") {
 The `SequenceType` conformance also let's you use methods like `map` on the `Statement`.
 
 ```swift
-let cars: [Car] = try db.prepare("SELECT name, price FROM cars").map { Car(name: $0[0], price: $0[1]) }
+let cars: [Car] = try connection.prepare("SELECT name, price FROM cars").map { Car(name: $0[0], price: $0[1]) }
 ```
 
 You can also extract the `Row` values using the column name.
 
 ```swift
-for row in try db.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
+for row in try connection.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
 	let name: String = row["name"]
 	let price: UInt = row["price"]
 
@@ -234,13 +240,13 @@ for row in try db.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
 Sometimes you only want to fetch a single `Row`. Maybe you know beforehand that there will only be 1 row, or maybe you specified a LIMIT of 1. Either way, you can easily fetch a single `Row` without having to iterate over the `Statement`.
 
 ```swift
-let row = try db.fetch("SELECT * FROM cars WHERE name = ?", "Audi")
+let row = try connection.fetch("SELECT * FROM cars WHERE name = ?", "Audi")
 print(row)
 ```
 
 ### Querying Data
 
-When querying the database for a single value, you want to use the `query` method on the `Database`. It is designed to extract the first column value from the first `Row` returned. This is very useful for certain SELECT and PRAGMA statements.
+When querying the database for a single value, you want to use the `query` method on the `Connection`. It is designed to extract the first column value from the first `Row` returned. This is very useful for certain SELECT and PRAGMA statements.
 
 ```swift
 let avgHighEndPrice: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
@@ -255,40 +261,40 @@ let synchronous: Int = try db.query("PRAGMA synchronous")
 
 ### Thread Safety
 
-Thread-safety is a complex topic when it comes to SQLite. As a general rule, it is NEVER safe to access a `Database` connection from multiple threads simultaneously. Each connection should be accessed serially to guarantee safety. 
+Thread-safety is a complex topic when it comes to SQLite. As a general rule, it is NEVER safe to access a database `Connection` from multiple threads simultaneously. Each connection should be accessed serially to guarantee safety. 
 
-If you wish to access the `Database` connection in parallel, there are a few things you need to know. First off, you'll need to use Write-Ahead Logging by setting the journal mode to `WAL`. By changing the `Database` to a `WAL` journal mode, the `Database` can be accessed in parallel using multiple connections.
+If you wish to access the database in parallel, there are a few things you need to know. First off, you'll need to use Write-Ahead Logging by setting the journal mode to `WAL`. By changing the database to a `WAL` journal mode, the database can be read during a write and written during a read in parallel using multiple connections.
 
 ```swift
 try db.execute("PRAGMA journal_mode = WAL")
 ```
 
-Another important note is that SQLite can only perform write operations serially, no matter how many connections you create. Therefore, you should only ever create a single connection for writing if possible. You can however use as many reader connections as you wish within a certain threshold. For more information about thread-safety and WAL journal modes, please refer to the following:
+Another important note is that SQLite can only perform write operations serially, no matter how many connections you create. Therefore, you should only ever create a single connection for writing if possible. You can use as many reader connections as you wish. For more information about thread-safety and WAL journal modes, please refer to the following:
 
 - [Write-Ahead Logging](https://www.sqlite.org/wal.html)
 - [SQLite and Multiple Threads](http://www.sqlite.org/threadsafe.html)
 - [SQLite WAL mode with multiple transactions in multiple threads](http://stackoverflow.com/questions/14234007/sqlite-wal-mode-with-multiple-transactions-in-multiple-threads)
 
-#### Database Queue
+#### Connection Queue
 
-The `DatabaseQueue` class in SQift was designed to help guarantee thread-safety for a `Database` connection that could be accessed from multiple threads. It executes all operations on an internal serial dispatch queue. This ensures all operations on the connection operation in a serial fashion. The `DatabaseQueue` also supports executing logic inside a transaction and savepoint.
+The `ConnectionQueue` class in SQift was designed to help guarantee thread-safety for a database `Connection` that could be accessed from multiple threads. It executes all operations on an internal serial dispatch queue. This ensures all operations on the connection operation in a serial fashion. The `ConnectionQueue` also supports executing logic inside a transaction and savepoint.
 
 ```swift
-let queue = try DatabaseQueue(database: Database(databaseType: .OnDisk("path_to_db")))
+let queue = try ConnectionQueue(connection: Connection(connectionType: .OnDisk("path_to_db")))
 
-try queue.execute { db in
-    try db.execute("PRAGMA foreign_keys = true")
-    try db.execute("PRAGMA journal_mode = WAL")
-    try db.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+try queue.execute { connection in
+    try connection.execute("PRAGMA foreign_keys = true")
+    try connection.execute("PRAGMA journal_mode = WAL")
+    try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 }
 
-try queue.executeInTransaction { db in
-    try db.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-    try db.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+try queue.executeInTransaction { connection in
+    try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+    try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
 }
 
-try queue.executeInSavepoint("drop_cars_table") { db in
-	try db.execute("DROP TABLE cars")	
+try queue.executeInSavepoint("drop_cars_table") { connection in
+	try connection.execute("DROP TABLE cars")	
 }
 ```
 
@@ -297,7 +303,7 @@ try queue.executeInSavepoint("drop_cars_table") { db in
 The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available and ones that are currently busy executing SQL logic. The pool will reuse available connections when they are available, and initializes new connections when all available connections are busy until the max connection count is reached.
 
 ```swift
-let pool = try ConnectionPool(databaseType: .OnDisk("path_to_db"))
+let pool = try ConnectionPool(connectionType: .OnDisk("path_to_db"))
 
 try pool.execute { connection in
     let count: Int = try connection.query("SELECT count(*) FROM cars")
@@ -313,8 +319,8 @@ If the max connection count is reached, the pool will start to append additional
 Production applications generally need to migrate the database schema from time-to-time. Whether it requires some new tables or possibly alterations to a table, you need to have a way to manage the migration logic. SQift has migration support already built-in for you through the `Migrator` class. All you need to do is create the `Migrator` instance and tell it to run. Everything else is handled internally by SQift.
 
 ```swift
-let database = try Database(databaseType: databaseType)
-let migrator = Migrator(database: database, desiredSchemaVersion: 2)
+let connection = try Connection(connectionType: connectionType)
+let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
 try migrator.runMigrationsIfNecessary(
 	migrationSQLForSchemaVersion: { version in
