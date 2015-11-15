@@ -329,7 +329,6 @@ All migrations must start at 1 and increment by 1 with each iteration. For examp
 
 ## TODO
 
-- Improve the String sanitization logic
 - Add support for OSX, watchOS and tvOS
 - Add a `DatabasePool` class to generate `Database` connections on-the-fly for executing parallel reads
 - Add support for busy-wait callbacks

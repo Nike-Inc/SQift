@@ -11,21 +11,14 @@ import Foundation
 private let SingleQuote = Character("'")
 
 extension String {
-    func sanitize() -> String {
-        var sanitizedCharacters: [Character] = []
+    func escape() -> String {
+        var escapedCharacters: [Character] = []
 
-        for (index, character) in characters.enumerate() {
-            if index == 0 || index == (characters.count - 1) {
-                if character != SingleQuote { sanitizedCharacters.append(character) }
-            } else {
-                if character == SingleQuote {
-                    sanitizedCharacters.append(character)
-                }
-
-                sanitizedCharacters.append(character)
-            }
+        for character in characters {
+            if character == SingleQuote { escapedCharacters.append(character) }
+            escapedCharacters.append(character)
         }
 
-        return String(SingleQuote) + String(sanitizedCharacters) + String(SingleQuote)
+        return String(SingleQuote) + String(escapedCharacters) + String(SingleQuote)
     }
 }

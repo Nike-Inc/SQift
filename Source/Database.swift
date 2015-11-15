@@ -386,7 +386,7 @@ public class Database {
         - throws: An `Error` if SQLite encounters an error running the savepoint.
     */
     public func savepoint(var name: String, closure: Void throws -> Void) throws {
-        name = name.sanitize()
+        name = name.escape()
 
         try execute("SAVEPOINT \(name)")
 
@@ -412,7 +412,7 @@ public class Database {
         - throws: An `Error` if SQLite encounters an error attaching the database.
     */
     public func attachDatabase(databaseType: DatabaseType, withName name: String) throws {
-        try execute("ATTACH DATABASE \(databaseType.path.sanitize()) AS \(name.sanitize())")
+        try execute("ATTACH DATABASE \(databaseType.path.escape()) AS \(name.escape())")
     }
 
     /**
@@ -425,7 +425,7 @@ public class Database {
         - throws: An `Error` if SQLite encounters an error detaching the database.
     */
     public func detachDatabase(name: String) throws {
-        try execute("DETACH DATABASE \(name.sanitize())")
+        try execute("DETACH DATABASE \(name.escape())")
     }
 
     // MARK: - Tracing
