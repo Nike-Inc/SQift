@@ -28,7 +28,7 @@ public class DatabaseQueue {
     public init(database: Database) {
         self.database = database
         self.id = NSUUID().UUIDString
-        self.queue = dispatch_queue_create("com.nike.fetch.database-queue-\(id)", DISPATCH_QUEUE_SERIAL)
+        self.queue = dispatch_queue_create("com.nike.sqift.database-queue-\(id)", DISPATCH_QUEUE_SERIAL)
     }
 
     // MARK: - Execution
