@@ -292,6 +292,22 @@ try queue.executeInSavepoint("drop_cars_table") { db in
 }
 ```
 
+#### Connection Pool
+
+The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available and ones that are currently busy executing SQL logic. The pool will reuse available connections when they are available, and initializes new connections when all available connections are busy until the max connection count is reached.
+
+```swift
+let pool = try ConnectionPool(databaseType: .OnDisk("path_to_db"))
+
+try pool.execute { connection in
+    let count: Int = try connection.query("SELECT count(*) FROM cars")
+}
+```
+
+If the max connection count is reached, the pool will start to append additional SQL closures to the already busy connections. This could result in blocking behavior. SQLite does not have a limit on the maximumn number of open connections to a single database. With that said, the default limit of `64` is set to a reasonable value that most likely will never be exceeded.
+
+> The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus guaranteeing the thread-safety of each connection.
+
 ### Migrations
 
 Production applications generally need to migrate the database schema from time-to-time. Whether it requires some new tables or possibly alterations to a table, you need to have a way to manage the migration logic. SQift has migration support already built-in for you through the `Migrator` class. All you need to do is create the `Migrator` instance and tell it to run. Everything else is handled internally by SQift.
@@ -330,7 +346,6 @@ All migrations must start at 1 and increment by 1 with each iteration. For examp
 ## TODO
 
 - Add support for OSX, watchOS and tvOS
-- Add a `DatabasePool` class to generate `Database` connections on-the-fly for executing parallel reads
 - Add support for busy-wait callbacks
 - Add support for custom collation callbacks
 - Add SQLCipher integration for encrypting the database
