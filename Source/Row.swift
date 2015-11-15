@@ -292,3 +292,22 @@ extension Row: SequenceType {
         }
     }
 }
+
+// MARK: - CustomStringConvertible
+
+extension Row: CustomStringConvertible {
+    /// A textual description of the `Row` values.
+    public var description: String {
+        let stringValues: [String] = values.map { value in
+            if let value = value as? String {
+                return "'\(value)'"
+            } else if let value = value {
+                return String(value)
+            } else {
+                return "NULL"
+            }
+        }
+
+        return "[" + stringValues.joinWithSeparator(", ") + "]"
+    }
+}

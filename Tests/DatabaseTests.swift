@@ -268,6 +268,33 @@ class DatabaseTestCase: XCTestCase {
         }
     }
 
+    func testThatDatabaseCanSelectRowsInTableAndCaptureTheRowDescription() {
+        do {
+            // Given
+            let database = try Database(databaseType: databaseType)
+            try database.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+            try database.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
+            try database.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
+
+            var descriptions: [String] = []
+
+            // When
+            for row in try database.prepare("SELECT * FROM cars WHERE price > ?", 20_000) {
+                descriptions.append(row.description)
+            }
+
+            // Then
+            if descriptions.count == 2 {
+                XCTAssertEqual(descriptions[0], "[1, 'Audi', 52642]")
+                XCTAssertEqual(descriptions[1], "[2, 'Mercedes', 57127]")
+            } else {
+                XCTFail("row count should be 2")
+            }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatDatabaseCanFetchFirstRowOfSelectStatement() {
         do {
             // Given
