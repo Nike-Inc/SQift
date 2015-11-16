@@ -487,6 +487,88 @@ public class Connection {
         collations[name] = collation
     }
 
+    // MARK: - Encryption
+
+    /**
+        Sets the encryption passphrase on the database which will lazily generate a key derivation when necessary.
+
+        The encryption passphrase MUST be set immediately after the `Connection` is initialized. If it is not called 
+        before any other operations are performed on the database, the encryption passphrase is ignored and the
+        database will NOT be encrypted.
+
+            let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+            try connection.setEncryptionPassphrase(passphrase)
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/#key>.
+
+        - parameter passphrase: The passphrase to use for encrypting the database.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error setting the passphrase.
+    */
+    public func setEncryptionPassphrase(passphrase: String) throws {
+        let passphraseData = passphrase.dataUsingEncoding(NSUTF8StringEncoding)!
+        try check(sqlite3_key(handle, passphraseData.bytes, Int32(passphraseData.length)))
+    }
+
+    /**
+        Updates the encryption passphrase on the database which will lazily generate a key derivation when necessary.
+
+        The current encryption passphrase MUST be set on the `Connection` before attempting to update the encryption
+        passphrase. Otherwise the update is ignored.
+
+            let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+            try connection.setEncryptionPassphrase(currentPassphrase)
+            try connection.updateEncryptionPassphrase(newPassphrase)
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_profile>.
+
+        - parameter passphrase: The passphrase to use for encrypting the database.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error setting the passphrase.
+    */
+    public func updateEncryptionPassphrase(passphrase: String) throws {
+        let passphraseData = passphrase.dataUsingEncoding(NSUTF8StringEncoding)!
+        try check(sqlite3_rekey(handle, passphraseData.bytes, Int32(passphraseData.length)))
+    }
+
+    /**
+        Exports the current database to the specified path encrypted with the specified passphrase.
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/index.html#sqlcipher_export>.
+
+        - parameter path:       The path to export the encrypted database to.
+        - parameter passphrase: The passphrase to encrypt the exported database with.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
+    */
+    public func exportEncryptedDatabaseToPath(path: String, withEncryptionPassphrase passphrase: String) throws {
+        let name = "encrypted".escape()
+
+        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \(passphrase.escape())")
+        try execute("SELECT sqlcipher_export(\(name))")
+        try execute("DETACH DATABASE \(name)")
+    }
+
+    /**
+        Exports a decrypted form of the current database to the specified path.
+
+        If the current database is encrypted with a passphrase, the passphrase must first be set before the database
+        can be exported.
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/index.html#sqlcipher_export>.
+
+        - parameter path:       The path to export the decrypted database to.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
+    */
+    public func exportDecryptedDatabaseToPath(path: String) throws {
+        let name = "decrypted".escape()
+
+        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY ''")
+        try execute("SELECT sqlcipher_export(\(name))")
+        try execute("DETACH DATABASE \(name)")
+    }
+
     // MARK: - Internal - Check Result Code
 
     func check(code: Int32) throws -> Int32 {
