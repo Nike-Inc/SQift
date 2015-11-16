@@ -247,14 +247,20 @@ class BindingTestCase: XCTestCase {
     }
 
     func testDateBinding() {
-        // Given, When
+        // Given
         let now = NSDate()
+
+        // When
         let bindingValue = now.bindingValue
-        let fromBindingValue = NSDate.fromBindingValue(BindingDateFormatter.stringFromDate(now))
+        let fromStringBindingValue = NSDate.fromBindingValue(BindingDateFormatter.stringFromDate(now))
+        let fromInt64BindingValue = NSDate.fromBindingValue(Int64(now.timeIntervalSince1970))
+        let fromDoubleBindingValue = NSDate.fromBindingValue(now.timeIntervalSince1970)
 
         // Then
         XCTAssertTrue(bindingValue == .Text(BindingDateFormatter.stringFromDate(now)))
-        XCTAssertEqualWithAccuracy(fromBindingValue.timeIntervalSinceDate(now), 0.0, accuracy: 0.001)
+        XCTAssertEqualWithAccuracy(fromStringBindingValue.timeIntervalSinceDate(now), 0.0, accuracy: 0.001)
+        XCTAssertEqualWithAccuracy(fromInt64BindingValue.timeIntervalSinceDate(now), 0.0, accuracy: 1.0)
+        XCTAssertEqualWithAccuracy(fromDoubleBindingValue.timeIntervalSinceDate(now), 0.0, accuracy: 0.000001)
     }
 
     // MARK: - Blob Binding Tests

@@ -303,7 +303,17 @@ extension NSDate: Binding {
     public var bindingValue: BindingValue { return .Text(BindingDateFormatter.stringFromDate(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `NSDate` representation.
-    public static func fromBindingValue(value: Any) -> NSDate { return BindingDateFormatter.dateFromString(value as! String)! }
+    public static func fromBindingValue(value: Any) -> NSDate {
+        if let value = value as? String {
+            return BindingDateFormatter.dateFromString(value)!
+        } else if let value = value as? Int64 {
+            return NSDate(timeIntervalSince1970: NSTimeInterval(value))
+        } else if let value = value as? Double {
+            return NSDate(timeIntervalSince1970: value)
+        } else {
+            fatalError("Cannot convert `\(value.dynamicType)` to NSDate")
+        }
+    }
 }
 
 /// Global date formatter to allow the `NSDate` binding to read and write dates as strings in the database. This makes
