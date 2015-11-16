@@ -368,7 +368,7 @@ public class Database {
             try closure()
             try execute("COMMIT")
         } catch {
-            try execute("ROLLBACK")
+            do { try execute("ROLLBACK") } catch { /** No-op */ }
             throw error
         }
     }
@@ -394,7 +394,7 @@ public class Database {
             try closure()
             try execute("RELEASE SAVEPOINT \(name)")
         } catch {
-            try execute("ROLLBACK TO SAVEPOINT \(name)")
+            do { try execute("ROLLBACK TO SAVEPOINT \(name)") } catch { /** No-op */ }
             throw error
         }
     }
