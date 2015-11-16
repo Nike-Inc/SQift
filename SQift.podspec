@@ -12,4 +12,7 @@ Pod::Spec.new do |s|
   s.source_files = 'Source/*.{swift,h}'
 
   s.library = 'sqlite3'
+  s.dependency 'SQLCipher', '~> 3.1'
+
+  s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1' }
 end

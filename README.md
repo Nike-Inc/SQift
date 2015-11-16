@@ -52,7 +52,6 @@ $ gem install cocoapods
 To integrate SQift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
@@ -476,6 +475,7 @@ If you prefer graphical interfaces, you could install [SQLiteManager 4](https://
 
 ## Roadmap
 
+- Get new podspec published for SQLCipher 3.3.1 - [Open Issue](https://github.com/sqlcipher/sqlcipher/issues/141)
 - Add support for OSX, watchOS and tvOS
 - Add Full-Text Search Support (FST4)
 - Create a full DSL leveraging property and method chaining similar to SnapKit
