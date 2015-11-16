@@ -36,7 +36,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionInitializationWithDefaultFlagsMatchConnectionPropertyValues() {
+    func testThatConnectionInitializationDefaultFlagsMatchConnectionPropertyValues() {
         do {
             // Given, When
             let connection = try Connection(connectionType: connectionType)
@@ -49,7 +49,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionInitializationWithCustomFlagsMatchConnectionPropertyValues() {
+    func testThatConnectionInitializationCustomFlagsMatchConnectionPropertyValues() {
         do {
             // Given
             var writableConnection: Connection? = try Connection(connectionType: connectionType)
