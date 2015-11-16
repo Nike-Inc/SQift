@@ -230,7 +230,8 @@ public class Statement {
         var names: [String] = []
 
         for index in 0..<self.columnCount {
-            names.append(self.columnNameAtIndex(index))
+            let columnName = String.fromCString(sqlite3_column_name(self.handle, Int32(index)))!
+            names.append(columnName)
         }
 
         return names
@@ -241,7 +242,7 @@ public class Statement {
     }
 
     func columnNameAtIndex(index: Int) -> String {
-        return String.fromCString(sqlite3_column_name(handle, Int32(index)))!
+        return columnNames[index]
     }
 
     func columnIndexForName(name: String) -> Int? {
