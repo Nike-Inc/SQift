@@ -18,7 +18,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Requirements
 
-- iOS 8.0+
+- iOS 8.0+, OSX 10.10+, tvOS 9.0+, watchOS 2.0+
 - Xcode 7.0+
 
 ## Communication
@@ -396,7 +396,6 @@ All migrations must start at 1 and increment by 1 with each iteration. For examp
 
 ## Roadmap
 
-- Add support for OSX, watchOS and tvOS
 - Add SQLCipher integration for encrypting the database
 - Add Full-Text Search Support (FST4)
 - Create a full DSL leveraging property and method chaining similar to SnapKit
