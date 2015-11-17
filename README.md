@@ -398,7 +398,6 @@ All migrations must start at 1 and increment by 1 with each iteration. For examp
 
 - Add support for OSX, watchOS and tvOS
 - Add support for busy-wait callbacks
-- Add support for custom collation callbacks
 - Add SQLCipher integration for encrypting the database
 - Add Full-Text Search Support (FST4)
 - Create a full DSL leveraging property and method chaining similar to SnapKit

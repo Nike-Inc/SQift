@@ -51,6 +51,7 @@ public class Connection {
     }
 
     private typealias TraceCallback = @convention(block) UnsafePointer<Int8> -> Void
+    private typealias CollationCallback = @convention(block) (UnsafePointer<Void>, Int32, UnsafePointer<Void>, Int32) -> Int32
 
     // MARK: - Properties
 
@@ -81,6 +82,7 @@ public class Connection {
     var handle: COpaquePointer = nil
 
     private var traceCallback: TraceCallback?
+    private var collations: [String: CollationCallback] = [:]
 
     // MARK: - Initialization
 
@@ -448,6 +450,41 @@ public class Connection {
         let traceCallbackPointer = unsafeBitCast(traceCallback, UnsafeMutablePointer<Void>.self)
 
         sqlite3_trace(handle, { unsafeBitCast($0, TraceCallback.self)($1) }, traceCallbackPointer)
+    }
+
+    // MARK: - Collation
+
+    /**
+        Registers the custom collation name with SQLite to execute the compare closure when collating.
+
+        For more details, please refer to: <https://www.sqlite.org/datatype3.html#collation>.
+
+        - parameter name:    The name of the custom collation.
+        - parameter compare: The closure used to compare the two strings.
+    */
+    public func createCollation(name: String, compare: (lhs: String, rhs: String) -> NSComparisonResult) {
+        let collation: CollationCallback = { lhsBytes, lhsLength, rhsBytes, rhsLength in
+            let lhsUTF8 = String(data: NSData(bytes: lhsBytes, length: Int(lhsLength)), encoding: NSUTF8StringEncoding)
+            let rhsUTF8 = String(data: NSData(bytes: rhsBytes, length: Int(rhsLength)), encoding: NSUTF8StringEncoding)
+
+            guard let lhs = lhsUTF8, let rhs = rhsUTF8 else { return 0 }
+
+            return Int32(compare(lhs: lhs, rhs: rhs).rawValue)
+        }
+
+        let collationPointer = unsafeBitCast(collation, UnsafeMutablePointer<Void>.self)
+
+        sqlite3_create_collation_v2(
+            handle,
+            name,
+            SQLITE_UTF8,
+            collationPointer, { (callback, lhsLength, lhsBytes, rhsLength, rhsBytes) -> Int32 in
+                unsafeBitCast(callback, CollationCallback.self)(lhsBytes, lhsLength, rhsBytes, rhsLength)
+            },
+            nil
+        )
+
+        collations[name] = collation
     }
 
     // MARK: - Internal - Check Result Code

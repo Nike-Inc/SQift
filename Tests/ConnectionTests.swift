@@ -626,4 +626,62 @@ class ConnectionTestCase: XCTestCase {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
+
+    func testThatConnectionCanCreateAndExecuteCustomNumericCollationFunction() {
+        do {
+            // Given
+            let connection = try Connection(connectionType: connectionType)
+            print(connectionType.path)
+
+            connection.createCollation("NUMERIC") { lhs, rhs in
+                return lhs.compare(rhs, options: .NumericSearch, locale: NSLocale.autoupdatingCurrentLocale())
+            }
+
+            try connection.execute("DROP TABLE IF EXISTS test")
+            try connection.execute("CREATE TABLE test(text TEXT COLLATE 'NUMERIC' NOT NULL)")
+
+            let inserted = ["string 1", "string 21", "string 12", "string 11", "string 02"]
+            let expected = ["string 1", "string 02", "string 11", "string 12", "string 21"]
+
+            try inserted.forEach { try connection.run("INSERT INTO test(text) VALUES(?)", $0) }
+
+            // When
+            let extracted: [String] = try connection.prepare("SELECT * FROM test ORDER BY text").map { $0[0] }
+
+            // Then
+            XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanCreateAndExecuteCustomDiacriticCollationFunction() {
+        do {
+            // Given
+            let connection = try Connection(connectionType: connectionType)
+            print(connectionType.path)
+
+            let options: NSStringCompareOptions = [.LiteralSearch, .WidthInsensitiveSearch, .ForcedOrderingSearch]
+
+            connection.createCollation("DIACRITIC") { lhs, rhs in
+                return lhs.compare(rhs, options: options, locale: NSLocale.autoupdatingCurrentLocale())
+            }
+
+            try connection.execute("DROP TABLE IF EXISTS test")
+            try connection.execute("CREATE TABLE test(text TEXT COLLATE 'DIACRITIC' NOT NULL)")
+
+            let inserted = ["o", "ô", "ö", "ò", "ó", "œ", "ø", "ō", "õ"]
+            let expected = ["o", "ó", "ò", "ô", "ö", "õ", "ø", "ō", "œ"]
+
+            try inserted.forEach { try connection.run("INSERT INTO test(text) VALUES(?)", $0) }
+
+            // When
+            let extracted: [String] = try connection.prepare("SELECT * FROM test ORDER BY text").map { $0[0] }
+
+            // Then
+            XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
 }
