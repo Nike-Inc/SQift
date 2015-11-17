@@ -253,7 +253,7 @@ let avgHighEndPrice: UInt = try db.query("SELECT avg(price) FROM cars WHERE pric
 let synchronous: Int = try db.query("PRAGMA synchronous")
 ```
 
-> You MUST be careful when using the `query` method. Always use version of the `query` API where the return type is optional unless you are 100% sure that the value will exist.
+> You MUST be careful when using the `query` method. You should always use the version of the `query` API where the return type is optional unless you are 100% sure that the value will exist.
 
 ### Dates
 
