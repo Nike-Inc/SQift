@@ -25,7 +25,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Open and Close Tests
 
-    func testThatDatabaseCanOpenDatabase() {
+    func testThatConnectionCanOpenDatabaseConnection() {
         // Given, When, Then
         do {
             let _ = try Connection(connectionType: connectionType)
@@ -36,7 +36,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseInitializationDefaultFlagsMatchDatabasePropertyValues() {
+    func testThatConnectionInitializationWithDefaultFlagsMatchConnectionPropertyValues() {
         do {
             // Given, When
             let connection = try Connection(connectionType: connectionType)
@@ -49,7 +49,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseInitializationCustomFlagsMatchDatabasePropertyValues() {
+    func testThatConnectionInitializationWithCustomFlagsMatchConnectionPropertyValues() {
         do {
             // Given
             var writableConnection: Connection? = try Connection(connectionType: connectionType)
@@ -67,7 +67,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanCloseDatabase() {
+    func testThatConnectionCanCloseDatabaseConnection() {
         do {
             // Given
             var onDiskConnection: Connection? = try Connection(connectionType: connectionType)
@@ -90,7 +90,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Execution Tests
 
-    func testThatDatabaseCanExecutePragmaStatements() {
+    func testThatConnectionCanExecutePragmaStatements() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -103,7 +103,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanCreateTable() {
+    func testThatConnectionCanCreateTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -115,7 +115,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanDropTable() {
+    func testThatConnectionCanDropTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -128,7 +128,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanInsertRowsIntoTable() {
+    func testThatConnectionCanInsertRowsIntoTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -143,7 +143,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanInsertThousandsOfRowsIntoTableUnderOneSecond() {
+    func testThatConnectionCanInsertThousandsOfRowsIntoTableUnderOneSecond() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -175,7 +175,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanUpdateRowsInTable() {
+    func testThatConnectionCanUpdateRowsInTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -189,7 +189,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanDeleteRowsInTable() {
+    func testThatConnectionCanDeleteRowsInTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -203,7 +203,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanSelectRowsInTable() {
+    func testThatConnectionCanSelectRowsInTable() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -235,7 +235,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanSelectColumnValuesFromRowUsingColumnNames() {
+    func testThatConnectionCanSelectColumnValuesFromRowUsingColumnNames() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -268,7 +268,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanSelectRowsInTableAndCaptureTheRowDescription() {
+    func testThatConnectionCanSelectRowsInTableAndCaptureTheRowDescription() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -295,7 +295,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanFetchFirstRowOfSelectStatement() {
+    func testThatConnectionCanFetchFirstRowOfSelectStatement() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -322,7 +322,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Binding Tests
 
-    func testThatDatabaseCanBindParametersToStatement() {
+    func testThatConnectionCanBindParametersToStatement() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -368,7 +368,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanBindNamedParametersToStatement() {
+    func testThatConnectionCanBindNamedParametersToStatement() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -402,7 +402,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Transaction and Savepoint Tests
 
-    func testThatDatabaseCanExecuteTransaction() {
+    func testThatConnectionCanExecuteTransaction() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -433,7 +433,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanRollbackTransactionExecutionWhenTransactionThrows() {
+    func testThatConnectionCanRollbackTransactionExecutionWhenTransactionThrows() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -458,7 +458,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanExecuteSavepoint() {
+    func testThatConnectionCanExecuteSavepoint() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -493,7 +493,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanRollbackToSavepointWhenSavepointExecutionThrows() {
+    func testThatConnectionCanRollbackToSavepointWhenSavepointExecutionThrows() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
@@ -520,7 +520,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Attach Database Tests
 
-    func testThatDatabaseCanAttachAndDetachDatabase() {
+    func testThatConnectionCanAttachAndDetachDatabase() {
         let personDBPath = NSFileManager.documentsDirectory.stringByAppendingString("/attach_detach_db_tests.db")
         defer { NSFileManager.removeItemAtPath(personDBPath) }
 
@@ -560,7 +560,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Trace Tests
 
-    func testThatDatabaseCanTraceStatementExecution() {
+    func testThatConnectionCanTraceStatementExecution() {
         do {
             // Given
             let connection = try Connection(connectionType: connectionType)
