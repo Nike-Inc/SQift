@@ -518,6 +518,41 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
+    func testThatConnectionCanExecuteSavepointsWithCrazyCharactersInName() {
+        do {
+            // Given
+            let connection = try Connection(connectionType: connectionType)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+
+            // When
+            try connection.savepoint("savè mę 😱 \n\r\n nõw \n plèãśę  ") {
+                try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52642)
+
+                try connection.savepoint("  save with' random \" chàracters") {
+                    try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 2, "Mercedes", 57127)
+                }
+            }
+
+            // When
+            let rows = try connection.prepare("SELECT * FROM cars").map { $0.values }
+
+            // Then
+            if rows.count == 2 {
+                XCTAssertEqual(rows[0][0] as? Int64, 1, "rows[0][0] should be 1")
+                XCTAssertEqual(rows[0][1] as? String, "Audi", "rows[0][1] should be `Audi`")
+                XCTAssertEqual(rows[0][2] as? Int64, 52642, "rows[0][2] should be 52642")
+
+                XCTAssertEqual(rows[1][0] as? Int64, 2, "rows[1][0] should be 2")
+                XCTAssertEqual(rows[1][1] as? String, "Mercedes", "rows[1][1] should be `Mercedes`")
+                XCTAssertEqual(rows[1][2] as? Int64, 57127, "rows[1][2] should be 57127")
+            } else {
+                XCTFail("rows count should be 2")
+            }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     // MARK: - Attach Database Tests
 
     func testThatConnectionCanAttachAndDetachDatabase() {
