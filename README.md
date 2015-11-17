@@ -355,7 +355,7 @@ try pool.execute { connection in
 }
 ```
 
-If the max connection count is reached, the pool will start to append additional SQL closures to the already busy connections. This could result in blocking behavior. SQLite does not have a limit on the maximumn number of open connections to a single database. With that said, the default limit of `64` is set to a reasonable value that most likely will never be exceeded.
+Since SQLite has no limit on the maximum number of open connections to a single database, the `ConnectionPool` will initialize as many connections as needed within a small amount of time. Each time a connection is executed, the internal drain delay timer starts up. When the drain delay timer fires, it will drain the available connections if there are no more busy connections. If there are still busy connections, the timer is restarted. This allows the `ConnectionPool` to spin up as many connections as necessary for very small amounts of time.
 
 > The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus guaranteeing the thread-safety of each connection.
 

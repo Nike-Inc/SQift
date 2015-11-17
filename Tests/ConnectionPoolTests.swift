@@ -66,7 +66,6 @@ class ConnectionPoolTestCase: XCTestCase {
 
             let beforeDequeueAvailableConnections = pool.availableConnections
             let beforeDequeueBusyConnections = pool.busyConnections
-            let beforeBusyCount = pool.busyConnectionClosureCounts.count
 
             // When
             let connection = pool.dequeueConnectionForUse()
@@ -77,9 +76,6 @@ class ConnectionPoolTestCase: XCTestCase {
 
             XCTAssertFalse(pool.availableConnections.contains(connection), "after dequeue, available connections should not contain connection")
             XCTAssertTrue(pool.busyConnections.contains(connection), "after dequeue, busy connections should contain connection")
-
-            XCTAssertEqual(beforeBusyCount, 0, "before busy count should be 0 since no connections should have been busy")
-            XCTAssertEqual(pool.busyConnectionClosureCounts[connection], 1, "closure count for connection should be 1 after dequeue")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -90,7 +86,6 @@ class ConnectionPoolTestCase: XCTestCase {
             // Given
             let pool = try ConnectionPool(connectionType: connectionType)
             pool.availableConnections.removeAll()
-            let beforeBusyCount = pool.busyConnectionClosureCounts.count
 
             // When
             let connection = pool.dequeueConnectionForUse()
@@ -98,29 +93,6 @@ class ConnectionPoolTestCase: XCTestCase {
             // Then
             XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection")
             XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection")
-
-            XCTAssertEqual(beforeBusyCount, 0, "before busy count should be 0 since no connections should have been busy")
-            XCTAssertEqual(pool.busyConnectionClosureCounts[connection], 1, "closure count for connection should be 1 after dequeue")
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
-    func testThatDequeueingConnectionReusesBusyConnectionIfNecessary() {
-        do {
-            // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
-
-            // When
-            let connection1 = pool.dequeueConnectionForUse()
-            let connection2 = pool.dequeueConnectionForUse()
-
-            // Then
-            XCTAssertEqual(connection1, connection2, "connection 1 should equal connection 2")
-            XCTAssertFalse(pool.availableConnections.contains(connection2), "available connections should not contain connection 2")
-            XCTAssertTrue(pool.busyConnections.contains(connection2), "busy connections should contain connection 2")
-
-            XCTAssertEqual(pool.busyConnectionClosureCounts[connection2], 2, "closure count for connection 2 should be 2")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -132,7 +104,6 @@ class ConnectionPoolTestCase: XCTestCase {
             let pool = try ConnectionPool(connectionType: connectionType)
             let connection = pool.dequeueConnectionForUse()
 
-            let beforeClosureCount = pool.busyConnectionClosureCounts[connection]
             let beforeEnqueueAvailableConnections = pool.availableConnections
             let beforeEnqueueBusyConnections = pool.busyConnections
 
@@ -140,88 +111,11 @@ class ConnectionPoolTestCase: XCTestCase {
             pool.enqueueConnectionForReuse(connection)
 
             // Then
-            XCTAssertEqual(beforeClosureCount, 1, "before closure count should be 1")
             XCTAssertFalse(beforeEnqueueAvailableConnections.contains(connection), "available connections should not contain connection before enqueue")
             XCTAssertTrue(beforeEnqueueBusyConnections.contains(connection), "busy connections should contain connection before enqueue")
 
-            XCTAssertNil(pool.busyConnectionClosureCounts[connection], "busy connection closure count should be nil after enqueue")
             XCTAssertTrue(pool.availableConnections.contains(connection), "available connections should contain connection after enqueue")
             XCTAssertFalse(pool.busyConnections.contains(connection), "busy connections should not contain connection after enqueue")
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
-    func testThatEnqueueConnectionDecrementsBusyConnectionWhenClosureCountIsLargerThanOne() {
-        do {
-            // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
-            pool.dequeueConnectionForUse()
-            let connection = pool.dequeueConnectionForUse()
-
-            let beforeClosureCount = pool.busyConnectionClosureCounts[connection]
-            let beforeEnqueueAvailableConnections = pool.availableConnections
-            let beforeEnqueueBusyConnections = pool.busyConnections
-
-            // When
-            pool.enqueueConnectionForReuse(connection)
-
-            // Then
-            XCTAssertEqual(beforeClosureCount, 2, "before closure count should be 2")
-            XCTAssertFalse(beforeEnqueueAvailableConnections.contains(connection), "available connections should not contain connection before enqueue")
-            XCTAssertTrue(beforeEnqueueBusyConnections.contains(connection), "busy connections should contain connection before enqueue")
-
-            XCTAssertEqual(pool.busyConnectionClosureCounts[connection], 1, "closure count should be 1")
-            XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection after enqueue")
-            XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection after enqueue")
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
-    func testThatBusyConnectionWithLowestClosureCountWorksUnderNormalConditions() {
-        do {
-            // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 8)
-
-            for _ in 0..<2 {
-                pool.availableConnections.insert(
-                    try ConnectionQueue(connection: Connection(connectionType: pool.connectionType, flags: pool.flags))
-                )
-            }
-
-            let connection1 = pool.dequeueConnectionForUse()
-            let connection2 = pool.dequeueConnectionForUse()
-            let connection3 = pool.dequeueConnectionForUse()
-
-            pool.busyConnectionClosureCounts[connection1] = 4
-            pool.busyConnectionClosureCounts[connection2] = 3
-            pool.busyConnectionClosureCounts[connection3] = 2
-
-            // When
-            let lowestConnection = pool.busyConnectionWithLowestClosureCount()
-
-            // Then
-            XCTAssertNotEqual(connection1, connection2, "connection 1 and 2 should not be equal")
-            XCTAssertNotEqual(connection2, connection3, "connection 2 and 3 should not be equal")
-            XCTAssertNotEqual(connection1, connection3, "connection 1 and 3 should not be equal")
-
-            XCTAssertEqual(lowestConnection, connection3, "lowest connection should equal connection 3")
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
-    func testThatBusyConnectionWithLowestClosureCountReturnsNilWhenThereAreNoBusyConnections() {
-        do {
-            // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
-
-            // When
-            let lowestConnection = pool.busyConnectionWithLowestClosureCount()
-
-            // Then
-            XCTAssertNil(lowestConnection, "lowest connection should be nil when busy connections is empty")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -230,7 +124,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolCanExecuteReadOnlyClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType)
 
             var count = -1
 
@@ -249,7 +143,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolFailsToExecuteWriteClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType, maxConnectionCount: 1)
+            let pool = try ConnectionPool(connectionType: connectionType)
 
             // When
             try pool.execute { connection in
@@ -272,7 +166,7 @@ class ConnectionPoolTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
             let pool = try ConnectionPool(connectionType: connectionType)
 
-            let range = 0..<pool.maxConnectionCount
+            let range = 0..<128
             let expectations: [XCTestExpectation] = range.map { expectationWithDescription("read: \($0)") }
             var counts: [Int] = []
 
@@ -297,6 +191,55 @@ class ConnectionPoolTestCase: XCTestCase {
             waitForExpectationsWithTimeout(10.0, handler: nil)
 
             // Then
+            XCTAssertEqual(counts.count, range.count, "counts array should have equal number of items as range")
+
+            for (index, count) in counts.enumerate() {
+                XCTAssertEqual(count, 2, "count should be equal to 2 at index: \(index)")
+            }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionPoolDrainDelayWorksAsExpected() {
+        do {
+            // Given
+            let connection = try Connection(connectionType: connectionType)
+            try TestTables.createAndPopulateAgentsTable(connection)
+            let pool = try ConnectionPool(connectionType: connectionType, availableConnectionDrainDelay: 0.1)
+
+            let range = 0..<10
+            let expectations: [XCTestExpectation] = range.map { expectationWithDescription("read: \($0)") }
+            var counts: [Int] = []
+
+            let queue = dispatch_queue_create("test_serial_queue", DISPATCH_QUEUE_SERIAL)
+
+            // When
+            range.forEach { index in
+                dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                    do {
+                        try pool.execute { connection in
+                            let count: Int = try connection.query("SELECT count(*) FROM agents")
+                            dispatch_sync(queue) { counts.append(count) }
+                        }
+                    } catch {
+                        // No-op
+                    }
+
+                    expectations[index].fulfill()
+                }
+            }
+
+            let drainExpectation = expectationWithDescription("drain timer should drain available connections")
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.2 * Float(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+                drainExpectation.fulfill()
+            }
+
+            waitForExpectationsWithTimeout(10.0, handler: nil)
+
+            // Then
+            XCTAssertEqual(pool.availableConnections.count, 1, "available connections count should be back down to 1")
             XCTAssertEqual(counts.count, range.count, "counts array should have equal number of items as range")
 
             for (index, count) in counts.enumerate() {

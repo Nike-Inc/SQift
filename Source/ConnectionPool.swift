@@ -11,34 +11,23 @@ import Foundation
 /// The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a
 /// thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available
 /// and ones that are currently busy executing SQL logic. The pool will reuse available connections when they
-/// are available, and initializes new connections when all available connections are busy until the max
-/// connection count is reached.
+/// are available, and initializes new connections when all available connections are busy.
 ///
-/// If the max connection count is reached, the pool will start to append additional SQL closures to the already
-/// busy connections. This could result in blocking behavior. SQLite does not have a limit on the maximumn number
-/// of open connections to a single database. With that said, the default limit of 64 is set to a reasonable value
-/// that most likely will never be exceeded.
+/// Since SQLite has no limit on the maximum number of open connections to a single database, the `ConnectionPool`
+/// will initialize as many connections as needed within a small amount of time. Each time a connection is executed,
+/// the internal drain delay timer starts up. When the drain delay timer fires, it will drain the available connections
+/// if there are no more busy connections. If there are still busy connections, the timer is restarted. This allows the
+/// `ConnectionPool` to spin up as many connections as necessary for very small amounts of time.
 ///
 /// The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a
 /// connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus
 /// guaranteeing the thread-safety of each connection.
 public class ConnectionPool {
 
-    // MARK: - Public - Properties
-
-    /// The maximum number of connections the pool can create.
-    public let maxConnectionCount: Int
-
     // MARK: - Internal - Properties
 
     var availableConnections: Set<ConnectionQueue>
-    var busyConnections: Set<ConnectionQueue>
-
-    var busyConnectionClosureCounts: [ConnectionQueue: Int]
-
-    var currentConnectionCount: Int { return availableConnections.count + busyConnections.count }
-    var openConnectionIsAvailable: Bool { return availableConnections.count > 0 }
-    var connectionLimitHasBeenReached: Bool { return currentConnectionCount == maxConnectionCount }
+    var busyConnections: Set<ConnectionQueue>   
 
     let connectionType: Connection.ConnectionType
     let flags: Int32
@@ -46,28 +35,35 @@ public class ConnectionPool {
     // MARK: - Private - Properties
 
     private let queue: dispatch_queue_t
+    private let drainDelay: NSTimeInterval
+    private var drainInProgress: Bool
 
     // MARK: - Initialization
 
     /**
-        Initializes the `ConnectionPool` instance with the specified connection type and maximum connection count.
+        Initializes the `ConnectionPool` instance with the specified connection type and drain delay.
 
-        - parameter connectionType:     The connection type to initialize.
-        - parameter maxConnectionCount: The maximum number of connections the pool can create.
+        - parameter connectionType: The connection type to initialize.
+        - parameter drainDelay:     Total time to wait before draining the available connections. Default is `1.0`.
 
         - throws: An `Error` if SQLite fails to initialize the default connection.
 
         - returns: The new `ConnectionPool` instance.
     */
-    public init(connectionType: Connection.ConnectionType, maxConnectionCount: Int = 64) throws {
+    public init(
+        connectionType: Connection.ConnectionType,
+        availableConnectionDrainDelay drainDelay: NSTimeInterval = 1.0)
+        throws
+    {
         self.connectionType = connectionType
+        self.drainDelay = drainDelay
+        self.drainInProgress = false
+
         self.flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE
         self.queue = dispatch_queue_create("com.nike.sqift.connection-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
-        self.maxConnectionCount = max(maxConnectionCount, 1)
 
         self.availableConnections = []
         self.busyConnections = []
-        self.busyConnectionClosureCounts = [:]
 
         let connection = try ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
         availableConnections.insert(connection)
@@ -86,8 +82,13 @@ public class ConnectionPool {
         var connection: ConnectionQueue!
 
         dispatch_sync(queue) { connection = self.dequeueConnectionForUse() }
+
         try connection.execute { database in try closure(database) }
-        dispatch_sync(queue) { self.enqueueConnectionForReuse(connection) }
+
+        dispatch_sync(queue) {
+            self.enqueueConnectionForReuse(connection)
+            self.startDrainDelayTimerIfNecessary()
+        }
     }
 
     // MARK: - Internal - Pool Dequeue and Enqueue
@@ -95,50 +96,47 @@ public class ConnectionPool {
     func dequeueConnectionForUse() -> ConnectionQueue {
         let connection: ConnectionQueue
 
-        if openConnectionIsAvailable {
+        if !availableConnections.isEmpty {
             connection = availableConnections.removeFirst()
-        } else if !connectionLimitHasBeenReached {
-            connection = try! ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
         } else {
-            connection = busyConnectionWithLowestClosureCount()!
+            connection = try! ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
         }
 
         busyConnections.insert(connection)
-
-        if busyConnectionClosureCounts[connection] == nil {
-            busyConnectionClosureCounts[connection] = 1
-        } else {
-            busyConnectionClosureCounts[connection] = busyConnectionClosureCounts[connection]! + 1
-        }
 
         return connection
     }
 
     func enqueueConnectionForReuse(connection: ConnectionQueue) {
-        let closureCount = busyConnectionClosureCounts[connection] ?? 1
-
-        guard closureCount == 1 else {
-            busyConnectionClosureCounts[connection] = closureCount - 1
-            return
-        }
-
-        busyConnectionClosureCounts.removeValueForKey(connection)
-
         busyConnections.remove(connection)
         availableConnections.insert(connection)
     }
 
-    func busyConnectionWithLowestClosureCount() -> ConnectionQueue? {
-        var lowestConnection: ConnectionQueue?
-        var lowestCount = Int.max
+    // MARK: - Internal - Drain Delay Timer
 
-        for (databaseQueue, count) in busyConnectionClosureCounts {
-            if lowestConnection == nil || count < lowestCount {
-                lowestConnection = databaseQueue
-                lowestCount = count
-            }
+    func startDrainDelayTimerIfNecessary() {
+        guard !drainInProgress else { return }
+
+        drainInProgress = true
+
+        let dispatchDrainDelay = dispatch_time(DISPATCH_TIME_NOW, Int64(drainDelay * Double(NSEC_PER_SEC)))
+
+        dispatch_after(dispatchDrainDelay, queue) { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.drainAllAvailableConnectionsExceptOne()
+        }
+    }
+
+    func drainAllAvailableConnectionsExceptOne() {
+        drainInProgress = false
+
+        guard availableConnections.count > 1 else { return }
+
+        guard busyConnections.isEmpty else {
+            startDrainDelayTimerIfNecessary()
+            return
         }
 
-        return lowestConnection
+        availableConnections = [availableConnections.first!]
     }
 }
