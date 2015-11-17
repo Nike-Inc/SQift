@@ -121,6 +121,52 @@ public class Migrator {
         return totalMigrationsCompleted
     }
 
+    /**
+        Runs all migrations sequentially until the desired schema version is reached.
+
+        This method gives full control over the migration process. The `migrate` closure passes in the schema
+        version to update to along with the database connection. It is then the closures job to handle all the
+        migration logic to update the schema to the provided version. Having complete control over this process
+        can be very useful when migrating a non-SQift database over to using SQift.
+
+        It is important to note that each version MUST start at one and increment by one each version. Alternative 
+        naming conventions and versioning schemes are NOT supported. For example, your first version number MUST be 
+        1. The second MUST be 2, etc.
+
+        - parameter migrate:     A closure required to migrate to the provided version using the provided connection.
+        - parameter willMigrate: A closure executed before running the migration for the specified schema version.
+        - parameter didMigrate:  A closure executed after running the migration for the specified schema version.
+
+        - throws: An `Error` if any migration encounters an error.
+
+        - returns: The total number of migrations completed.
+    */
+    public func runMigrationsIfNecessary(
+        migrateDatabaseToSchemaVersion migrate: (UInt64, Connection) throws -> Void,
+        willMigrateToSchemaVersion willMigrate: (UInt64 -> Void)? = nil,
+        didMigrateToSchemaVersion didMigrate: (UInt64 -> Void)? = nil)
+        throws -> UInt64
+    {
+        guard migrationRequired else { return 0 }
+
+        if !migrationsTableExists { try createMigrationsTable() }
+
+        var totalMigrationsCompleted: UInt64 = 0
+
+        for schemaVersion in (currentSchemaVersion + 1)...desiredSchemaVersion {
+            willMigrate?(schemaVersion)
+
+            try migrate(schemaVersion, connection)
+            try connection.run("INSERT INTO \(Migrator.MigrationTableName) VALUES(?, ?)", schemaVersion, NSDate())
+
+            didMigrate?(schemaVersion)
+
+            ++totalMigrationsCompleted
+        }
+
+        return totalMigrationsCompleted
+    }
+
     // MARK: - Internal - Migrations Table Helpers
 
     func createMigrationsTable() throws {

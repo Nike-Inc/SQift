@@ -315,6 +315,77 @@ class MigratorTestCase: XCTestCase {
         }
     }
 
+    func testThatMigratorCanRunMigrationsByDelegatingMigrationToTheCaller() {
+        do {
+            // Given
+            let connection = try Connection(connectionType: connectionType)
+            let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
+
+            let expectation = expectationWithDescription("migrations should complete successfully")
+
+            var willMigrate: [UInt64] = []
+            var didMigrate: [UInt64] = []
+            var migrationError: Error? = nil
+            var agentsTableExists = false
+            var agentCount = 0
+
+            // When
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
+                do {
+                    try migrator.runMigrationsIfNecessary(
+                        migrateDatabaseToSchemaVersion: { version, connection in
+                            switch version {
+                            case 1:
+                                try connection.execute(
+                                    "CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+                                )
+                            default:
+                                try connection.execute("INSERT INTO agents(name) VALUES('Sterling Archer')")
+                                try connection.execute("INSERT INTO agents(name) VALUES('Lana Kane')")
+                            }
+                        },
+                        willMigrateToSchemaVersion: { version in
+                            willMigrate.append(version)
+                        },
+                        didMigrateToSchemaVersion: { version in
+                            didMigrate.append(version)
+                        }
+                    )
+
+                    agentsTableExists = try connection.query("SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                        "table",
+                        "agents"
+                    )
+
+                    agentCount = try connection.query("SELECT count(*) FROM agents")
+                } catch {
+                    migrationError = error as? Error
+                }
+
+                expectation.fulfill()
+            }
+
+            waitForExpectationsWithTimeout(timeout, handler: nil)
+
+            // Then
+            if willMigrate.count == 2 && didMigrate.count == 2 {
+                XCTAssertEqual(willMigrate[0], 1, "will migrate 0 should be 1")
+                XCTAssertEqual(willMigrate[1], 2, "will migrate 1 should be 2")
+
+                XCTAssertEqual(didMigrate[0], 1, "did migrate 0 should be 1")
+                XCTAssertEqual(didMigrate[1], 2, "did migrate 1 should be 2")
+            } else {
+                XCTFail("will and did migrate counts should be 2")
+            }
+
+            XCTAssertNil(migrationError, "migration error should be nil")
+            XCTAssertTrue(agentsTableExists, "agents table exists should be true")
+            XCTAssertEqual(agentCount, 2, "agent count should be 2")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatMigratorGracefullyHandlesErrorEncounteredDuringMigration() {
         do {
             // Given
