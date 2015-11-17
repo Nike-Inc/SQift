@@ -255,6 +255,51 @@ let synchronous: Int = try db.query("PRAGMA synchronous")
 
 > You MUST be careful when using the `query` method. Always use version of the `query` API where the return type is optional unless you are 100% sure that the value will exist.
 
+### Dates
+
+Since SQLite already has builtin support for dates, it's critical that SQift leverage that capability for things like being able to store dates in the database, run range queries against them and be able to extract them back out. SQift handles all this functionality through the `NSDate` binding as well as the `BindingDateFormatter`. By default, all `NSDate` types will be stored in the database as `TEXT`, so make sure to set your column types accordingly.
+
+```swift
+let date1975: NSDate!
+let date1983: NSDate!
+let date1992: NSDate!
+let date2001: NSDate!
+
+try connection.execute(
+	"CREATE TABLE cars(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, release_date TEXT)"
+)
+
+try connection.execute("INSERT INTO cars(?, ?)", "70s car", date1975)
+try connection.execute("INSERT INTO cars(?, ?)", "80s car", date1983)
+try connection.execute("INSERT INTO cars(?, ?)", "90s car", date1992)
+try connection.execute("INSERT INTO cars(?, ?)", "00s car", date2001)
+```
+
+Once you have your dates stored in the database, you can run date range queries to narrow down your data.
+
+```swift
+let date1980: NSDate!
+let date2000: NSDate!
+
+let carCount: Int = try connection.query(
+	"SELECT count(*) FROM cars WHERE release_date >= date(?) AND release_date <= date(?)",
+	date1980, 
+	date2000
+)
+
+print("Total Cars from the 80s and 90s: \(carCount)") // should equal 2
+```
+
+> You can swap the default date formatting, but be careful when doing so. You need to make sure the new date format complies with the SQLite [requirements](https://www.sqlite.org/lang_datefunc.html) so date range queries will continue to work as expected.
+
+You can also extract dates out of each row as an `NSDate`.
+
+```swift
+let releaseDate: NSDate = try connection.fetch(
+	"SELECT release_date WHERE name = ? LIMIT 1", "80s car"
+)[0]
+```
+
 ---
 
 ## Advanced
