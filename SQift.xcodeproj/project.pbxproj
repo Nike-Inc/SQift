@@ -9,6 +9,28 @@
 /* Begin PBXBuildFile section */
 		4C05B9741BF9039600CFC13C /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9731BF9039600CFC13C /* ConnectionPool.swift */; };
 		4C05B9781BF91A6800CFC13C /* ConnectionPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9771BF91A6800CFC13C /* ConnectionPoolTests.swift */; };
+		4C29B2EE1BFB25C00086A2EF /* SQift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C29B2E41BFB25C00086A2EF /* SQift.framework */; };
+		4C29B2FB1BFB25DE0086A2EF /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2441BF6A57300822606 /* Binding.swift */; };
+		4C29B2FC1BFB25DE0086A2EF /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2451BF6A57300822606 /* Connection.swift */; };
+		4C29B2FD1BFB25DE0086A2EF /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9731BF9039600CFC13C /* ConnectionPool.swift */; };
+		4C29B2FE1BFB25DE0086A2EF /* ConnectionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2461BF6A57300822606 /* ConnectionQueue.swift */; };
+		4C29B2FF1BFB25DE0086A2EF /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2471BF6A57300822606 /* Error.swift */; };
+		4C29B3001BFB25DE0086A2EF /* Migrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2481BF6A57300822606 /* Migrator.swift */; };
+		4C29B3011BFB25DE0086A2EF /* Row.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2491BF6A57300822606 /* Row.swift */; };
+		4C29B3021BFB25DE0086A2EF /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C24B1BF6A57300822606 /* Statement.swift */; };
+		4C29B3031BFB25DE0086A2EF /* String+SQift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C24C1BF6A57300822606 /* String+SQift.swift */; };
+		4C29B3041BFB25DE0086A2EF /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA8C23A1BF6A4C100822606 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C29B3051BFB25DE0086A2EF /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA8C24A1BF6A57300822606 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C29B3061BFB25F20086A2EF /* BindingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2571BF6A5E000822606 /* BindingTests.swift */; };
+		4C29B3071BFB25F20086A2EF /* ConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2591BF6A5E000822606 /* ConnectionTests.swift */; };
+		4C29B3081BFB25F20086A2EF /* ConnectionPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9771BF91A6800CFC13C /* ConnectionPoolTests.swift */; };
+		4C29B3091BFB25F20086A2EF /* ConnectionQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2581BF6A5E000822606 /* ConnectionQueueTests.swift */; };
+		4C29B30A1BFB25F20086A2EF /* ErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25A1BF6A5E000822606 /* ErrorTests.swift */; };
+		4C29B30B1BFB25F20086A2EF /* FetchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25B1BF6A5E000822606 /* FetchTests.swift */; };
+		4C29B30C1BFB25F20086A2EF /* MigratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25C1BF6A5E000822606 /* MigratorTests.swift */; };
+		4C29B30D1BFB25F20086A2EF /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25E1BF6A5E000822606 /* QueryTests.swift */; };
+		4C29B30E1BFB25F20086A2EF /* TestTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25F1BF6A5E000822606 /* TestTables.swift */; };
+		4C29B30F1BFB25F20086A2EF /* NSFileManager+SQift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25D1BF6A5E000822606 /* NSFileManager+SQift.swift */; };
 		4CA8C2291BF6A49400822606 /* SQift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA8C21E1BF6A49400822606 /* SQift.framework */; };
 		4CA8C23C1BF6A4C100822606 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA8C23A1BF6A4C100822606 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4CA8C24D1BF6A57300822606 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2441BF6A57300822606 /* Binding.swift */; };
@@ -32,6 +54,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4C29B2EF1BFB25C00086A2EF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4CA8C2151BF6A49400822606 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4C29B2E31BFB25C00086A2EF;
+			remoteInfo = "SQift OSX";
+		};
 		4CA8C22A1BF6A49400822606 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4CA8C2151BF6A49400822606 /* Project object */;
@@ -44,8 +73,10 @@
 /* Begin PBXFileReference section */
 		4C05B9731BF9039600CFC13C /* ConnectionPool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionPool.swift; sourceTree = "<group>"; };
 		4C05B9771BF91A6800CFC13C /* ConnectionPoolTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionPoolTests.swift; sourceTree = "<group>"; };
+		4C29B2E41BFB25C00086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C29B2ED1BFB25C00086A2EF /* SQift OSX Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift OSX Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4CA8C2281BF6A49400822606 /* SQiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SQiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CA8C2281BF6A49400822606 /* SQift iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2391BF6A4C100822606 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4CA8C23A1BF6A4C100822606 /* SQift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQift.h; sourceTree = "<group>"; };
 		4CA8C23E1BF6A4C700822606 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -70,6 +101,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4C29B2E01BFB25C00086A2EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C29B2EA1BFB25C00086A2EF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C29B2EE1BFB25C00086A2EF /* SQift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CA8C21A1BF6A49400822606 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -101,7 +147,9 @@
 			isa = PBXGroup;
 			children = (
 				4CA8C21E1BF6A49400822606 /* SQift.framework */,
-				4CA8C2281BF6A49400822606 /* SQiftTests.xctest */,
+				4CA8C2281BF6A49400822606 /* SQift iOS Tests.xctest */,
+				4C29B2E41BFB25C00086A2EF /* SQift.framework */,
+				4C29B2ED1BFB25C00086A2EF /* SQift OSX Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,6 +226,15 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		4C29B2E11BFB25C00086A2EF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C29B3051BFB25DE0086A2EF /* sqlite3.h in Headers */,
+				4C29B3041BFB25DE0086A2EF /* SQift.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CA8C21B1BF6A49400822606 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -190,9 +247,45 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		4CA8C21D1BF6A49400822606 /* SQift */ = {
+		4C29B2E31BFB25C00086A2EF /* SQift OSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4CA8C2321BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift" */;
+			buildConfigurationList = 4C29B2F91BFB25C00086A2EF /* Build configuration list for PBXNativeTarget "SQift OSX" */;
+			buildPhases = (
+				4C29B2DF1BFB25C00086A2EF /* Sources */,
+				4C29B2E01BFB25C00086A2EF /* Frameworks */,
+				4C29B2E11BFB25C00086A2EF /* Headers */,
+				4C29B2E21BFB25C00086A2EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SQift OSX";
+			productName = "SQift OSX";
+			productReference = 4C29B2E41BFB25C00086A2EF /* SQift.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		4C29B2EC1BFB25C00086A2EF /* SQift OSX Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C29B2FA1BFB25C00086A2EF /* Build configuration list for PBXNativeTarget "SQift OSX Tests" */;
+			buildPhases = (
+				4C29B2E91BFB25C00086A2EF /* Sources */,
+				4C29B2EA1BFB25C00086A2EF /* Frameworks */,
+				4C29B2EB1BFB25C00086A2EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4C29B2F01BFB25C00086A2EF /* PBXTargetDependency */,
+			);
+			name = "SQift OSX Tests";
+			productName = "SQift OSXTests";
+			productReference = 4C29B2ED1BFB25C00086A2EF /* SQift OSX Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4CA8C21D1BF6A49400822606 /* SQift iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CA8C2321BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift iOS" */;
 			buildPhases = (
 				4CA8C2191BF6A49400822606 /* Sources */,
 				4CA8C21A1BF6A49400822606 /* Frameworks */,
@@ -203,14 +296,14 @@
 			);
 			dependencies = (
 			);
-			name = SQift;
+			name = "SQift iOS";
 			productName = SQift;
 			productReference = 4CA8C21E1BF6A49400822606 /* SQift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		4CA8C2271BF6A49400822606 /* SQiftTests */ = {
+		4CA8C2271BF6A49400822606 /* SQift iOS Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4CA8C2351BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQiftTests" */;
+			buildConfigurationList = 4CA8C2351BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift iOS Tests" */;
 			buildPhases = (
 				4CA8C2241BF6A49400822606 /* Sources */,
 				4CA8C2251BF6A49400822606 /* Frameworks */,
@@ -221,9 +314,9 @@
 			dependencies = (
 				4CA8C22B1BF6A49400822606 /* PBXTargetDependency */,
 			);
-			name = SQiftTests;
+			name = "SQift iOS Tests";
 			productName = SQiftTests;
-			productReference = 4CA8C2281BF6A49400822606 /* SQiftTests.xctest */;
+			productReference = 4CA8C2281BF6A49400822606 /* SQift iOS Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -236,6 +329,12 @@
 				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Nike;
 				TargetAttributes = {
+					4C29B2E31BFB25C00086A2EF = {
+						CreatedOnToolsVersion = 7.1;
+					};
+					4C29B2EC1BFB25C00086A2EF = {
+						CreatedOnToolsVersion = 7.1;
+					};
 					4CA8C21D1BF6A49400822606 = {
 						CreatedOnToolsVersion = 7.1;
 					};
@@ -256,13 +355,29 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4CA8C21D1BF6A49400822606 /* SQift */,
-				4CA8C2271BF6A49400822606 /* SQiftTests */,
+				4CA8C21D1BF6A49400822606 /* SQift iOS */,
+				4CA8C2271BF6A49400822606 /* SQift iOS Tests */,
+				4C29B2E31BFB25C00086A2EF /* SQift OSX */,
+				4C29B2EC1BFB25C00086A2EF /* SQift OSX Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4C29B2E21BFB25C00086A2EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C29B2EB1BFB25C00086A2EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CA8C21C1BF6A49400822606 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -280,6 +395,39 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4C29B2DF1BFB25C00086A2EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C29B2FD1BFB25DE0086A2EF /* ConnectionPool.swift in Sources */,
+				4C29B2FE1BFB25DE0086A2EF /* ConnectionQueue.swift in Sources */,
+				4C29B3001BFB25DE0086A2EF /* Migrator.swift in Sources */,
+				4C29B3031BFB25DE0086A2EF /* String+SQift.swift in Sources */,
+				4C29B2FB1BFB25DE0086A2EF /* Binding.swift in Sources */,
+				4C29B2FF1BFB25DE0086A2EF /* Error.swift in Sources */,
+				4C29B3011BFB25DE0086A2EF /* Row.swift in Sources */,
+				4C29B2FC1BFB25DE0086A2EF /* Connection.swift in Sources */,
+				4C29B3021BFB25DE0086A2EF /* Statement.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C29B2E91BFB25C00086A2EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4C29B3061BFB25F20086A2EF /* BindingTests.swift in Sources */,
+				4C29B3091BFB25F20086A2EF /* ConnectionQueueTests.swift in Sources */,
+				4C29B3071BFB25F20086A2EF /* ConnectionTests.swift in Sources */,
+				4C29B30A1BFB25F20086A2EF /* ErrorTests.swift in Sources */,
+				4C29B30D1BFB25F20086A2EF /* QueryTests.swift in Sources */,
+				4C29B30E1BFB25F20086A2EF /* TestTables.swift in Sources */,
+				4C29B30F1BFB25F20086A2EF /* NSFileManager+SQift.swift in Sources */,
+				4C29B30B1BFB25F20086A2EF /* FetchTests.swift in Sources */,
+				4C29B3081BFB25F20086A2EF /* ConnectionPoolTests.swift in Sources */,
+				4C29B30C1BFB25F20086A2EF /* MigratorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4CA8C2191BF6A49400822606 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -316,14 +464,91 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		4C29B2F01BFB25C00086A2EF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4C29B2E31BFB25C00086A2EF /* SQift OSX */;
+			targetProxy = 4C29B2EF1BFB25C00086A2EF /* PBXContainerItemProxy */;
+		};
 		4CA8C22B1BF6A49400822606 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4CA8C21D1BF6A49400822606 /* SQift */;
+			target = 4CA8C21D1BF6A49400822606 /* SQift iOS */;
 			targetProxy = 4CA8C22A1BF6A49400822606 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4C29B2F51BFB25C00086A2EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Source/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
+				PRODUCT_NAME = SQift;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		4C29B2F61BFB25C00086A2EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Source/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
+				PRODUCT_NAME = SQift;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		4C29B2F71BFB25C00086A2EF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-OSX-Tests";
+				PRODUCT_NAME = "SQift OSX Tests";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		4C29B2F81BFB25C00086A2EF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-OSX-Tests";
+				PRODUCT_NAME = "SQift OSX Tests";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		4CA8C2301BF6A49400822606 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -363,7 +588,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -409,7 +634,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -435,7 +660,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
@@ -457,7 +682,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -470,8 +695,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQiftTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-iOS-Tests";
+				PRODUCT_NAME = "SQift iOS Tests";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
@@ -483,8 +708,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQiftTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-iOS-Tests";
+				PRODUCT_NAME = "SQift iOS Tests";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
@@ -493,6 +718,22 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4C29B2F91BFB25C00086A2EF /* Build configuration list for PBXNativeTarget "SQift OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C29B2F51BFB25C00086A2EF /* Debug */,
+				4C29B2F61BFB25C00086A2EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		4C29B2FA1BFB25C00086A2EF /* Build configuration list for PBXNativeTarget "SQift OSX Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C29B2F71BFB25C00086A2EF /* Debug */,
+				4C29B2F81BFB25C00086A2EF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		4CA8C2181BF6A49400822606 /* Build configuration list for PBXProject "SQift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -502,7 +743,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4CA8C2321BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift" */ = {
+		4CA8C2321BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CA8C2331BF6A49400822606 /* Debug */,
@@ -511,7 +752,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4CA8C2351BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQiftTests" */ = {
+		4CA8C2351BF6A49400822606 /* Build configuration list for PBXNativeTarget "SQift iOS Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4CA8C2361BF6A49400822606 /* Debug */,
