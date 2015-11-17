@@ -12,7 +12,7 @@ import XCTest
 
 class ConnectionPoolTestCase: XCTestCase {
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/connection_pool_tests.db")
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/connection_pool_tests.db")
         return .OnDisk(path)
     }()
 

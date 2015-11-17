@@ -12,7 +12,7 @@ import XCTest
 
 class ErrorTestCase: XCTestCase {
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/error_tests.db")
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/error_tests.db")
         return .OnDisk(path)
     }()
 

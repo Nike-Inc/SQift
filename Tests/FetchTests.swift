@@ -14,7 +14,7 @@ class FetchTestCase: XCTestCase {
     var connection: Connection!
 
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/fetch_tests.db")
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/fetch_tests.db")
         return .OnDisk(path)
     }()
 

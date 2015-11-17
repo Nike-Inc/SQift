@@ -12,7 +12,7 @@ import XCTest
 
 class ConnectionTestCase: XCTestCase {
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/database_tests.db")
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/database_tests.db")
         return .OnDisk(path)
     }()
 
@@ -556,7 +556,7 @@ class ConnectionTestCase: XCTestCase {
     // MARK: - Attach Database Tests
 
     func testThatConnectionCanAttachAndDetachDatabase() {
-        let personDBPath = NSFileManager.documentsDirectory.stringByAppendingString("/attach_detach_db_tests.db")
+        let personDBPath = NSFileManager.cachesDirectory.stringByAppendingString("/attach_detach_db_tests.db")
         defer { NSFileManager.removeItemAtPath(personDBPath) }
 
         do {

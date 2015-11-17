@@ -14,8 +14,7 @@ class MigratorTestCase: XCTestCase {
     let timeout = 10.0
 
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/migrator_tests.db")
-        print(path)
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/migrator_tests.db")
         return .OnDisk(path)
     }()
 

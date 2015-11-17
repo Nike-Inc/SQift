@@ -14,7 +14,7 @@ class QueryTestCase: XCTestCase {
     var connection: Connection!
 
     let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/query_tests.db")
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/query_tests.db")
         return .OnDisk(path)
     }()
 
