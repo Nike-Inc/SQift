@@ -15,31 +15,6 @@ public class Connection {
     // MARK: - Helper Types
 
     /**
-        Used to specify the path of the database for initialization.
-
-        - OnDisk:    Creates an on-disk database: <https://www.sqlite.org/uri.html>.
-        - InMemory:  Creates an in-memory database: <https://www.sqlite.org/inmemorydb.html#sharedmemdb>.
-        - Temporary: Creates a temporary database: <https://www.sqlite.org/inmemorydb.html#temp_db>.
-    */
-    public enum ConnectionType {
-        case OnDisk(String)
-        case InMemory
-        case Temporary
-
-        /// Returns the path of the database.
-        public var path: String {
-            switch self {
-            case .OnDisk(let path):
-                return path
-            case .InMemory:
-                return ":memory:"
-            case .Temporary:
-                return ""
-            }
-        }
-    }
-
-    /**
         Used to declare the transaction behavior when executing a transaction.
 
         For more info about transactions, see <https://www.sqlite.org/lang_transaction.html>.
@@ -87,21 +62,21 @@ public class Connection {
     // MARK: - Initialization
 
     /**
-        Initializes the database `Connection` with the specified connection type and initialization flags.
+        Initializes the database `Connection` with the specified storage location and initialization flags.
 
         For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
 
-        - parameter connectionType:  The connection type to initialize.
-        - parameter readOnly:        Whether the database should be read-only.
-        - parameter multiThreaded:   Whether the database should be multi-threaded.
-        - parameter sharedCache:     Whether the database should use a shared cache.
+        - parameter storageLocation: The storage location path to use during initialization.
+        - parameter readOnly:        Whether the connection should be read-only.
+        - parameter multiThreaded:   Whether the connection should be multi-threaded.
+        - parameter sharedCache:     Whether the connection should use a shared cache.
 
         - throws: An `Error` if SQLite encounters an error when opening the database connection.
 
         - returns: The new database `Connection` instance.
     */
     public convenience init(
-        connectionType: ConnectionType = .InMemory,
+        storageLocation: StorageLocation = .InMemory,
         readOnly: Bool = false,
         multiThreaded: Bool = true,
         sharedCache: Bool = true)
@@ -113,23 +88,23 @@ public class Connection {
         flags |= multiThreaded ? SQLITE_OPEN_NOMUTEX : SQLITE_OPEN_FULLMUTEX
         flags |= sharedCache ? SQLITE_OPEN_SHAREDCACHE : SQLITE_OPEN_PRIVATECACHE
 
-        try self.init(connectionType: connectionType, flags: flags)
+        try self.init(storageLocation: storageLocation, flags: flags)
     }
 
     /**
-        Initializes the `Database` connection with the specified database type and initialization flags.
+        Initializes the `Database` connection with the specified storage location and initialization flags.
 
         For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
 
-        - parameter connectionType:  The connection type to initialize.
-        - parameter flags:           The bitmask flags to use when initializing the database.
+        - parameter storageLocation: The storage location path to use during initialization.
+        - parameter flags:           The bitmask flags to use when initializing the connection.
 
         - throws: An `Error` if SQLite encounters an error when opening the database connection.
 
         - returns: The new database `Connection` instance.
     */
-    public init(connectionType: ConnectionType, flags: Int32) throws {
-        try check(sqlite3_open_v2(connectionType.path, &handle, flags, nil))
+    public init(storageLocation: StorageLocation, flags: Int32) throws {
+        try check(sqlite3_open_v2(storageLocation.path, &handle, flags, nil))
     }
 
     deinit {
@@ -408,13 +383,13 @@ public class Connection {
 
         For more details, please refer to: <https://www.sqlite.org/lang_attach.html>.
 
-        - parameter databaseType: The database type to attach.
-        - parameter name:         The name of the database being attached.
+        - parameter storageLocation: The storage location of the database to attach.
+        - parameter name:            The name of the database being attached.
 
         - throws: An `Error` if SQLite encounters an error attaching the database.
     */
-    public func attachDatabase(connectionType: ConnectionType, withName name: String) throws {
-        try execute("ATTACH DATABASE \(connectionType.path.escape()) AS \(name.escape())")
+    public func attachDatabase(storageLocation: StorageLocation, withName name: String) throws {
+        try execute("ATTACH DATABASE \(storageLocation.path.escape()) AS \(name.escape())")
     }
 
     /**

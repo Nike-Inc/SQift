@@ -13,7 +13,7 @@ import XCTest
 class QueryTestCase: XCTestCase {
     var connection: Connection!
 
-    let connectionType: Connection.ConnectionType = {
+    let storageLocation: StorageLocation = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/query_tests.db")
         return .OnDisk(path)
     }()
@@ -24,7 +24,7 @@ class QueryTestCase: XCTestCase {
         super.setUp()
 
         do {
-            connection = try Connection(connectionType: connectionType)
+            connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
         } catch {
             // No-op
@@ -33,7 +33,7 @@ class QueryTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(connectionType.path)
+        NSFileManager.removeItemAtPath(storageLocation.path)
     }
 
     // MARK: - Tests

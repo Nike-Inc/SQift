@@ -13,7 +13,7 @@ import XCTest
 class MigratorTestCase: XCTestCase {
     let timeout = 10.0
 
-    let connectionType: Connection.ConnectionType = {
+    let storageLocation: StorageLocation = {
         let path = NSFileManager.documentsDirectory.stringByAppendingString("/migrator_tests.db")
         print(path)
         return .OnDisk(path)
@@ -23,7 +23,7 @@ class MigratorTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(connectionType.path)
+        NSFileManager.removeItemAtPath(storageLocation.path)
     }
 
     // MARK: - Tests
@@ -31,7 +31,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanCreateMigrationsTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
@@ -52,7 +52,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorDoesNotThrowWhenCreatingMigrationsTableWhenTableAlreadyExists() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
@@ -75,7 +75,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorMigrationsTableExistsPropertyReturnsFalseIfTableDoesNotExists() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
@@ -92,7 +92,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorMigrationsTableExistsPropertyReturnsTrueIfTableExists() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
@@ -109,7 +109,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunInitialMigration() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
@@ -161,7 +161,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunMultipleMigrations() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
@@ -234,7 +234,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunMigrationsBeyondTheInitialMigration() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             var migrator: Migrator? = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             try migrator?.runMigrationsIfNecessary(
@@ -318,7 +318,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorCanRunMigrationsByDelegatingMigrationToTheCaller() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
@@ -389,7 +389,7 @@ class MigratorTestCase: XCTestCase {
     func testThatMigratorGracefullyHandlesErrorEncounteredDuringMigration() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             let expectation = expectationWithDescription("migrations should complete successfully")
