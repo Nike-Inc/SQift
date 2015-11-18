@@ -11,8 +11,7 @@ Pod::Spec.new do |s|
   s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :branch => 'master' }
   s.source_files = 'Source/*.{swift,h}'
 
-  s.library = 'sqlite3'
-  s.dependency 'SQLCipher', '~> 3.1'
+  s.dependency 'SQLCipher', '~> 3.3'
 
   s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1' }
 end
