@@ -11,8 +11,8 @@ import SQift
 import XCTest
 
 class ConnectionTestCase: XCTestCase {
-    let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.cachesDirectory.stringByAppendingString("/database_tests.db")
+    let storageLocation: StorageLocation = {
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/connection_tests.db")
         return .OnDisk(path)
     }()
 
@@ -20,7 +20,7 @@ class ConnectionTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(connectionType.path)
+        NSFileManager.removeItemAtPath(storageLocation.path)
     }
 
     // MARK: - Open and Close Tests
@@ -28,9 +28,9 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanOpenDatabaseConnection() {
         // Given, When, Then
         do {
-            let _ = try Connection(connectionType: connectionType)
-            let _ = try Connection(connectionType: .InMemory)
-            let _ = try Connection(connectionType: .Temporary)
+            let _ = try Connection(storageLocation: storageLocation)
+            let _ = try Connection(storageLocation: .InMemory)
+            let _ = try Connection(storageLocation: .Temporary)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -39,7 +39,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionInitializationWithDefaultFlagsMatchConnectionPropertyValues() {
         do {
             // Given, When
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // Then
             XCTAssertFalse(connection.readOnly)
@@ -52,12 +52,12 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionInitializationWithCustomFlagsMatchConnectionPropertyValues() {
         do {
             // Given
-            var writableConnection: Connection? = try Connection(connectionType: connectionType)
+            var writableConnection: Connection? = try Connection(storageLocation: storageLocation)
             try writableConnection?.execute("PRAGMA foreign_keys = true")
             writableConnection = nil
 
             // When
-            let readOnlyConnection = try Connection(connectionType: connectionType, readOnly: true, multiThreaded: false)
+            let readOnlyConnection = try Connection(storageLocation: storageLocation, readOnly: true, multiThreaded: false)
 
             // Then
             XCTAssertTrue(readOnlyConnection.readOnly)
@@ -70,9 +70,9 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanCloseDatabaseConnection() {
         do {
             // Given
-            var onDiskConnection: Connection? = try Connection(connectionType: connectionType)
-            var inMemoryConnection: Connection? = try Connection(connectionType: .InMemory)
-            var temporaryConnection: Connection? = try Connection(connectionType: .Temporary)
+            var onDiskConnection: Connection? = try Connection(storageLocation: storageLocation)
+            var inMemoryConnection: Connection? = try Connection(storageLocation: .InMemory)
+            var temporaryConnection: Connection? = try Connection(storageLocation: .Temporary)
 
             // When, Then
             try onDiskConnection?.execute("PRAGMA foreign_keys = true")
@@ -93,7 +93,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanExecutePragmaStatements() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
             try connection.execute("PRAGMA foreign_keys = true")
@@ -106,7 +106,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanCreateTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
@@ -118,7 +118,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanDropTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
@@ -131,7 +131,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanInsertRowsIntoTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
@@ -146,7 +146,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanInsertThousandsOfRowsIntoTableUnderOneSecond() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("PRAGMA synchronous = NORMAL")
             try connection.execute("PRAGMA journal_mode = WAL")
             try TestTables.createAndPopulateAgentsTable(connection)
@@ -178,7 +178,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanUpdateRowsInTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
@@ -192,7 +192,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanDeleteRowsInTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
@@ -206,7 +206,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanSelectRowsInTable() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
@@ -238,7 +238,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanSelectColumnValuesFromRowUsingColumnNames() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
@@ -271,7 +271,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanSelectRowsInTableAndCaptureTheRowDescription() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
@@ -298,7 +298,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanFetchFirstRowOfSelectStatement() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
@@ -325,7 +325,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanBindParametersToStatement() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, date TEXT)")
 
             let date: NSDate = {
@@ -371,7 +371,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanBindNamedParametersToStatement() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER, dup_name TEXT)")
 
             // When
@@ -405,7 +405,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanExecuteTransaction() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -436,7 +436,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanRollbackTransactionExecutionWhenTransactionThrows() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -461,7 +461,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanExecuteSavepoint() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -496,7 +496,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanRollbackToSavepointWhenSavepointExecutionThrows() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -521,7 +521,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanExecuteSavepointsWithCrazyCharactersInName() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -561,11 +561,11 @@ class ConnectionTestCase: XCTestCase {
 
         do {
             // Given
-            let connection1 = try Connection(connectionType: connectionType)
+            let connection1 = try Connection(storageLocation: storageLocation)
             try connection1.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection1.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
 
-            var connection2: Connection? = try Connection(connectionType: .OnDisk(personDBPath))
+            var connection2: Connection? = try Connection(storageLocation: .OnDisk(personDBPath))
             try connection2?.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT)")
             try connection2?.prepare("INSERT INTO person VALUES(?, ?)").bind(1, "Sterling Archer").run()
 
@@ -598,7 +598,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanTraceStatementExecution() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             var statements: [String] = []
 
@@ -632,7 +632,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanCreateAndExecuteCustomNumericCollationFunction() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             connection.createCollation("NUMERIC") { lhs, rhs in
                 return lhs.compare(rhs, options: .NumericSearch, locale: NSLocale.autoupdatingCurrentLocale())
@@ -659,7 +659,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanCreateAndExecuteCustomDiacriticCollationFunction() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             let options: NSStringCompareOptions = [.LiteralSearch, .WidthInsensitiveSearch, .ForcedOrderingSearch]
 
             connection.createCollation("DIACRITIC") { lhs, rhs in
@@ -687,7 +687,7 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanReplaceCustomCollationFunctionOnTheFly() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             connection.createCollation("NODIACRITIC") { lhs, rhs in
