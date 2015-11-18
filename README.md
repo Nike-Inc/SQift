@@ -12,6 +12,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 - [X] Query a Single Column Value from a Single Row
 - [X] ConnectionQueue for Serial Execution per Database Connection
 - [X] ConnectionPool for Parallel Execution of Read-Only Connections
+- [X] Top-Level Database to Simplify Thread-Safe Reads and Writes
 - [X] Database Migrations Support
 - [x] Comprehensive Unit Test Coverage
 - [x] Complete Documentation
@@ -358,6 +359,28 @@ try pool.execute { connection in
 Since SQLite has no limit on the maximum number of open connections to a single database, the `ConnectionPool` will initialize as many connections as needed within a small amount of time. Each time a connection is executed, the internal drain delay timer starts up. When the drain delay timer fires, it will drain the available connections if there are no more busy connections. If there are still busy connections, the timer is restarted. This allows the `ConnectionPool` to spin up as many connections as necessary for very small amounts of time.
 
 > The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus guaranteeing the thread-safety of each connection.
+
+#### Database
+
+The `Database` class is a lightweight way to create a single writable connection queue and connection pool for all read statements. The read and write APIs are designed to make it simple to execute SQL statements on the appropriate type of `Connection` in a thread-safe manner.
+
+```swift
+let database = try Database(storageLocation: .OnDisk("path_to_db"))
+
+try database.executeWrite { connection in
+    try connection.execute("PRAGMA foreign_keys = true")
+    try connection.execute("PRAGMA journal_mode = WAL")
+    try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+}
+
+try database.executeRead { connection in
+	let count: Int = try connection.query("SELECT count(*) FROM cars")
+}
+```
+
+This is the easiest way to operate in a 100% thread-safe manner without having to deal with the underlying complexities of the `ConnectionQueue` and `ConnectionPool` classes.
+
+> We would like to encourage everyone to use a `Database` object rather than working directly with connection queues or connection pools.
 
 ### Migrations
 
