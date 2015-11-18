@@ -15,6 +15,8 @@ public class Database {
     private var writerConnectionQueue: ConnectionQueue!
     private var readerConnectionPool: ConnectionPool!
 
+    // MARK: - Initialization
+
     /**
         Initializes the `Database` with the specified storage location and initialization flags.
 
@@ -61,6 +63,8 @@ public class Database {
         self.writerConnectionQueue = ConnectionQueue(connection: writerConnection)
         self.readerConnectionPool = ConnectionPool(storageLocation: storageLocation)
     }
+
+    // MARK: - Execution
 
     /**
         Executes the specified closure on the read-only connection pool.
