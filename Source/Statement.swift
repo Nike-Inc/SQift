@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLCipher
 
 /// The `Statement` class represents a prepared SQL statement to bind parameters to and execute.
 public class Statement {

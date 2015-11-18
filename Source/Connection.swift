@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLCipher
 
 /// The `Connection` class represents a single connection to a SQLite database. For more details about using multiple
 /// database connections to improve concurrency, see <https://www.sqlite.org/isolation.html>.

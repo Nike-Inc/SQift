@@ -8,6 +8,7 @@
 
 import Foundation
 import SQift
+import SQLCipher
 import XCTest
 
 class ErrorTestCase: XCTestCase {

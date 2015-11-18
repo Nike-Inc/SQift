@@ -8,6 +8,7 @@
 
 import Foundation
 @testable import SQift
+import SQLCipher
 import XCTest
 
 class ConnectionPoolTestCase: XCTestCase {

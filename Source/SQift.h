@@ -10,5 +10,3 @@
 
 FOUNDATION_EXPORT double SQiftVersionNumber;
 FOUNDATION_EXPORT const unsigned char SQiftVersionString[];
-
-#import "sqlite3.h"
