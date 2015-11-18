@@ -30,7 +30,7 @@ public class ConnectionPool {
     var availableConnections: Set<ConnectionQueue>
     var busyConnections: Set<ConnectionQueue>   
 
-    let connectionType: Connection.ConnectionType
+    let storageLocation: StorageLocation
     let flags: Int32
 
     // MARK: - Private - Properties
@@ -44,19 +44,18 @@ public class ConnectionPool {
     /**
         Initializes the `ConnectionPool` instance with the specified connection type and drain delay.
 
-        - parameter connectionType: The connection type to initialize.
-        - parameter drainDelay:     Total time to wait before draining the available connections. Default is `1.0`.
+        - parameter storageLocation: The storage location path to use during initialization.
+        - parameter drainDelay:      Total time to wait before draining the available connections. Default is `1.0`.
 
         - throws: An `Error` if SQLite fails to initialize the default connection.
 
         - returns: The new `ConnectionPool` instance.
     */
     public init(
-        connectionType: Connection.ConnectionType,
+        storageLocation: StorageLocation,
         availableConnectionDrainDelay drainDelay: NSTimeInterval = 1.0)
-        throws
     {
-        self.connectionType = connectionType
+        self.storageLocation = storageLocation
         self.drainDelay = drainDelay
         self.drainInProgress = false
 
@@ -65,9 +64,6 @@ public class ConnectionPool {
 
         self.availableConnections = []
         self.busyConnections = []
-
-        let connection = try ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
-        availableConnections.insert(connection)
     }
 
     // MARK: - Execution
@@ -81,8 +77,17 @@ public class ConnectionPool {
     */
     public func execute(closure: Connection throws -> Void) throws {
         var connection: ConnectionQueue!
+        var dequeueError: Error?
 
-        dispatch_sync(queue) { connection = self.dequeueConnectionForUse() }
+        dispatch_sync(queue) {
+            do {
+                connection = try self.dequeueConnectionForUse()
+            } catch {
+                dequeueError = error as? Error
+            }
+        }
+
+        guard dequeueError == nil else { throw dequeueError! }
 
         try connection.execute { database in try closure(database) }
 
@@ -94,13 +99,13 @@ public class ConnectionPool {
 
     // MARK: - Internal - Pool Dequeue and Enqueue
 
-    func dequeueConnectionForUse() -> ConnectionQueue {
+    func dequeueConnectionForUse() throws -> ConnectionQueue {
         let connection: ConnectionQueue
 
         if !availableConnections.isEmpty {
             connection = availableConnections.removeFirst()
         } else {
-            connection = try! ConnectionQueue(connection: Connection(connectionType: connectionType, flags: flags))
+            connection = try ConnectionQueue(connection: Connection(storageLocation: storageLocation, flags: flags))
         }
 
         busyConnections.insert(connection)

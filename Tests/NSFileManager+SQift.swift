@@ -13,6 +13,10 @@ extension NSFileManager {
         return NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
     }
 
+    static var cachesDirectory: String {
+        return NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true).first!
+    }
+
     static func removeItemAtPath(path: String) {
         do {
             try NSFileManager.defaultManager().removeItemAtPath(path)

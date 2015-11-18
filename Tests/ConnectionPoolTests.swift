@@ -12,8 +12,8 @@ import SQLCipher
 import XCTest
 
 class ConnectionPoolTestCase: XCTestCase {
-    let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/connection_pool_tests.db")
+    let storageLocation: StorageLocation = {
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/connection_pool_tests.db")
         return .OnDisk(path)
     }()
 
@@ -25,7 +25,7 @@ class ConnectionPoolTestCase: XCTestCase {
         // Initialize read / write database before opening connection pool. Otherwise connection pool will fail
         // to initialize because it only opens readonly connections.
         do {
-            let _ = try Connection(connectionType: connectionType)
+            let _ = try Connection(storageLocation: storageLocation)
         } catch {
             // No-op
         }
@@ -33,63 +33,36 @@ class ConnectionPoolTestCase: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-        NSFileManager.removeItemAtPath(connectionType.path)
+        NSFileManager.removeItemAtPath(storageLocation.path)
     }
 
     // MARK: - Tests
 
-    func testThatConnectionPoolInitializationSucceeds() {
+    func testThatDequeuingConnectionFailsWithInvalidOnDiskPath() {
         do {
-            // Given, When, Then
-            let _ = try ConnectionPool(connectionType: connectionType)
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
+            // Given
+            let pool = ConnectionPool(storageLocation: .OnDisk("/path/does/not/exist"))
 
-    func testThatConnectionPoolInitializationFailsWithInvalidOnDiskPath() {
-        do {
-            // Given, When
-            let _ = try ConnectionPool(connectionType: .OnDisk("/path/does/not/exist"))
+            // When
+            let _ = try pool.dequeueConnectionForUse()
+
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then
-            XCTAssertEqual(error.code, SQLITE_CANTOPEN)
+            XCTAssertEqual(error.code, SQLITE_CANTOPEN, "error code should be `SQLITE_CANTOPEN`")
         } catch {
             XCTFail("Failed with an unknown error type: \(error)")
-        }
-    }
-
-    func testThatDequeueingConnectionReturnsAvailableConnection() {
-        do {
-            // Given
-            let pool = try ConnectionPool(connectionType: connectionType)
-
-            let beforeDequeueAvailableConnections = pool.availableConnections
-            let beforeDequeueBusyConnections = pool.busyConnections
-
-            // When
-            let connection = pool.dequeueConnectionForUse()
-
-            // Then
-            XCTAssertTrue(beforeDequeueAvailableConnections.contains(connection), "before dequeue, available connections should contain connection")
-            XCTAssertFalse(beforeDequeueBusyConnections.contains(connection), "before dequeue, busy connections should not contain connection")
-
-            XCTAssertFalse(pool.availableConnections.contains(connection), "after dequeue, available connections should not contain connection")
-            XCTAssertTrue(pool.busyConnections.contains(connection), "after dequeue, busy connections should contain connection")
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
 
     func testThatDequeueingConnectionCreatesNewConnection() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType)
+            let pool = ConnectionPool(storageLocation: storageLocation)
             pool.availableConnections.removeAll()
 
             // When
-            let connection = pool.dequeueConnectionForUse()
+            let connection = try pool.dequeueConnectionForUse()
 
             // Then
             XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection")
@@ -102,8 +75,8 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatEnqueueConnectionRemovesBusyConnectionAndInsertsAvailableConnection() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType)
-            let connection = pool.dequeueConnectionForUse()
+            let pool = ConnectionPool(storageLocation: storageLocation)
+            let connection = try pool.dequeueConnectionForUse()
 
             let beforeEnqueueAvailableConnections = pool.availableConnections
             let beforeEnqueueBusyConnections = pool.busyConnections
@@ -125,7 +98,7 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolCanExecuteReadOnlyClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType)
+            let pool = ConnectionPool(storageLocation: storageLocation)
 
             var count = -1
 
@@ -144,10 +117,11 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolFailsToExecuteWriteClosure() {
         do {
             // Given
-            let pool = try ConnectionPool(connectionType: connectionType)
+            let pool = ConnectionPool(storageLocation: storageLocation)
 
             // When
             try pool.execute { connection in
+                print("Is connection read-only? \(connection.readOnly)")
                 try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)")
             }
 
@@ -163,9 +137,9 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolCanExecuteMultipleClosuresInParallel() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
-            let pool = try ConnectionPool(connectionType: connectionType)
+            let pool = ConnectionPool(storageLocation: storageLocation)
 
             let range = 0..<128
             let expectations: [XCTestExpectation] = range.map { expectationWithDescription("read: \($0)") }
@@ -205,9 +179,9 @@ class ConnectionPoolTestCase: XCTestCase {
     func testThatConnectionPoolDrainDelayWorksAsExpected() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
-            let pool = try ConnectionPool(connectionType: connectionType, availableConnectionDrainDelay: 0.1)
+            let pool = ConnectionPool(storageLocation: storageLocation, availableConnectionDrainDelay: 0.1)
 
             let range = 0..<10
             let expectations: [XCTestExpectation] = range.map { expectationWithDescription("read: \($0)") }

@@ -255,7 +255,7 @@ extension UInt: Binding {
     public var bindingValue: BindingValue { return .Integer(Int64(bitPattern: UInt64(self))) }
 
     /// Converts the binding value `Any` object representation to an equivalent `UInt` representation.
-    public static func fromBindingValue(value: Any) -> UInt { return UInt(bitPattern: Int(value as! Int64)) }
+    public static func fromBindingValue(value: Any) -> UInt { return UInt(UInt64(bitPattern: value as! Int64)) }
 }
 
 // MARK: - Real Bindings

@@ -12,6 +12,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 - [X] Query a Single Column Value from a Single Row
 - [X] ConnectionQueue for Serial Execution per Database Connection
 - [X] ConnectionPool for Parallel Execution of Read-Only Connections
+- [X] Top-Level Database to Simplify Thread-Safe Reads and Writes
 - [X] Database Migrations Support
 - [X] Database Encryption and Exporting Decrypted or Encrypted Variations
 - [x] Comprehensive Unit Test Coverage
@@ -19,7 +20,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Requirements
 
-- iOS 8.0+
+- iOS 8.0+, OSX 10.10+, tvOS 9.0+, watchOS 2.0+
 - Xcode 7.0+
 
 ## Dependencies
@@ -84,16 +85,16 @@ SQift heavily leverages the new error handling model released with Swift 2.0. It
 Creating a database connection is simple.
 
 ```swift
-let onDiskConnection = try Connection(connectionType: .OnDisk("path_to_db"))
-let inMemoryConnection = try Connection(connectionType: .InMemory)
-let tempConnection = try Connection(connectionType: .Temporary)
+let onDiskConnection = try Connection(storageLocation: .OnDisk("path_to_db"))
+let inMemoryConnection = try Connection(storageLocation: .InMemory)
+let tempConnection = try Connection(storageLocation: .Temporary)
 ```
 
 There are also convenience parameters to make it easy to customize the flags when initializing the database connection:
 
 ```swift
 let connection = try Connection(
-	connectionType: .OnDisk("path_to_db"),
+	storageLocation: .OnDisk("path_to_db"),
 	readOnly: true,
 	multiThreaded: false,
 	sharedCache: false
@@ -107,7 +108,7 @@ let connection = try Connection(
 To execute a SQL statement on the `Connection`, you need to first create a `Connection`, then call `execute`.
 
 ```swift
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
 
 try connection.execute("PRAGMA foreign_keys = true")
 try connection.execute("PRAGMA journal_mode = WAL")
@@ -173,7 +174,7 @@ In order to make it as easy as possible to use SQift, SQift extends the followin
 Safely binding parameters to a `Statement` is easy thanks to the `Binding` protocol. First you need to `prepare` a `Statement` object, then `bind` the parameters and `run` it using method chaining.
 
 ```swift
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
 
 try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52_642).run()
 try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id": 1, ":name": "Audi", ":price": 52_642]).run()
@@ -182,7 +183,7 @@ try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id
 There are also convenience methods on the `Connection` for preparing a `Statement`, binding parameters and running it all in a single method named `run`.
 
 ```swift
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
 
 try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52_642)
 try connection.run("INSERT INTO cars VALUES(:id, :name, :price)", parameters: [":id": 1, ":name": "Audi", ":price": 52_642])
@@ -315,7 +316,7 @@ Thread-safety is a complex topic when it comes to SQLite. As a general rule, it 
 If you wish to access the database in parallel, there are a few things you need to know. First off, you'll need to use Write-Ahead Logging by setting the journal mode to `WAL`. By changing the database to a `WAL` journal mode, the database can be read during a write and written during a read in parallel using multiple connections.
 
 ```swift
-try db.execute("PRAGMA journal_mode = WAL")
+try connection.execute("PRAGMA journal_mode = WAL")
 ```
 
 Another important note is that SQLite can only perform write operations serially, no matter how many connections you create. Therefore, you should only ever create a single connection for writing if possible. You can use as many reader connections as you wish. For more information about thread-safety and WAL journal modes, please refer to the following:
@@ -329,7 +330,7 @@ Another important note is that SQLite can only perform write operations serially
 The `ConnectionQueue` class in SQift was designed to help guarantee thread-safety for a database `Connection` that could be accessed from multiple threads. It executes all operations on an internal serial dispatch queue. This ensures all operations on the connection operation in a serial fashion. The `ConnectionQueue` also supports executing logic inside a transaction and savepoint.
 
 ```swift
-let queue = try ConnectionQueue(connection: Connection(connectionType: .OnDisk("path_to_db")))
+let queue = try ConnectionQueue(connection: Connection(storageLocation: .OnDisk("path_to_db")))
 
 try queue.execute { connection in
     try connection.execute("PRAGMA foreign_keys = true")
@@ -352,7 +353,7 @@ try queue.executeInSavepoint("drop_cars_table") { connection in
 The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available and ones that are currently busy executing SQL logic. The pool will reuse available connections when they are available, and initializes new connections when all available connections are busy until the max connection count is reached.
 
 ```swift
-let pool = try ConnectionPool(connectionType: .OnDisk("path_to_db"))
+let pool = try ConnectionPool(storageLocation: .OnDisk("path_to_db"))
 
 try pool.execute { connection in
     let count: Int = try connection.query("SELECT count(*) FROM cars")
@@ -363,12 +364,34 @@ Since SQLite has no limit on the maximum number of open connections to a single 
 
 > The thread-safety is guaranteed by the connection pool by always executing the SQL closure inside a connection queue. This ensures all SQL closures executed on the connection are done so in a serial fashion, thus guaranteeing the thread-safety of each connection.
 
+#### Database
+
+The `Database` class is a lightweight way to create a single writable connection queue and connection pool for all read statements. The read and write APIs are designed to make it simple to execute SQL statements on the appropriate type of `Connection` in a thread-safe manner.
+
+```swift
+let database = try Database(storageLocation: .OnDisk("path_to_db"))
+
+try database.executeWrite { connection in
+    try connection.execute("PRAGMA foreign_keys = true")
+    try connection.execute("PRAGMA journal_mode = WAL")
+    try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+}
+
+try database.executeRead { connection in
+	let count: Int = try connection.query("SELECT count(*) FROM cars")
+}
+```
+
+This is the easiest way to operate in a 100% thread-safe manner without having to deal with the underlying complexities of the `ConnectionQueue` and `ConnectionPool` classes.
+
+> We would like to encourage everyone to use a `Database` object rather than working directly with connection queues or connection pools.
+
 ### Migrations
 
 Production applications generally need to migrate the database schema from time-to-time. Whether it requires some new tables or possibly alterations to a table, you need to have a way to manage the migration logic. SQift has migration support already built-in for you through the `Migrator` class. All you need to do is create the `Migrator` instance and tell it to run. Everything else is handled internally by SQift.
 
 ```swift
-let connection = try Connection(connectionType: connectionType)
+let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
 let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
 try migrator.runMigrationsIfNecessary(
@@ -476,7 +499,6 @@ If you prefer graphical interfaces, you could install [SQLiteManager 4](https://
 ## Roadmap
 
 - Get new podspec published for SQLCipher 3.3.1 - [Open Issue](https://github.com/sqlcipher/sqlcipher/issues/141)
-- Add support for OSX, watchOS and tvOS
 - Add Full-Text Search Support (FST4)
 - Create a full DSL leveraging property and method chaining similar to SnapKit
   - The goal here would be to eliminate the need to ever write a single line of SQL
@@ -495,7 +517,7 @@ SQift is designed from the start to support the latest Swift features and syntax
 
 ### Why not use any of the other open-source Swift libraries already out there?
 
-There are many Swift SQLite libraries current on GitHub. Unfortunatey, none of them are production ready with the exception of SQLite.swift. SQLite.swift is a very well designed library that is fully featured, but has several serious drawbacks. 
+There are many Swift SQLite libraries current on GitHub. Unfortunatey, none of them are production ready with the exception of SQLite.swift. SQLite.swift is a very well designed library that is fully featured, but has several drawbacks.
 
 - The full DSL has serious performance problems converting the Swift types to SQL.
 - The entire library is locked to serial execution on a single dispatch queue. Write-Ahead Logging (WAL) journal modes are not supported.

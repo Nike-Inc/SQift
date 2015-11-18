@@ -12,15 +12,15 @@ import SQLCipher
 import XCTest
 
 class ErrorTestCase: XCTestCase {
-    let connectionType: Connection.ConnectionType = {
-        let path = NSFileManager.documentsDirectory.stringByAppendingString("/error_tests.db")
+    let storageLocation: StorageLocation = {
+        let path = NSFileManager.cachesDirectory.stringByAppendingString("/error_tests.db")
         return .OnDisk(path)
     }()
 
     func testThatInitializingDatabaseWithInvalidFilePathThrowsError() {
         do {
             // Given, When
-            let _ = try Connection(connectionType: .OnDisk("/path/does/not/exist"))
+            let _ = try Connection(storageLocation: .OnDisk("/path/does/not/exist"))
             XCTFail("Execution should not reach this point")
         } catch let error as Error {
             // Then
@@ -33,7 +33,7 @@ class ErrorTestCase: XCTestCase {
     func testThatExecutingInvalidSQLThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.execute("CREATE TABE testing(id)")
@@ -50,7 +50,7 @@ class ErrorTestCase: XCTestCase {
     func testThatPreparingStatementWithInvalidSQLThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             let _ = try connection.prepare("INSERT IN table")
@@ -67,7 +67,7 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithIncorrectNumberOfParametersThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
@@ -86,7 +86,7 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithParameterOfIncorrectTypeThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
@@ -105,7 +105,7 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithUnmatchedParameterNameThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
@@ -124,7 +124,7 @@ class ErrorTestCase: XCTestCase {
     func testThatBindingStatementWithParameterNameOfIncorrectTypeThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
@@ -143,7 +143,7 @@ class ErrorTestCase: XCTestCase {
     func testThatRunningTransactionWithInvalidSQLThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.transaction {
@@ -162,7 +162,7 @@ class ErrorTestCase: XCTestCase {
     func testThatRunningSavepointWithInvalidSQLThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.savepoint("save it good") {
@@ -181,7 +181,7 @@ class ErrorTestCase: XCTestCase {
     func testThatAttachingDatabaseWithInvalidFilePathThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.attachDatabase(.OnDisk("/path/does/not/exist"), withName: "not_gonna_work")
@@ -197,7 +197,7 @@ class ErrorTestCase: XCTestCase {
     func testThatDetachingDatabaseThatIsNotAttachedThrowsError() {
         do {
             // Given
-            let connection = try Connection(connectionType: connectionType)
+            let connection = try Connection(storageLocation: storageLocation)
 
             // When
             try connection.detachDatabase("not_attached")
