@@ -1,0 +1,3 @@
+[submodule "Submodules/sqlcipher"]
+	path = Submodules/sqlcipher
+	url = git@github.com:cnoon/sqlcipher.git
