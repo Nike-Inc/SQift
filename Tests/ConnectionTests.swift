@@ -380,11 +380,16 @@ class ConnectionTestCase: XCTestCase {
             try connection.prepare("INSERT INTO cars VALUES(?1, ?2, ?3, ?2)").bind(parameters1).run()
 
             let parameters2: [String: Bindable?] = [":id": 2, ":name": "Mercedes", ":price": 57127]
-            try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price, :name)").bind(parameters2).run()
+            try connection.run("INSERT INTO cars VALUES(:id, :name, :price, :name)", parameters2)
 
             let rows = try connection.prepare("SELECT * FROM cars").map { $0.values }
+            let audiCount: Int = try connection.query("SELECT * FROM cars WHERE name = :name", [":name": "Audi"])
+            let hondaCount: Int? = try connection.query("SELECT * FROM cars WHERE name = :name", [":name": "Honda"])
 
             // Then
+            XCTAssertEqual(audiCount, 1, "audi count should be 1")
+            XCTAssertEqual(hondaCount, nil, "honda count should be 0")
+
             if rows.count == 2 {
                 XCTAssertEqual(rows[0][0] as? Int64, 1, "rows[0][0] should be 1")
                 XCTAssertEqual(rows[0][1] as? String, "Audi", "rows[0][1] should be `Audi`")
@@ -613,6 +618,8 @@ class ConnectionTestCase: XCTestCase {
             try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
 
             try connection.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
+
+            connection.trace(nil)
 
             // Then
             if statements.count == 4 {
