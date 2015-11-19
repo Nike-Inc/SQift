@@ -20,7 +20,8 @@ struct TestTables {
                     "  missions INTEGER NOT NULL," +
                     "  salary REAL NOT NULL," +
                     "  job_title BLOB NOT NULL," +
-                    "  car TEXT" +
+                    "  car TEXT," +
+                    "  beneficiary NULL" +
                 ")"
             )
 

@@ -66,38 +66,6 @@ class FetchTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanFetchFirstRowForSelectStatementEvenWhenSelectFailsToFindAnyRows() {
-        do {
-            // Given, When
-            let rowValues = try connection.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
-
-            // Then
-            XCTAssertEqual(rowValues.count, 7, "row values count should be 7")
-
-            for (index, rowValue) in rowValues.enumerate() {
-                XCTAssertNil(rowValue, "row value at index \(index) should be nil")
-            }
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
-    func testThatFetchFirstRowOnDatabaseReturnsAllNilValuesWhenNoRowsAreFoundInSelectStatement() {
-        do {
-            // Given, When
-            let rowValues = try connection.fetch("SELECT * FROM agents WHERE name='Does Not Exist'").values
-
-            // Then
-            XCTAssertEqual(rowValues.count, 7, "row values count should be 7")
-
-            for (index, rowValue) in rowValues.enumerate() {
-                XCTAssertNil(rowValue, "row value at index \(index) should be nil")
-            }
-        } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
-        }
-    }
-
     func testThatDatabaseCanIterateThroughAllRowsForSelectStatement() {
         do {
             // Given

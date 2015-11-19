@@ -223,7 +223,7 @@ public struct Row {
 
         switch statement.columnTypeAtIndex(columnIndex) {
         case SQLITE_NULL:
-            value = nil
+            value = NSNull()
         case SQLITE_INTEGER:
             value = sqlite3_column_int64(handle, Int32(columnIndex))
         case SQLITE_FLOAT:
