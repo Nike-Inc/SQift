@@ -506,7 +506,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error setting the key.
     */
     public func setRawEncryptionKey(key: String) throws {
-        try execute("PRAGMA key = \"x\(key.escape())\"")
+        try execute("PRAGMA key = \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
     }
 
     /**
@@ -549,7 +549,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error updating the key.
     */
     public func updateRawEncryptionKey(key: String) throws {
-        try execute("PRAGMA rekey = \"x\(key.escape())\"")
+        try execute("PRAGMA rekey = \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
     }
 
     /**
@@ -586,7 +586,7 @@ public class Connection {
     public func exportEncryptedDatabaseToPath(path: String, withRawEncryptionKey key: String) throws {
         let name = "encrypted".escape()
 
-        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \"x\(key.escape())\"")
+        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
         try execute("SELECT sqlcipher_export(\(name))")
         try execute("DETACH DATABASE \(name)")
     }
@@ -618,3 +618,5 @@ public class Connection {
         throw error
     }
 }
+
+private let EncryptionKeyBlobCharacter = "x"
