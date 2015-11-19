@@ -713,7 +713,7 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Encryption Tests
 
-    func testThatConnectionCanEncryptEmptyDatabaseWithKey() {
+    func testThatConnectionCanEncryptEmptyDatabaseWithPassphrase() {
         do {
             // Given
             let passphrase = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -757,7 +757,51 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionCannotReadEncryptedDatabaseWithoutKey() {
+    func testThatConnectionCanEncryptEmptyDatabaseWithDerivedKey() {
+        do {
+            // Given
+            let key = "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+            var connection: Connection! = try Connection(storageLocation: storageLocation)
+
+            try connection.setRawEncryptionKey(key)
+            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)")
+            try connection.run("INSERT INTO agents(name) VALUES(?)", "Sterling Archer")
+
+            connection = nil
+
+            // When
+            connection = try Connection(storageLocation: storageLocation)
+
+            var missingEncryptionKeyError: Error?
+
+            do {
+                let _: Int = try connection.query("SELECT * FROM agents")
+            } catch let error as Error {
+                missingEncryptionKeyError = error
+            } catch {
+                // No-op
+            }
+
+            connection = nil
+
+            connection = try Connection(storageLocation: storageLocation)
+            try connection.setRawEncryptionKey(key)
+
+            let encryptionKeyCount: Int = try connection.query("SELECT * FROM agents")
+
+            // Then
+            XCTAssertNotNil(missingEncryptionKeyError, "missing encryption key error should not be nil")
+            XCTAssertEqual(encryptionKeyCount, 1, "encryption key count should be 1 when the encryption key is set")
+
+            if let error = missingEncryptionKeyError {
+                XCTAssertEqual(error.code, SQLITE_NOTADB, "when encryption key is missing, error code should be SQLITE_NOTADB")
+            }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCannotReadEncryptedDatabaseWithoutPassphrase() {
         do {
             // Given
             let passphrase = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -791,7 +835,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionCanUpdateEncryptionKeyOnAnAlreadyEncryptedDatabase() {
+    func testThatConnectionCanUpdateEncryptionPassphraseOnAnAlreadyEncryptedDatabase() {
         do {
             // Given
             let passphrase1 = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -817,7 +861,33 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionCanExportEncryptedVersionOfUnencryptedDatabase() {
+    func testThatConnectionCanUpdateDerivedEncryptionHexKeyOnAnAlreadyEncryptedDatabase() {
+        do {
+            // Given
+            let key1 = "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+            let key2 = "1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF"
+
+            var connection: Connection! = try Connection(storageLocation: storageLocation)
+            try connection.setRawEncryptionKey(key1)
+            try TestTables.createAndPopulateAgentsTable(connection)
+            try connection.updateRawEncryptionKey(key2)
+
+            connection = nil
+
+            // When
+            connection = try Connection(storageLocation: storageLocation)
+            try connection.setRawEncryptionKey(key2)
+
+            let count: Int = try connection.query("SELECT count(*) FROM sqlite_master")
+
+            // Then
+            XCTAssertEqual(count, 2, "count should be 2")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanExportUnencryptedDatabaseEncryptedWithPassphrase() {
         let encryptedPath = NSFileManager.cachesDirectory.stringByAppendingString("/export_encrypted_db_test.db")
         defer { NSFileManager.removeItemAtPath(encryptedPath) }
 
@@ -843,7 +913,33 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    func testThatConnectionCanExportDecryptedVersionOfEncryptedDatabase() {
+    func testThatConnectionCanExportUnencryptedDatabaseEncryptedWithRawKey() {
+        let encryptedPath = NSFileManager.cachesDirectory.stringByAppendingString("/export_encrypted_db_test.db")
+        defer { NSFileManager.removeItemAtPath(encryptedPath) }
+
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+            try TestTables.createAndPopulateAgentsTable(connection)
+
+            let key = "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+
+            // When
+            try connection.exportEncryptedDatabaseToPath(encryptedPath, withRawEncryptionKey: key)
+
+            let encryptedConnection = try Connection(storageLocation: .OnDisk(encryptedPath))
+            try encryptedConnection.setRawEncryptionKey(key)
+
+            let count: Int = try encryptedConnection.query("SELECT count(*) FROM agents")
+
+            // Then
+            XCTAssertEqual(count, 2, "count should be 2")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanExportDecryptedVersionOfPassphraseEncryptedDatabase() {
         let decryptedPath = NSFileManager.cachesDirectory.stringByAppendingString("/export_decrypted_db_test.db")
         defer { NSFileManager.removeItemAtPath(decryptedPath) }
 
@@ -853,6 +949,31 @@ class ConnectionTestCase: XCTestCase {
 
             let connection = try Connection(storageLocation: storageLocation)
             try connection.setEncryptionPassphrase(passphrase)
+            try TestTables.createAndPopulateAgentsTable(connection)
+
+            // When
+            try connection.exportDecryptedDatabaseToPath(decryptedPath)
+            let decryptedConnection = try Connection(storageLocation: .OnDisk(decryptedPath))
+
+            let count: Int = try decryptedConnection.query("SELECT count(*) FROM agents")
+
+            // Then
+            XCTAssertEqual(count, 2, "count should be 2")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanExportDecryptedVersionOfRawKeyEncryptedDatabase() {
+        let decryptedPath = NSFileManager.cachesDirectory.stringByAppendingString("/export_decrypted_db_test.db")
+        defer { NSFileManager.removeItemAtPath(decryptedPath) }
+
+        do {
+            // Given
+            let key = "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+
+            let connection = try Connection(storageLocation: storageLocation)
+            try connection.setRawEncryptionKey(key)
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When

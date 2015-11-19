@@ -466,13 +466,13 @@ public class Connection {
     // MARK: - Encryption
 
     /**
-        Sets the encryption passphrase on the database which will lazily generate a key derivation when necessary.
+        Sets the encryption passphrase on the database.
 
         The encryption passphrase MUST be set immediately after the `Connection` is initialized. If it is not called 
         before any other operations are performed on the database, the encryption passphrase is ignored and the
         database will NOT be encrypted.
 
-            let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+            let connection = try Connection(storageType: .OnDisk("path_to_db"))
             try connection.setEncryptionPassphrase(passphrase)
 
         For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/#key>.
@@ -482,17 +482,40 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error setting the passphrase.
     */
     public func setEncryptionPassphrase(passphrase: String) throws {
-        let passphraseData = passphrase.dataUsingEncoding(NSUTF8StringEncoding)!
-        try check(sqlite3_key(handle, passphraseData.bytes, Int32(passphraseData.length)))
+        try execute("PRAGMA key = \(passphrase.escape())")
     }
 
     /**
-        Updates the encryption passphrase on the database which will lazily generate a key derivation when necessary.
+        Sets the raw encryption key on the database.
+
+        SQLCipher requires the raw encryption key to be a 64 character hex string. Anything else could result in
+        undefined behavior from SQLCipher.
+
+        The raw encryption key MUST be set immediately after the `Connection` is initialized. If it is not called
+        before any other operations are performed on the database, the raw encryption key is ignored and the
+        database will NOT be encrypted.
+
+            let key = "2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99"
+            let connection = try Connection(storageType: .OnDisk("path_to_db"))
+            try connection.setRawEncryptionKey(key)
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/#key>.
+
+        - parameter key: The 64 character hex string to use for encrypting the database.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error setting the key.
+    */
+    public func setRawEncryptionKey(key: String) throws {
+        try execute("PRAGMA key = \"x\(key.escape())\"")
+    }
+
+    /**
+        Updates the encryption passphrase on the database.
 
         The current encryption passphrase MUST be set on the `Connection` before attempting to update the encryption
         passphrase. Otherwise the update is ignored.
 
-            let connection = try Connection(connectionType: .OnDisk("path_to_db"))
+            let connection = try Connection(storageType: .OnDisk("path_to_db"))
             try connection.setEncryptionPassphrase(currentPassphrase)
             try connection.updateEncryptionPassphrase(newPassphrase)
 
@@ -500,11 +523,33 @@ public class Connection {
 
         - parameter passphrase: The passphrase to use for encrypting the database.
 
-        - throws: An `Error` if SQLite or SQLCipher encounter an error setting the passphrase.
+        - throws: An `Error` if SQLite or SQLCipher encounter an error updating the passphrase.
     */
     public func updateEncryptionPassphrase(passphrase: String) throws {
-        let passphraseData = passphrase.dataUsingEncoding(NSUTF8StringEncoding)!
-        try check(sqlite3_rekey(handle, passphraseData.bytes, Int32(passphraseData.length)))
+        try execute("PRAGMA rekey = \(passphrase.escape())")
+    }
+
+    /**
+        Updates the raw encryption key on the database.
+
+        SQLCipher requires the raw encryption key to be a 64 character hex string. Anything else could result in
+        undefined behavior from SQLCipher.
+
+        The current raw encryption key MUST be set on the `Connection` before attempting to update the derived
+        encryption key. Otherwise the update is ignored.
+
+            let connection = try Connection(storageType: .OnDisk("path_to_db"))
+            try connection.setRawEncryptionKey(currentKey)
+            try connection.updateRawEncryptionKey(newKey)
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_profile>.
+
+        - parameter key: The 64 character hex string to use for encrypting the database.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error updating the key.
+    */
+    public func updateRawEncryptionKey(key: String) throws {
+        try execute("PRAGMA rekey = \"x\(key.escape())\"")
     }
 
     /**
@@ -521,6 +566,27 @@ public class Connection {
         let name = "encrypted".escape()
 
         try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \(passphrase.escape())")
+        try execute("SELECT sqlcipher_export(\(name))")
+        try execute("DETACH DATABASE \(name)")
+    }
+
+    /**
+        Exports the current database to the specified path encrypted with the specified key.
+
+        SQLCipher requires the derived encryption key to be a 64 character hex string. Anything else could result in
+        undefined behavior from SQLCipher.
+
+        For more details, please refer to: <https://www.zetetic.net/sqlcipher/sqlcipher-api/index.html#sqlcipher_export>.
+
+        - parameter path: The path to export the encrypted database to.
+        - parameter key:  The 64 character hex string to encrypt the exported database with.
+
+        - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
+    */
+    public func exportEncryptedDatabaseToPath(path: String, withRawEncryptionKey key: String) throws {
+        let name = "encrypted".escape()
+
+        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \"x\(key.escape())\"")
         try execute("SELECT sqlcipher_export(\(name))")
         try execute("DETACH DATABASE \(name)")
     }
