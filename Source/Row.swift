@@ -26,11 +26,6 @@ public struct Row {
 
     //=========================== Column Index Subscripts ============================
 
-    /// Returns an `NSNull` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> NSNull { return valueAtColumnIndex(columnIndex)! }
-    /// Returns an optional `NSNull` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> NSNull? { return valueAtColumnIndex(columnIndex) }
-
     /// Returns a `Bool` instance extracted from the database at the given column index.
     public subscript(columnIndex: Int) -> Bool { return valueAtColumnIndex(columnIndex)! }
     /// Returns an optional `Bool` instance extracted from the database at the given column index.
@@ -112,11 +107,6 @@ public struct Row {
     public subscript(columnIndex: Int) -> NSData? { return valueAtColumnIndex(columnIndex) }
 
     //=========================== Column Name Subscripts ============================
-
-    /// Returns an `NSNull` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> NSNull { return valueForColumnName(columnName)! }
-    /// Returns an optional `NSNull` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> NSNull? { return valueForColumnName(columnName) }
 
     /// Returns a `Bool` instance extracted from the database for the column index matching the given name.
     public subscript(columnName: String) -> Bool { return valueForColumnName(columnName)! }
@@ -223,7 +213,7 @@ public struct Row {
 
         switch statement.columnTypeAtIndex(columnIndex) {
         case SQLITE_NULL:
-            value = NSNull()
+            value = nil
         case SQLITE_INTEGER:
             value = sqlite3_column_int64(handle, Int32(columnIndex))
         case SQLITE_FLOAT:

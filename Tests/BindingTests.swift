@@ -12,16 +12,14 @@ import XCTest
 
 class BindingTestCase: XCTestCase {
 
-    // MARK: - Null Binding Tests
+    // MARK: - Null Bindable Tests
 
     func testNSNullBinding() {
         // Given, When
         let bindingValue = NSNull().bindingValue
-        let fromBindingValue = NSNull.fromBindingValue("NULL")
 
         // Then
         XCTAssertTrue(bindingValue == .Null)
-        XCTAssertTrue(fromBindingValue == NSNull())
     }
 
     // MARK: - Integer Binding Tests

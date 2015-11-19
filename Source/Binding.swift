@@ -73,17 +73,11 @@ public protocol Extractable {
 /// The `Binding` protocol represents a type that is both `Bindable` as a parameter and `Extractable` from the database.
 public protocol Binding: Bindable, Extractable {}
 
-// MARK: - Null Bindings
+// MARK: - Null Bindable
 
-extension NSNull: Binding {
-    /// The binding type of a parameter to bind to a statement.
-    public typealias BindingType = NSNull
-
+extension NSNull: Bindable {
     /// The binding value representation of the type to be bound to a `Statement`.
     public var bindingValue: BindingValue { return .Null }
-
-    /// Converts the binding value `Any` object representation to an equivalent `NSNull` representation.
-    public static func fromBindingValue(value: Any) -> NSNull { return NSNull() }
 }
 
 // MARK: - Integer Bindings

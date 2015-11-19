@@ -32,9 +32,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
-
-            let beneficiary_NSNull: NSNull = row[7]
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")
 
             let id_Bool: Bool = row[0]
 
@@ -59,29 +57,27 @@ class RowTestCase: XCTestCase {
             let jobTitle_NSData: NSData = row[5]
 
             // Then
-            XCTAssertEqual(beneficiary_NSNull, NSNull())
-
             XCTAssertEqual(id_Bool, true)
 
-            XCTAssertEqual(id_Int8, 1)
-            XCTAssertEqual(id_Int16, 1)
-            XCTAssertEqual(id_Int32, 1)
-            XCTAssertEqual(id_Int64, 1)
-            XCTAssertEqual(id_Int, 1)
+            XCTAssertEqual(id_Int8, 2)
+            XCTAssertEqual(id_Int16, 2)
+            XCTAssertEqual(id_Int32, 2)
+            XCTAssertEqual(id_Int64, 2)
+            XCTAssertEqual(id_Int, 2)
 
-            XCTAssertEqual(id_UInt8, 1)
-            XCTAssertEqual(id_UInt16, 1)
-            XCTAssertEqual(id_UInt32, 1)
-            XCTAssertEqual(id_UInt64, 1)
-            XCTAssertEqual(id_UInt, 1)
+            XCTAssertEqual(id_UInt8, 2)
+            XCTAssertEqual(id_UInt16, 2)
+            XCTAssertEqual(id_UInt32, 2)
+            XCTAssertEqual(id_UInt64, 2)
+            XCTAssertEqual(id_UInt, 2)
 
-            XCTAssertEqual(salary_Float, 2_500_000.56)
-            XCTAssertEqual(salary_Double, 2_500_000.56)
+            XCTAssertEqual(salary_Float, 9_600_200.11)
+            XCTAssertEqual(salary_Double, 9_600_200.11)
 
-            XCTAssertEqual(name_String, "Sterling Archer")
-            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-10-02T08:20:00.000")!)
+            XCTAssertEqual(name_String, "Lana Kane")
+            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
 
-            XCTAssertEqual(jobTitle_NSData, "The world's greatest secret agent".dataUsingEncoding(NSUTF8StringEncoding))
+            XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -94,9 +90,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
-
-            let beneficiary_NSNull: NSNull? = row[7]
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")
 
             let id_Bool: Bool? = row[0]
 
@@ -121,29 +115,27 @@ class RowTestCase: XCTestCase {
             let jobTitle_NSData: NSData? = row[5]
 
             // Then
-            XCTAssertEqual(beneficiary_NSNull, NSNull())
-
             XCTAssertEqual(id_Bool, true)
 
-            XCTAssertEqual(id_Int8, 1)
-            XCTAssertEqual(id_Int16, 1)
-            XCTAssertEqual(id_Int32, 1)
-            XCTAssertEqual(id_Int64, 1)
-            XCTAssertEqual(id_Int, 1)
+            XCTAssertEqual(id_Int8, 2)
+            XCTAssertEqual(id_Int16, 2)
+            XCTAssertEqual(id_Int32, 2)
+            XCTAssertEqual(id_Int64, 2)
+            XCTAssertEqual(id_Int, 2)
 
-            XCTAssertEqual(id_UInt8, 1)
-            XCTAssertEqual(id_UInt16, 1)
-            XCTAssertEqual(id_UInt32, 1)
-            XCTAssertEqual(id_UInt64, 1)
-            XCTAssertEqual(id_UInt, 1)
+            XCTAssertEqual(id_UInt8, 2)
+            XCTAssertEqual(id_UInt16, 2)
+            XCTAssertEqual(id_UInt32, 2)
+            XCTAssertEqual(id_UInt64, 2)
+            XCTAssertEqual(id_UInt, 2)
 
-            XCTAssertEqual(salary_Float, 2_500_000.56)
-            XCTAssertEqual(salary_Double, 2_500_000.56)
+            XCTAssertEqual(salary_Float, 9_600_200.11)
+            XCTAssertEqual(salary_Double, 9_600_200.11)
 
-            XCTAssertEqual(name_String, "Sterling Archer")
-            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-10-02T08:20:00.000")!)
+            XCTAssertEqual(name_String, "Lana Kane")
+            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
 
-            XCTAssertEqual(jobTitle_NSData, "The world's greatest secret agent".dataUsingEncoding(NSUTF8StringEncoding))
+            XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -156,9 +148,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
-
-            let beneficiary_NSNull: NSNull = row["beneficiary"]
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")
 
             let id_Bool: Bool = row["id"]
 
@@ -183,29 +173,27 @@ class RowTestCase: XCTestCase {
             let jobTitle_NSData: NSData = row["job_title"]
 
             // Then
-            XCTAssertEqual(beneficiary_NSNull, NSNull())
-
             XCTAssertEqual(id_Bool, true)
 
-            XCTAssertEqual(id_Int8, 1)
-            XCTAssertEqual(id_Int16, 1)
-            XCTAssertEqual(id_Int32, 1)
-            XCTAssertEqual(id_Int64, 1)
-            XCTAssertEqual(id_Int, 1)
+            XCTAssertEqual(id_Int8, 2)
+            XCTAssertEqual(id_Int16, 2)
+            XCTAssertEqual(id_Int32, 2)
+            XCTAssertEqual(id_Int64, 2)
+            XCTAssertEqual(id_Int, 2)
 
-            XCTAssertEqual(id_UInt8, 1)
-            XCTAssertEqual(id_UInt16, 1)
-            XCTAssertEqual(id_UInt32, 1)
-            XCTAssertEqual(id_UInt64, 1)
-            XCTAssertEqual(id_UInt, 1)
+            XCTAssertEqual(id_UInt8, 2)
+            XCTAssertEqual(id_UInt16, 2)
+            XCTAssertEqual(id_UInt32, 2)
+            XCTAssertEqual(id_UInt64, 2)
+            XCTAssertEqual(id_UInt, 2)
 
-            XCTAssertEqual(salary_Float, 2_500_000.56)
-            XCTAssertEqual(salary_Double, 2_500_000.56)
+            XCTAssertEqual(salary_Float, 9_600_200.11)
+            XCTAssertEqual(salary_Double, 9_600_200.11)
 
-            XCTAssertEqual(name_String, "Sterling Archer")
-            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-10-02T08:20:00.000")!)
+            XCTAssertEqual(name_String, "Lana Kane")
+            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
 
-            XCTAssertEqual(jobTitle_NSData, "The world's greatest secret agent".dataUsingEncoding(NSUTF8StringEncoding))
+            XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -218,9 +206,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
-
-            let beneficiary_NSNull: NSNull? = row["beneficiary"]
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")
 
             let id_Bool: Bool? = row["id"]
 
@@ -245,29 +231,27 @@ class RowTestCase: XCTestCase {
             let jobTitle_NSData: NSData? = row["job_title"]
 
             // Then
-            XCTAssertEqual(beneficiary_NSNull, NSNull())
-
             XCTAssertEqual(id_Bool, true)
 
-            XCTAssertEqual(id_Int8, 1)
-            XCTAssertEqual(id_Int16, 1)
-            XCTAssertEqual(id_Int32, 1)
-            XCTAssertEqual(id_Int64, 1)
-            XCTAssertEqual(id_Int, 1)
+            XCTAssertEqual(id_Int8, 2)
+            XCTAssertEqual(id_Int16, 2)
+            XCTAssertEqual(id_Int32, 2)
+            XCTAssertEqual(id_Int64, 2)
+            XCTAssertEqual(id_Int, 2)
 
-            XCTAssertEqual(id_UInt8, 1)
-            XCTAssertEqual(id_UInt16, 1)
-            XCTAssertEqual(id_UInt32, 1)
-            XCTAssertEqual(id_UInt64, 1)
-            XCTAssertEqual(id_UInt, 1)
+            XCTAssertEqual(id_UInt8, 2)
+            XCTAssertEqual(id_UInt16, 2)
+            XCTAssertEqual(id_UInt32, 2)
+            XCTAssertEqual(id_UInt64, 2)
+            XCTAssertEqual(id_UInt, 2)
 
-            XCTAssertEqual(salary_Float, 2_500_000.56)
-            XCTAssertEqual(salary_Double, 2_500_000.56)
+            XCTAssertEqual(salary_Float, 9_600_200.11)
+            XCTAssertEqual(salary_Double, 9_600_200.11)
 
-            XCTAssertEqual(name_String, "Sterling Archer")
-            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-10-02T08:20:00.000")!)
+            XCTAssertEqual(name_String, "Lana Kane")
+            XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
 
-            XCTAssertEqual(jobTitle_NSData, "The world's greatest secret agent".dataUsingEncoding(NSUTF8StringEncoding))
+            XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -280,20 +264,19 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(connection)
 
             // When
-            let values = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'").values
+            let values = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'").values
 
             // Then
-            if values.count == 8 {
+            if values.count == 7 {
                 XCTAssertTrue(values[0] is Int64, "id column should be extracted as `Int64`")
                 XCTAssertTrue(values[1] is String, "name column should be extracted as `Int64`")
                 XCTAssertTrue(values[2] is String, "date column should be extracted as `Int64`")
                 XCTAssertTrue(values[3] is Int64, "missions column should be extracted as `Int64`")
                 XCTAssertTrue(values[4] is Double, "salary column should be extracted as `Int64`")
                 XCTAssertTrue(values[5] is NSData, "job_title column should be extracted as `Int64`")
-                XCTAssertTrue(values[6] is String, "car column should be extracted as `Int64`")
-                XCTAssertTrue(values[7] is NSNull, "beneficiary column should be extracted as `Int64`")
+                XCTAssertNil(values[6], "car column should be extracted as `nil`")
             } else {
-                XCTFail("values count should be 8")
+                XCTFail("values count should be 7")
             }
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
