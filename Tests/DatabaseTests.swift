@@ -32,6 +32,7 @@ class DatabaseTestCase: XCTestCase {
             let _ = try Database(storageLocation: storageLocation)
             let _ = try Database(storageLocation: .InMemory)
             let _ = try Database(storageLocation: .Temporary)
+            let _ = try Database(storageLocation: storageLocation, flags: SQLITE_OPEN_READONLY)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
