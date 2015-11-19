@@ -21,7 +21,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 ## Requirements
 
 - iOS 8.0+, OSX 10.10+, tvOS 9.0+, watchOS 2.0+
-- Xcode 7.0+
+- Xcode 7.1+
 
 ## Dependencies
 
@@ -60,7 +60,7 @@ use_frameworks!
 source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'SQift', '~> 0.0.1'
+pod 'SQift', '~> 0.1'
 ```
 
 Then, run the following command:
@@ -493,15 +493,6 @@ sqlite> SELECT count(*) FROM sqlite_master;
 If you prefer graphical interfaces, you could install [SQLiteManager 4](https://itunes.apple.com/us/app/sqlitemanager-4/id604707021?mt=12). While it's not quite as nice as `SQLPro` or `Base`, it's still a fairly solid application. Also, you can always use the `sqlcipher` command line tool to export a decrypted form of the database if you really wanted to a different application.
 
 > You could also write a simple bash script to wrap `sqlcipher` to export the decrypted database by passing in the passphrase.
-
----
-
-## Roadmap
-
-- Get new podspec published for SQLCipher 3.3.1 - [Open Issue](https://github.com/sqlcipher/sqlcipher/issues/141)
-- Add Full-Text Search Support (FST4)
-- Create a full DSL leveraging property and method chaining similar to SnapKit
-  - The goal here would be to eliminate the need to ever write a single line of SQL
 
 ---
 
