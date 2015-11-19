@@ -92,6 +92,9 @@
 		4CC289081BFD3F3A009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FB1BFD3CE2009A5577 /* SQLCipher.framework */; };
 		4CC2890B1BFD3F44009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FD1BFD3CE2009A5577 /* SQLCipher.framework */; };
 		4CC2890E1BFD3F4E009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FF1BFD3CE2009A5577 /* SQLCipher.framework */; };
+		4CF8B4521BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
+		4CF8B4531BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
+		4CF8B4541BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,6 +217,7 @@
 		4CC288E51BFD0707009A5577 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		4CC288EA1BFD070D009A5577 /* StorageLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageLocation.swift; sourceTree = "<group>"; };
 		4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sqlcipher.xcodeproj; path = Submodules/sqlcipher/sqlcipher.xcodeproj; sourceTree = "<group>"; };
+		4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,6 +330,7 @@
 				4CA8C2591BF6A5E000822606 /* ConnectionTests.swift */,
 				4C05B9771BF91A6800CFC13C /* ConnectionPoolTests.swift */,
 				4CA8C2581BF6A5E000822606 /* ConnectionQueueTests.swift */,
+				4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */,
 				4CA8C25A1BF6A5E000822606 /* ErrorTests.swift */,
 				4CA8C25B1BF6A5E000822606 /* FetchTests.swift */,
 				4CA8C25C1BF6A5E000822606 /* MigratorTests.swift */,
@@ -732,6 +737,7 @@
 				4C29B30D1BFB25F20086A2EF /* QueryTests.swift in Sources */,
 				4C29B30E1BFB25F20086A2EF /* TestTables.swift in Sources */,
 				4C29B30F1BFB25F20086A2EF /* NSFileManager+SQift.swift in Sources */,
+				4CF8B4531BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,
 				4C29B30B1BFB25F20086A2EF /* FetchTests.swift in Sources */,
 				4C29B3081BFB25F20086A2EF /* ConnectionPoolTests.swift in Sources */,
 				4C29B30C1BFB25F20086A2EF /* MigratorTests.swift in Sources */,
@@ -767,6 +773,7 @@
 				4C29B33F1BFB28E40086A2EF /* QueryTests.swift in Sources */,
 				4C29B3401BFB28E40086A2EF /* TestTables.swift in Sources */,
 				4C29B3411BFB28E40086A2EF /* NSFileManager+SQift.swift in Sources */,
+				4CF8B4541BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,
 				4C29B33D1BFB28E40086A2EF /* FetchTests.swift in Sources */,
 				4C29B33A1BFB28E40086A2EF /* ConnectionPoolTests.swift in Sources */,
 				4C29B33E1BFB28E40086A2EF /* MigratorTests.swift in Sources */,
@@ -820,6 +827,7 @@
 				4CA8C2641BF6A5E000822606 /* FetchTests.swift in Sources */,
 				4CA8C2661BF6A5E000822606 /* NSFileManager+SQift.swift in Sources */,
 				4CA8C2601BF6A5E000822606 /* BindingTests.swift in Sources */,
+				4CF8B4521BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,
 				4CA8C2651BF6A5E000822606 /* MigratorTests.swift in Sources */,
 				4CA8C2671BF6A5E000822606 /* QueryTests.swift in Sources */,
 				4C05B9781BF91A6800CFC13C /* ConnectionPoolTests.swift in Sources */,
