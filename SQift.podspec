@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :branch => 'master' }
+  s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :tag => s.version }
   s.source_files = 'Source/*.{swift,h}'
 
   s.dependency 'SQLCipher', '~> 3.3'
