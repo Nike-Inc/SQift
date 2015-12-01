@@ -59,12 +59,12 @@ public class ConnectionQueue {
     }
 
     /**
-         Executes the specified closure inside a transaction on the serial dispatch queue.
+        Executes the specified closure inside a transaction on the serial dispatch queue.
 
-         - parameter closure: A closure to execute.
+        - parameter closure: A closure to execute.
 
-         - throws: An `Error` if executing the transaction or closure encounters an error.
-     */
+        - throws: An `Error` if executing the transaction or closure encounters an error.
+    */
     public func executeInTransaction(
         transactionType: Connection.TransactionType = .Deferred,
         closure: Connection throws -> Void)
@@ -88,12 +88,12 @@ public class ConnectionQueue {
     }
 
     /**
-         Executes the specified closure inside a savepoint with the specified name on the serial dispatch queue.
+        Executes the specified closure inside a savepoint with the specified name on the serial dispatch queue.
 
-         - parameter closure: A closure to execute.
+        - parameter closure: A closure to execute.
 
-         - throws: An `Error` if executing the transaction or closure encounters an error.
-     */
+        - throws: An `Error` if executing the transaction or closure encounters an error.
+    */
     public func executeInSavepoint(name: String, closure: Connection throws -> Void) throws {
         var executionError: ErrorType?
 
