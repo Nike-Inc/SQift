@@ -28,7 +28,7 @@ public class ConnectionPool {
     // MARK: - Internal - Properties
 
     var availableConnections: Set<ConnectionQueue>
-    var busyConnections: Set<ConnectionQueue>   
+    var busyConnections: Set<ConnectionQueue>
 
     let storageLocation: StorageLocation
     let flags: Int32
@@ -38,14 +38,16 @@ public class ConnectionPool {
     private let queue: dispatch_queue_t
     private let drainDelay: NSTimeInterval
     private var drainInProgress: Bool
+    private let pragmaStatements: [String]
 
     // MARK: - Initialization
 
     /**
         Initializes the `ConnectionPool` instance with the specified connection type and drain delay.
 
-        - parameter storageLocation: The storage location path to use during initialization.
-        - parameter drainDelay:      Total time to wait before draining the available connections. Default is `1.0`.
+        - parameter storageLocation:  The storage location path to use during initialization.
+        - parameter drainDelay:       Total time to wait before draining the available connections. Default is `1.0`.
+        - parameter pragmaStatements: Pragma statements to execute on each new connection before use. Default is `[]`.
 
         - throws: An `Error` if SQLite fails to initialize the default connection.
 
@@ -53,11 +55,13 @@ public class ConnectionPool {
     */
     public init(
         storageLocation: StorageLocation,
-        availableConnectionDrainDelay drainDelay: NSTimeInterval = 1.0)
+        availableConnectionDrainDelay drainDelay: NSTimeInterval = 1.0,
+        pragmaStatements: [String] = [])
     {
         self.storageLocation = storageLocation
         self.drainDelay = drainDelay
         self.drainInProgress = false
+        self.pragmaStatements = pragmaStatements
 
         self.flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE
         self.queue = dispatch_queue_create("com.nike.sqift.connection-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
@@ -100,17 +104,21 @@ public class ConnectionPool {
     // MARK: - Internal - Pool Dequeue and Enqueue
 
     func dequeueConnectionForUse() throws -> ConnectionQueue {
-        let connection: ConnectionQueue
+        let connectionQueue: ConnectionQueue
 
         if !availableConnections.isEmpty {
-            connection = availableConnections.removeFirst()
+            connectionQueue = availableConnections.removeFirst()
         } else {
-            connection = try ConnectionQueue(connection: Connection(storageLocation: storageLocation, flags: flags))
+            connectionQueue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation, flags: flags))
+
+            for pragmaStatement in pragmaStatements {
+                try connectionQueue.execute { try $0.execute(pragmaStatement) }
+            }
         }
 
-        busyConnections.insert(connection)
+        busyConnections.insert(connectionQueue)
 
-        return connection
+        return connectionQueue
     }
 
     func enqueueConnectionForReuse(connection: ConnectionQueue) {
