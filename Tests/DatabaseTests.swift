@@ -38,6 +38,28 @@ class DatabaseTestCase: XCTestCase {
         }
     }
 
+    func testThatDatabaseInitializationExecutesPragmaStatements() {
+        do {
+            // Given
+            let database = try Database(storageLocation: storageLocation, databasePragmas: ["PRAGMA foreign_keys = ON"], connectionPragmas: ["PRAGMA synchronous = 1"])
+
+            var foreignKeys = 0
+            var synchronous = 0
+
+            // When
+            try database.writerConnectionQueue.execute { connection in
+                foreignKeys = try connection.query("PRAGMA foreign_keys")
+                synchronous = try connection.query("PRAGMA synchronous")
+            }
+
+            // Then
+            XCTAssertEqual(foreignKeys, 1, "foreign keys should be 1")
+            XCTAssertEqual(synchronous, 1, "synchronous should be 1")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatDatabaseFailsToInitializeWithInvalidOnDiskStorageLocation() {
         do {
             // Given, When

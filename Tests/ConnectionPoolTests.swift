@@ -72,6 +72,30 @@ class ConnectionPoolTestCase: XCTestCase {
         }
     }
 
+    func testThatDequeueingConnectionCreatesNewConnectionWithSpecifiedPragmaStatements() {
+        do {
+            // Given
+            let pool = ConnectionPool(storageLocation: storageLocation, pragmaStatements: ["PRAGMA synchronous = 1"])
+            pool.availableConnections.removeAll()
+
+            var synchronous = 0
+
+            // When
+            let connection = try pool.dequeueConnectionForUse()
+
+            try pool.execute { connection in
+                synchronous = try connection.query("PRAGMA synchronous")
+            }
+
+            // Then
+            XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection")
+            XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection")
+            XCTAssertEqual(synchronous, 1, "synchronous should be 1")
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatEnqueueConnectionRemovesBusyConnectionAndInsertsAvailableConnection() {
         do {
             // Given
