@@ -12,7 +12,9 @@ import Foundation
 /// using a serial dispatch queue. For maximum thread-safety, use a single database `Connection` which is always
 /// accessed through a single `ConnectionQueue`.
 public class ConnectionQueue {
-    private let connection: Connection
+    /// The database connection to be accessed solely through the connection queue.
+    public let connection: Connection
+
     private let id: String
     private let queue: dispatch_queue_t
 
