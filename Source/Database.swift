@@ -12,8 +12,11 @@ import Foundation
 /// all read statements. The read and write APIs are designed to make it simple to execute SQL statements on the
 /// appropriate type of `Connection` in a thread-safe manner.
 public class Database {
-    private var writerConnectionQueue: ConnectionQueue!
-    private var readerConnectionPool: ConnectionPool!
+    /// The writer connection queue used to execute all write operations.
+    public var writerConnectionQueue: ConnectionQueue!
+
+    /// The reader connection pool used to execute all read operations.
+    public var readerConnectionPool: ConnectionPool!
 
     // MARK: - Initialization
 
