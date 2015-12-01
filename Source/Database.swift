@@ -23,10 +23,13 @@ public class Database {
     /**
         Initializes the `Database` with the specified storage location and initialization flags.
 
-        - parameter storageLocation: The storage location path to use during initialization.
-        - parameter readOnly:        Whether the database should be read-only.
-        - parameter multiThreaded:   Whether the database should be multi-threaded.
-        - parameter sharedCache:     Whether the database should use a shared cache.
+        - parameter storageLocation:   The storage location path to use during initialization.
+        - parameter readOnly:          Whether the database should be read-only.
+        - parameter multiThreaded:     Whether the database should be multi-threaded.
+        - parameter sharedCache:       Whether the database should use a shared cache.
+        - parameter drainDelay:        Total time to wait before draining available reader connections. Default is `1.0`.
+        - parameter databasePragmas:   Pragma statements to execute once when the database is initialized. Default is `[]`.
+        - parameter connectionPragmas: Pragma statements to execute when each connection is initialized. Default is `[]`.
 
         - throws: An `Error` if SQLite encounters an error opening the writable connection.
 
@@ -36,7 +39,10 @@ public class Database {
         storageLocation: StorageLocation = .InMemory,
         readOnly: Bool = false,
         multiThreaded: Bool = true,
-        sharedCache: Bool = true)
+        sharedCache: Bool = true,
+        drainDelay: NSTimeInterval = 1.0,
+        databasePragmas: [String] = [],
+        connectionPragmas: [String] = [])
         throws
     {
         let writerConnection = try Connection(
@@ -46,25 +52,51 @@ public class Database {
             sharedCache: sharedCache
         )
 
-        self.writerConnectionQueue = ConnectionQueue(connection: writerConnection)
-        self.readerConnectionPool = ConnectionPool(storageLocation: storageLocation)
+        try databasePragmas.forEach { try writerConnection.execute($0) }
+        try connectionPragmas.forEach { try writerConnection.execute($0) }
+
+        writerConnectionQueue = ConnectionQueue(connection: writerConnection)
+
+        readerConnectionPool = ConnectionPool(
+            storageLocation: storageLocation,
+            availableConnectionDrainDelay: drainDelay,
+            pragmaStatements: connectionPragmas
+        )
     }
 
     /**
         Initializes the `Database` with the specified storage location and initialization flags.
 
-        - parameter storageLocation: The storage location path to use during initialization.
-        - parameter flags:           The bitmask flags to use when initializing the database.
+        - parameter storageLocation:   The storage location path to use during initialization.
+        - parameter flags:             The bitmask flags to use when initializing the database.
+        - parameter drainDelay:        Total time to wait before draining available reader connections. Default is `1.0`.
+        - parameter databasePragmas:   Pragma statements to execute once when the database is initialized. Default is `[]`.
+        - parameter connectionPragmas: Pragma statements to execute when each connection is initialized. Default is `[]`.
 
         - throws: An `Error` if SQLite encounters an error opening the writable connection.
 
         - returns: The new `Database` instance.
-     */
-    public init(storageLocation: StorageLocation, flags: Int32) throws {
+    */
+    public init(
+        storageLocation: StorageLocation,
+        flags: Int32,
+        drainDelay: NSTimeInterval = 1.0,
+        databasePragmas: [String] = [],
+        connectionPragmas: [String] = [])
+        throws
+    {
         let writerConnection = try Connection(storageLocation: storageLocation, flags: flags)
 
-        self.writerConnectionQueue = ConnectionQueue(connection: writerConnection)
-        self.readerConnectionPool = ConnectionPool(storageLocation: storageLocation)
+        try databasePragmas.forEach { try writerConnection.execute($0) }
+        try connectionPragmas.forEach { try writerConnection.execute($0) }
+
+        writerConnectionQueue = ConnectionQueue(connection: writerConnection)
+
+        readerConnectionPool = ConnectionPool(
+            storageLocation: storageLocation,
+            availableConnectionDrainDelay: drainDelay,
+            pragmaStatements: connectionPragmas
+        )
     }
 
     // MARK: - Execution
