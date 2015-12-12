@@ -45,12 +45,12 @@ class FetchTestCase: XCTestCase {
 
             // Then
             if let
-                name: String = row["name"],
-                date: NSDate = row["date"],
-                missions: Int = row["missions"],
-                salary: Float = row["salary"],
-                jobTitle: NSData = row["job_title"],
-                car: String = row["car"]
+                name: String = row?["name"],
+                date: NSDate = row?["date"],
+                missions: Int = row?["missions"],
+                salary: Float = row?["salary"],
+                jobTitle: NSData = row?["job_title"],
+                car: String = row?["car"]
             {
                 XCTAssertEqual(name, "Sterling Archer")
                 XCTAssertEqual(date, BindingDateFormatter.dateFromString("2015-10-02T08:20:00.000"))

@@ -173,8 +173,8 @@ public class Statement {
 
         - returns: The first `Row` of the query.
      */
-    public func fetch() throws -> Row {
-        try step()
+    public func fetch() throws -> Row? {
+        guard try step() else { return nil }
         return Row(statement: self)
     }
 

@@ -307,9 +307,11 @@ class ConnectionTestCase: XCTestCase {
             var car: (String, UInt64)?
 
             // When
-            let row = try connection.fetch("SELECT * FROM cars WHERE name='Audi'")
-
-            if let name: String = row["name"], let price: UInt64 = row["price"] {
+            if let
+                row = try connection.fetch("SELECT * FROM cars WHERE name='Audi'"),
+                name: String = row["name"],
+                price: UInt64 = row["price"]
+            {
                 car = (name, price)
             }
 

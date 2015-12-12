@@ -229,7 +229,7 @@ public class Connection {
 
         - returns: The first `Row` of the query.
     */
-    public func fetch(SQL: String, _ parameters: Bindable?...) throws -> Row {
+    public func fetch(SQL: String, _ parameters: Bindable?...) throws -> Row? {
         return try prepare(SQL).bind(parameters).fetch()
     }
 

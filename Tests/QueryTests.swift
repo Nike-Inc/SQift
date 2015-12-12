@@ -179,8 +179,8 @@ class QueryTestCase: XCTestCase {
     func testThatDatabaseCanSafelyQueryRowsWithNullValues() {
         do {
             // Given, When
-            let archersCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")["car"]
-            let lanasCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")["car"]
+            let archersCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")?["car"]
+            let lanasCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")?["car"]
 
             // Then
             XCTAssertEqual(archersCar, "Charger", "archers car should be 'Charger'")
