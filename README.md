@@ -245,8 +245,9 @@ for row in try connection.prepare("SELECT * FROM cars WHERE price > ?", 20_000) 
 Sometimes you only want to fetch a single `Row`. Maybe you know beforehand that there will only be 1 row, or maybe you specified a LIMIT of 1. Either way, you can easily fetch a single `Row` without having to iterate over the `Statement`.
 
 ```swift
-let row = try connection.fetch("SELECT * FROM cars WHERE name = ?", "Audi")
-print(row)
+if let row = try connection.fetch("SELECT * FROM cars WHERE name = ?", "Audi") {
+    print(row)
+}
 ```
 
 ### Querying Data
