@@ -66,6 +66,18 @@ class FetchTestCase: XCTestCase {
         }
     }
 
+    func testThatDatabaseDoesNotFetchRowWhenNoRowIsFound() {
+        do {
+            // Given, When
+            let row = try connection.fetch("SELECT * FROM agents WHERE name='Cyril Figgis'")
+
+            // Then
+            XCTAssertNil(row)
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatDatabaseCanIterateThroughAllRowsForSelectStatement() {
         do {
             // Given
