@@ -147,8 +147,7 @@ class QueryTestCase: XCTestCase {
 
             let hiredInOctoberOrNovemberCount: UInt64 = try connection.query(
                 "SELECT count(*) FROM agents WHERE date >= date(?) AND date <= date(?)",
-                firstOfOctober,
-                endOfNovember
+                [firstOfOctober, endOfNovember]
             )
 
             // Then

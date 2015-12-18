@@ -264,6 +264,31 @@ public class Connection {
         The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
         using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
 
+            let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
+            let synchronous: Int = try db.query("PRAGMA synchronous")
+
+        You MUST be careful when using this method. It force unwraps the `Binding` even if the binding value
+        is `nil`. It is much safer to use the optional `query` counterpart method.
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: The parameters to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error in the prepare, bind, step or data extraction process.
+
+        - returns: The first column value of the first row of the query.
+    */
+    public func query<T: Binding>(SQL: String, _ parameters: [Bindable?]) throws -> T {
+        return try prepare(SQL).bind(parameters).query()
+    }
+
+    /**
+        Runs the SQL query against the database and returns the first column value of the first row.
+
+        The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
+        using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+
             let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
             let synchronous: Int? = try db.query("PRAGMA synchronous")
 
@@ -277,6 +302,28 @@ public class Connection {
         - returns: The first column value of the first row of the query.
     */
     public func query<T: Binding>(SQL: String, _ parameters: Bindable?...) throws -> T? {
+        return try prepare(SQL).bind(parameters).query()
+    }
+
+    /**
+        Runs the SQL query against the database and returns the first column value of the first row.
+
+        The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
+        using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+
+            let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
+            let synchronous: Int? = try db.query("PRAGMA synchronous")
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: The parameters to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error in the prepare, bind, step or data extraction process.
+
+        - returns: The first column value of the first row of the query.
+    */
+    public func query<T: Binding>(SQL: String, _ parameters: [Bindable?]) throws -> T? {
         return try prepare(SQL).bind(parameters).query()
     }
 
