@@ -72,10 +72,16 @@ class ConnectionPoolTestCase: XCTestCase {
         }
     }
 
-    func testThatDequeueingConnectionCreatesNewConnectionWithSpecifiedPragmaStatements() {
+    func testThatDequeueingConnectionCreatesNewConnectionAndExecutesPreparationClosure() {
         do {
             // Given
-            let pool = ConnectionPool(storageLocation: storageLocation, pragmaStatements: ["PRAGMA synchronous = 1"])
+            let pool = ConnectionPool(
+                storageLocation: storageLocation,
+                connectionPreparation: { connection in
+                    try connection.execute("PRAGMA synchronous = 1")
+                }
+            )
+
             pool.availableConnections.removeAll()
 
             var synchronous = 0

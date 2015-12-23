@@ -38,10 +38,16 @@ class DatabaseTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseInitializationExecutesPragmaStatements() {
+    func testThatDatabaseInitializationExecutesWriterConnectionPreparationClosure() {
         do {
             // Given
-            let database = try Database(storageLocation: storageLocation, databasePragmas: ["PRAGMA foreign_keys = ON"], connectionPragmas: ["PRAGMA synchronous = 1"])
+            let database = try Database(
+                storageLocation: storageLocation,
+                writerConnectionPreparation: { connection in
+                    try connection.execute("PRAGMA foreign_keys = ON")
+                    try connection.execute("PRAGMA synchronous = 1")
+                }
+            )
 
             var foreignKeys = 0
             var synchronous = 0

@@ -38,30 +38,32 @@ public class ConnectionPool {
     private let queue: dispatch_queue_t
     private let drainDelay: NSTimeInterval
     private var drainInProgress: Bool
-    private let pragmaStatements: [String]
+    private let connectionPreparation: (Connection throws -> Void)?
 
     // MARK: - Initialization
 
     /**
-        Initializes the `ConnectionPool` instance with the specified connection type and drain delay.
+        Initializes the `ConnectionPool` instance with the connection type, drain delay and connection preparation.
 
-        - parameter storageLocation:  The storage location path to use during initialization.
-        - parameter drainDelay:       Total time to wait before draining the available connections. Default is `1.0`.
-        - parameter pragmaStatements: Pragma statements to execute on each new connection before use. Default is `[]`.
+        The connection preparation closure is always executed on any new connection, before the public `execute` method
+        closure is run. This can be very useful for setting up PRAGMAs or custom collation closures on the connection
+        before use.
 
-        - throws: An `Error` if SQLite fails to initialize the default connection.
+        - parameter storageLocation:       The storage location path to use during initialization.
+        - parameter drainDelay:            Total time to wait before draining the available connections. Default is `1.0`.
+        - parameter connectionPreparation: Closure executed when a new connection is created. Default is `nil`.
 
         - returns: The new `ConnectionPool` instance.
     */
     public init(
         storageLocation: StorageLocation,
         availableConnectionDrainDelay drainDelay: NSTimeInterval = 1.0,
-        pragmaStatements: [String] = [])
+        connectionPreparation: (Connection throws -> Void)? = nil)
     {
         self.storageLocation = storageLocation
         self.drainDelay = drainDelay
         self.drainInProgress = false
-        self.pragmaStatements = pragmaStatements
+        self.connectionPreparation = connectionPreparation
 
         self.flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE
         self.queue = dispatch_queue_create("com.nike.sqift.connection-pool-\(NSUUID().UUIDString)", DISPATCH_QUEUE_SERIAL)
@@ -110,10 +112,7 @@ public class ConnectionPool {
             connectionQueue = availableConnections.removeFirst()
         } else {
             connectionQueue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation, flags: flags))
-
-            for pragmaStatement in pragmaStatements {
-                try connectionQueue.execute { try $0.execute(pragmaStatement) }
-            }
+            try connectionPreparation?(connectionQueue.connection)
         }
 
         busyConnections.insert(connectionQueue)

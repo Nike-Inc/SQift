@@ -21,15 +21,19 @@ public class Database {
     // MARK: - Initialization
 
     /**
-        Initializes the `Database` with the specified storage location and initialization flags.
+        Initializes the `Database` with the specified storage location, initialization flags and preparation closures.
 
-        - parameter storageLocation:   The storage location path to use during initialization.
-        - parameter readOnly:          Whether the database should be read-only.
-        - parameter multiThreaded:     Whether the database should be multi-threaded.
-        - parameter sharedCache:       Whether the database should use a shared cache.
-        - parameter drainDelay:        Total time to wait before draining available reader connections. Default is `1.0`.
-        - parameter databasePragmas:   Pragma statements to execute once when the database is initialized. Default is `[]`.
-        - parameter connectionPragmas: Pragma statements to execute when each connection is initialized. Default is `[]`.
+        The writer connection preparation closure is executed immediately after the writer connection is created. This 
+        can be very useful for setting up PRAGMAs or custom collation closures on the connection before use. The reader
+        connection preparation closure is executed immediately after a new reader connection is created.
+
+        - parameter storageLocation:             The storage location path to use during initialization.
+        - parameter readOnly:                    Whether the database should be read-only.
+        - parameter multiThreaded:               Whether the database should be multi-threaded.
+        - parameter sharedCache:                 Whether the database should use a shared cache.
+        - parameter drainDelay:                  Total time to wait before draining available reader connections. Default is `1.0`.
+        - parameter writerConnectionPreparation: Closure executed when the writer connection is created. Default is `nil`.
+        - parameter readerConnectionPreparation: Closure executed when each new reader connection is created. Default is `nil`.
 
         - throws: An `Error` if SQLite encounters an error opening the writable connection.
 
@@ -41,8 +45,8 @@ public class Database {
         multiThreaded: Bool = true,
         sharedCache: Bool = true,
         drainDelay: NSTimeInterval = 1.0,
-        databasePragmas: [String] = [],
-        connectionPragmas: [String] = [])
+        writerConnectionPreparation: (Connection throws -> Void)? = nil,
+        readerConnectionPreparation: (Connection throws -> Void)? = nil)
         throws
     {
         let writerConnection = try Connection(
@@ -52,26 +56,29 @@ public class Database {
             sharedCache: sharedCache
         )
 
-        try databasePragmas.forEach { try writerConnection.execute($0) }
-        try connectionPragmas.forEach { try writerConnection.execute($0) }
+        try writerConnectionPreparation?(writerConnection)
 
         writerConnectionQueue = ConnectionQueue(connection: writerConnection)
 
         readerConnectionPool = ConnectionPool(
             storageLocation: storageLocation,
             availableConnectionDrainDelay: drainDelay,
-            pragmaStatements: connectionPragmas
+            connectionPreparation: readerConnectionPreparation
         )
     }
 
     /**
-        Initializes the `Database` with the specified storage location and initialization flags.
+        Initializes the `Database` with the specified storage location, initialization flags and preparation closures.
+
+        The writer connection preparation closure is executed immediately after the writer connection is created. This
+        can be very useful for setting up PRAGMAs or custom collation closures on the connection before use. The reader
+        connection preparation closure is executed immediately after a new reader connection is created.
 
         - parameter storageLocation:   The storage location path to use during initialization.
         - parameter flags:             The bitmask flags to use when initializing the database.
         - parameter drainDelay:        Total time to wait before draining available reader connections. Default is `1.0`.
-        - parameter databasePragmas:   Pragma statements to execute once when the database is initialized. Default is `[]`.
-        - parameter connectionPragmas: Pragma statements to execute when each connection is initialized. Default is `[]`.
+        - parameter writerConnectionPreparation: Closure executed when the writer connection is created. Default is `nil`.
+        - parameter readerConnectionPreparation: Closure executed when each new reader connection is created. Default is `nil`.
 
         - throws: An `Error` if SQLite encounters an error opening the writable connection.
 
@@ -81,21 +88,19 @@ public class Database {
         storageLocation: StorageLocation,
         flags: Int32,
         drainDelay: NSTimeInterval = 1.0,
-        databasePragmas: [String] = [],
-        connectionPragmas: [String] = [])
+        writerConnectionPreparation: (Connection throws -> Void)? = nil,
+        readerConnectionPreparation: (Connection throws -> Void)? = nil)
         throws
     {
         let writerConnection = try Connection(storageLocation: storageLocation, flags: flags)
-
-        try databasePragmas.forEach { try writerConnection.execute($0) }
-        try connectionPragmas.forEach { try writerConnection.execute($0) }
+        try writerConnectionPreparation?(writerConnection)
 
         writerConnectionQueue = ConnectionQueue(connection: writerConnection)
 
         readerConnectionPool = ConnectionPool(
             storageLocation: storageLocation,
             availableConnectionDrainDelay: drainDelay,
-            pragmaStatements: connectionPragmas
+            connectionPreparation: readerConnectionPreparation
         )
     }
 
