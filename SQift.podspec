@@ -7,6 +7,9 @@ Pod::Spec.new do |s|
   s.authors = { 'Dave Camp' => 'dave.camp@nike.com', 'Christian Noon' => 'christian.noon@nike.com' }
 
   s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.10'
+  s.tvos.deployment_target = '9.0'
+  s.watchos.deployment_target = '2.0'
 
   s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :tag => s.version }
   s.source_files = 'Source/*.{swift,h}'
