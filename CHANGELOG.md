@@ -4,6 +4,23 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.2.0
+
+### Release Notes
+
+#### Added
+
+* Test around fetching a `Row` that cannot be found.
+* Method to `Connection` allowing you to query a value with a parameter array.
+
+#### Updated
+
+* The connection property ACL on the `ConnectionQueue` to `public`.
+* The writer queue and reader pool property ACLs on the `Database` to `public`.
+* `Connection` and `Statement` fetch functions to return an optional `Row` for cases where the fetch does not find a valid `Row`.
+* The code sample in the README for fetching a single `Row`.
+* `Database` and `ConnectionPool` initializers to take connection preparation closures to allow you to prepare a `Connection` for use. This allows you to set PRAGMAs, custom collation closures, etc. on a connection before starting to use it.
+
 ## 0.1.0
 
 ### Release Notes
