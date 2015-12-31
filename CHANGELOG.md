@@ -4,6 +4,19 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.3.0
+
+### Release Notes
+
+#### Added
+
+* New `run` and `fetch` variant APIs for arrays and dictionaries to `Connection`.
+* Tests verifying all parameter binding variants work as expected for `fetch` and `query` APIs.
+
+#### Fixed
+
+* Refactored test names to use `Connection` instead of `Database` where applicable.
+
 ## 0.2.0
 
 ### Release Notes
