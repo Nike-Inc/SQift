@@ -202,4 +202,22 @@ class QueryTestCase: XCTestCase {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
     }
+
+    func testThatDatabaseCanQueryValuesUsingAllParameterBindingVariants() {
+        do {
+            // Given, When
+            let count1: Int = try connection.query("SELECT count(1) FROM agents WHERE name='Sterling Archer'")
+            let count2: Int = try connection.query("SELECT count(1) FROM agents WHERE name=?", "Sterling Archer")
+            let count3: Int = try connection.query("SELECT count(1) FROM agents WHERE name=?", ["Sterling Archer"])
+            let count4: Int = try connection.query("SELECT count(1) FROM agents WHERE name=:name", [":name": "Sterling Archer"])
+
+            // Then
+            XCTAssertEqual(count1, 1)
+            XCTAssertEqual(count2, 1)
+            XCTAssertEqual(count3, 1)
+            XCTAssertEqual(count4, 1)
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
 }
