@@ -66,6 +66,36 @@ class FetchTestCase: XCTestCase {
         }
     }
 
+    func testThatDatabaseCanFetchRowForSelectStatementUsingAllParameterBindingVariants() {
+        do {
+            // Given, When
+            let values1 = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")?.values ?? []
+            let values2 = try connection.fetch("SELECT * FROM agents WHERE name=?", "Sterling Archer")?.values ?? []
+            let values3 = try connection.fetch("SELECT * FROM agents WHERE name=?", ["Sterling Archer"])?.values ?? []
+            let values4 = try connection.fetch("SELECT * FROM agents WHERE name=:name", [":name": "Sterling Archer"])?.values ?? []
+
+            // Then
+            XCTAssertEqual(values1.count, 7)
+            XCTAssertEqual(values2.count, 7)
+            XCTAssertEqual(values3.count, 7)
+            XCTAssertEqual(values4.count, 7)
+
+            if values1.count == 7 && values2.count == 7 && values3.count == 7 && values4.count == 7 {
+                [values1, values2, values3, values4].forEach { values in
+                    XCTAssertEqual(values[0] as? Int64, 1)
+                    XCTAssertEqual(values[1] as? String, "Sterling Archer")
+                    XCTAssertEqual(values[2] as? String, "2015-10-02T08:20:00.000")
+                    XCTAssertEqual(values[3] as? Int64, 485)
+                    XCTAssertEqual(values[4] as? Double, 2_500_000.56)
+                    XCTAssertEqual(String(data: values[5] as! NSData, encoding: NSUTF8StringEncoding), "The world's greatest secret agent")
+                    XCTAssertEqual(values[6] as? String, "Charger")
+                }
+            }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     func testThatDatabaseDoesNotFetchRowWhenNoRowIsFound() {
         do {
             // Given, When
