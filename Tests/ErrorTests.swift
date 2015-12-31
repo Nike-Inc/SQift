@@ -17,7 +17,7 @@ class ErrorTestCase: XCTestCase {
         return .OnDisk(path)
     }()
 
-    func testThatInitializingDatabaseWithInvalidFilePathThrowsError() {
+    func testThatInitializingConnectionWithInvalidFilePathThrowsError() {
         do {
             // Given, When
             let _ = try Connection(storageLocation: .OnDisk("/path/does/not/exist"))

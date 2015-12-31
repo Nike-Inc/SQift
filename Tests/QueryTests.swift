@@ -38,7 +38,7 @@ class QueryTestCase: XCTestCase {
 
     // MARK: - Tests
 
-    func testThatDatabaseCanQueryRowsMatchingExactText() {
+    func testThatConnectionCanQueryRowsMatchingExactText() {
         do {
             // Given, When
             let exactCount: Int = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
@@ -58,7 +58,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryRowsContainingText() {
+    func testThatConnectionCanQueryRowsContainingText() {
         do {
             // Given, When
             let likeCount: Int8 = try connection.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
@@ -78,7 +78,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryRowsWithinIntegerRange() {
+    func testThatConnectionCanQueryRowsWithinIntegerRange() {
         do {
             // Given, When
             let belowSalaryCount: UInt8 = try connection.query("SELECT count(*) FROM agents WHERE salary < 3000000.12")
@@ -92,7 +92,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryRowsWithinRealRange() {
+    func testThatConnectionCanQueryRowsWithinRealRange() {
         do {
             // Given, When
             let belowMissionsCount: UInt = try connection.query("SELECT count(*) FROM agents WHERE missions <= 485")
@@ -106,7 +106,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryRowsWithinDateRange() {
+    func testThatConnectionCanQueryRowsWithinDateRange() {
         do {
             // Given
             let calendar = NSCalendar.currentCalendar()
@@ -158,7 +158,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryRowsMatchingBlobData() {
+    func testThatConnectionCanQueryRowsMatchingBlobData() {
         do {
             // Given, When
             let archersJobTitleData: NSData = try connection.query("SELECT job_title FROM agents WHERE name='Sterling Archer'")
@@ -175,7 +175,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanSafelyQueryRowsWithNullValues() {
+    func testThatConnectionCanSafelyQueryRowsWithNullValues() {
         do {
             // Given, When
             let archersCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")?["car"]
@@ -189,7 +189,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryPRAGMAValues() {
+    func testThatConnectionCanQueryPRAGMAValues() {
         do {
             // Given, When
             let synchronous: Int = try connection.query("PRAGMA synchronous")
@@ -203,7 +203,7 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanQueryValuesUsingAllParameterBindingVariants() {
+    func testThatConnectionCanQueryValuesUsingAllParameterBindingVariants() {
         do {
             // Given, When
             let count1: Int = try connection.query("SELECT count(1) FROM agents WHERE name='Sterling Archer'")

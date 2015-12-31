@@ -38,7 +38,7 @@ class FetchTestCase: XCTestCase {
 
     // MARK: - Tests
 
-    func testThatDatabaseCanFetchFirstRowForSelectStatement() {
+    func testThatConnectionCanFetchFirstRowForSelectStatement() {
         do {
             // Given, When
             let row = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")
@@ -66,7 +66,7 @@ class FetchTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanFetchRowForSelectStatementUsingAllParameterBindingVariants() {
+    func testThatConnectionCanFetchRowForSelectStatementUsingAllParameterBindingVariants() {
         do {
             // Given, When
             let values1 = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")?.values ?? []
@@ -96,7 +96,7 @@ class FetchTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseDoesNotFetchRowWhenNoRowIsFound() {
+    func testThatConnectionDoesNotFetchRowWhenNoRowIsFound() {
         do {
             // Given, When
             let row = try connection.fetch("SELECT * FROM agents WHERE name='Cyril Figgis'")
@@ -108,7 +108,7 @@ class FetchTestCase: XCTestCase {
         }
     }
 
-    func testThatDatabaseCanIterateThroughAllRowsForSelectStatement() {
+    func testThatConnectionCanIterateThroughAllRowsForSelectStatement() {
         do {
             // Given
             var rows: [[Any?]] = []
