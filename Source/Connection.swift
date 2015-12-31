@@ -198,13 +198,30 @@ public class Connection {
     /**
         Runs the SQL statement in a single-step by internally calling prepare, bind, step and finalize.
 
+            try db.run("INSERT INTO cars(name) VALUES(?)", "Honda")
+            try db.run("UPDATE cars SET price = ? WHERE name = ?", 27_999, "Honda")
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: The parameters to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error when running the SQL statement.
+    */
+    public func run(SQL: String, _ parameters: [Bindable?]) throws {
+        try prepare(SQL).bind(parameters).run()
+    }
+
+    /**
+        Runs the SQL statement in a single-step by internally calling prepare, bind, step and finalize.
+
             try db.run("INSERT INTO cars(name) VALUES(:name)", [":name": "Honda"])
             try db.run("UPDATE cars SET price = :price WHERE name = :name", [":price": 27_999, ":name": "Honda"])
 
         For more details, please refer to documentation in the `Statement` class.
 
         - parameter SQL:        The SQL string to run.
-        - parameter parameters: The parameters to bind to the statement.
+        - parameter parameters: A dictionary of key/value pairs to bind to the statement.
 
         - throws: An `Error` if SQLite encounters and error when running the SQL statement.
     */
@@ -230,6 +247,48 @@ public class Connection {
         - returns: The first `Row` of the query.
     */
     public func fetch(SQL: String, _ parameters: Bindable?...) throws -> Row? {
+        return try prepare(SQL).bind(parameters).fetch()
+    }
+
+    /**
+        Fetches the first `Row` from the database after running the SQL statement query.
+
+        Fetching the first row of a query can be convenient in cases where you are attempting to SELECT a single
+        row. For example, using a LIMIT filter of 1 would be an excellent candidate for a `fetch`.
+
+            let row = try db.fetch("SELECT * FROM cars WHERE type = 'sedan' LIMIT 1")
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: The parameters to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
+
+        - returns: The first `Row` of the query.
+    */
+    public func fetch(SQL: String, _ parameters: [Bindable?]) throws -> Row? {
+        return try prepare(SQL).bind(parameters).fetch()
+    }
+
+    /**
+        Fetches the first `Row` from the database after running the SQL statement query.
+
+        Fetching the first row of a query can be convenient in cases where you are attempting to SELECT a single
+        row. For example, using a LIMIT filter of 1 would be an excellent candidate for a `fetch`.
+
+            let row = try db.fetch("SELECT * FROM cars WHERE type = 'sedan' LIMIT 1")
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: A dictionary of key/value pairs to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
+
+        - returns: The first `Row` of the query.
+    */
+    public func fetch(SQL: String, _ parameters: [String: Bindable?]) throws -> Row? {
         return try prepare(SQL).bind(parameters).fetch()
     }
 
@@ -289,6 +348,30 @@ public class Connection {
         The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
         using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
 
+            let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > :price", [":price": 40_000])
+
+        You MUST be careful when using this method. It force unwraps the `Binding` even if the binding value
+        is `nil`. It is much safer to use the optional `query` counterpart method.
+
+        For more details, please refer to documentation in the `Statement` class.
+
+        - parameter SQL:        The SQL string to run.
+        - parameter parameters: A dictionary of key/value pairs to bind to the statement.
+
+        - throws: An `Error` if SQLite encounters and error in the prepare, bind, step or data extraction process.
+
+        - returns: The first column value of the first row of the query.
+    */
+    public func query<T: Binding>(SQL: String, _ parameters: [String: Bindable?]) throws -> T {
+        return try prepare(SQL).bind(parameters).query()
+    }
+
+    /**
+        Runs the SQL query against the database and returns the first column value of the first row.
+
+        The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
+        using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+
             let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
             let synchronous: Int? = try db.query("PRAGMA synchronous")
 
@@ -324,30 +407,6 @@ public class Connection {
         - returns: The first column value of the first row of the query.
     */
     public func query<T: Binding>(SQL: String, _ parameters: [Bindable?]) throws -> T? {
-        return try prepare(SQL).bind(parameters).query()
-    }
-
-    /**
-        Runs the SQL query against the database and returns the first column value of the first row.
-
-        The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-        using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
-
-            let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > :price", [":price": 40_000])
-
-        You MUST be careful when using this method. It force unwraps the `Binding` even if the binding value
-        is `nil`. It is much safer to use the optional `query` counterpart method.
-
-        For more details, please refer to documentation in the `Statement` class.
-
-        - parameter SQL:        The SQL string to run.
-        - parameter parameters: A dictionary of key/value pairs to bind to the statement.
-
-        - throws: An `Error` if SQLite encounters and error in the prepare, bind, step or data extraction process.
-
-        - returns: The first column value of the first row of the query.
-    */
-    public func query<T: Binding>(SQL: String, _ parameters: [String: Bindable?]) throws -> T {
         return try prepare(SQL).bind(parameters).query()
     }
 
