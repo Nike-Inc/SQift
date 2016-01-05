@@ -13,6 +13,16 @@ The changelog for SQift includes information about the each release including an
 * New `run` and `fetch` variant APIs for arrays and dictionaries to `Connection`.
 * Tests verifying all parameter binding variants work as expected for `fetch` and `query` APIs.
 
+#### Updated
+
+* `Database` and `Connection` initializers now set `sharedCache` to `false` by default.
+
+> Using a `sharedCache` is intended for use with embedded servers to help keep memory usage low for embedded devices. For app development using a WAL journal mode, it is better to not use a shared cache to avoid table locking.
+
+#### Removed
+
+* The `readOnly` parameter from the `Database` initializer.
+
 #### Fixed
 
 * Refactored test names to use `Connection` instead of `Database` where applicable.
