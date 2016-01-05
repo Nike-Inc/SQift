@@ -28,9 +28,8 @@ public class Database {
         connection preparation closure is executed immediately after a new reader connection is created.
 
         - parameter storageLocation:             The storage location path to use during initialization.
-        - parameter readOnly:                    Whether the database should be read-only.
-        - parameter multiThreaded:               Whether the database should be multi-threaded.
-        - parameter sharedCache:                 Whether the database should use a shared cache.
+        - parameter multiThreaded:               Whether the database should be multi-threaded. Default is `true`.
+        - parameter sharedCache:                 Whether the database should use a shared cache. Default is `false`.
         - parameter drainDelay:                  Total time to wait before draining available reader connections. Default is `1.0`.
         - parameter writerConnectionPreparation: Closure executed when the writer connection is created. Default is `nil`.
         - parameter readerConnectionPreparation: Closure executed when each new reader connection is created. Default is `nil`.
@@ -41,9 +40,8 @@ public class Database {
     */
     public init(
         storageLocation: StorageLocation = .InMemory,
-        readOnly: Bool = false,
         multiThreaded: Bool = true,
-        sharedCache: Bool = true,
+        sharedCache: Bool = false,
         drainDelay: NSTimeInterval = 1.0,
         writerConnectionPreparation: (Connection throws -> Void)? = nil,
         readerConnectionPreparation: (Connection throws -> Void)? = nil)
@@ -51,7 +49,7 @@ public class Database {
     {
         let writerConnection = try Connection(
             storageLocation: storageLocation,
-            readOnly: readOnly,
+            readOnly: false,
             multiThreaded: multiThreaded,
             sharedCache: sharedCache
         )
