@@ -68,9 +68,9 @@ public class Connection {
         For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
 
         - parameter storageLocation: The storage location path to use during initialization.
-        - parameter readOnly:        Whether the connection should be read-only.
-        - parameter multiThreaded:   Whether the connection should be multi-threaded.
-        - parameter sharedCache:     Whether the connection should use a shared cache.
+        - parameter readOnly:        Whether the connection should be read-only. Default is `false`.
+        - parameter multiThreaded:   Whether the connection should be multi-threaded. Default is `true`.
+        - parameter sharedCache:     Whether the connection should use a shared cache. Default is `false`.
 
         - throws: An `Error` if SQLite encounters an error when opening the database connection.
 
@@ -80,7 +80,7 @@ public class Connection {
         storageLocation: StorageLocation = .InMemory,
         readOnly: Bool = false,
         multiThreaded: Bool = true,
-        sharedCache: Bool = true)
+        sharedCache: Bool = false)
         throws
     {
         var flags: Int32 = 0
