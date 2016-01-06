@@ -4,6 +4,14 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.4.0
+
+### Release Notes
+
+#### Added
+
+* Added `NSURL` binding along with `Row` subscripts and unit tests.
+
 ## 0.3.0
 
 ### Release Notes
