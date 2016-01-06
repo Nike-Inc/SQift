@@ -96,6 +96,11 @@ public struct Row {
     /// Returns an optional `String` instance extracted from the database at the given column index.
     public subscript(columnIndex: Int) -> String? { return valueAtColumnIndex(columnIndex) }
 
+    /// Returns a `NSURL` instance extracted from the database at the given column index.
+    public subscript(columnIndex: Int) -> NSURL { return valueAtColumnIndex(columnIndex)! }
+    /// Returns an optional `NSURL` instance extracted from the database at the given column index.
+    public subscript(columnIndex: Int) -> NSURL? { return valueAtColumnIndex(columnIndex) }
+
     /// Returns an `NSDate` instance extracted from the database at the given column index.
     public subscript(columnIndex: Int) -> NSDate { return valueAtColumnIndex(columnIndex)! }
     /// Returns an optional `NSDate` instance extracted from the database at the given column index.
@@ -177,6 +182,11 @@ public struct Row {
     public subscript(columnName: String) -> String { return valueForColumnName(columnName)! }
     /// Returns an optional `String` instance extracted from the database for the column index matching the given name.
     public subscript(columnName: String) -> String? { return valueForColumnName(columnName) }
+
+    /// Returns a `NSURL` instance extracted from the database for the column index matching the given name.
+    public subscript(columnName: String) -> NSURL { return valueForColumnName(columnName)! }
+    /// Returns an optional `NSURL` instance extracted from the database for the column index matching the given name.
+    public subscript(columnName: String) -> NSURL? { return valueForColumnName(columnName) }
 
     /// Returns an `NSDate` instance extracted from the database for the column index matching the given name.
     public subscript(columnName: String) -> NSDate { return valueForColumnName(columnName)! }

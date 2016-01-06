@@ -289,6 +289,17 @@ extension String: Binding {
     public static func fromBindingValue(value: Any) -> String { return value as! String }
 }
 
+extension NSURL: Binding {
+    /// The binding type of a parameter to bind to a statement.
+    public typealias BindingType = String
+
+    /// The binding value representation of the type to be bound to a `Statement`.
+    public var bindingValue: BindingValue { return .Text(absoluteString) }
+
+    /// Converts the binding value `Any` object representation to an equivalent `NSURL` representation.
+    public static func fromBindingValue(value: Any) -> NSURL { return NSURL(string: value as! String)! }
+}
+
 extension NSDate: Binding {
     /// The binding type of a parameter to bind to a statement.
     public typealias BindingType = String

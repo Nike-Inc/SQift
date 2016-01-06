@@ -244,6 +244,22 @@ class BindingTestCase: XCTestCase {
         XCTAssertEqual(fromBindingValue, "Téštįńg 👍🏼🎉🔥ไม้หันอากาศ")
     }
 
+    func testURLBinding() {
+        // Given, When
+        let remoteURLBindingValue = NSURL(string: "https://httpbin.org/get")!.bindingValue
+        let remoteURLFromBindingValue = NSURL.fromBindingValue("https://httpbin.org/get")
+
+        let fileURLBindingValue = NSURL(fileURLWithPath: "/Users/cnoon/DropShip/file.json").bindingValue
+        let fileURLFromBindingValue = NSURL.fromBindingValue("file:///Users/cnoon/DropShip/file.json")
+
+        // Then
+        XCTAssertTrue(remoteURLBindingValue == .Text("https://httpbin.org/get"))
+        XCTAssertEqual(remoteURLFromBindingValue, NSURL(string: "https://httpbin.org/get")!)
+
+        XCTAssertTrue(fileURLBindingValue == .Text("file:///Users/cnoon/DropShip/file.json"))
+        XCTAssertEqual(fileURLFromBindingValue, NSURL(fileURLWithPath: "/Users/cnoon/DropShip/file.json"))
+    }
+
     func testDateBinding() {
         // Given
         let now = NSDate()
