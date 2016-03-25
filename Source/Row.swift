@@ -283,11 +283,11 @@ extension Row: SequenceType {
         var currentIndex = 0
         let statement = self.statement
 
-        return anyGenerator {
+        return AnyGenerator {
             guard currentIndex < statement.columnCount else { return nil }
 
             let value = self.valueAtColumnIndex(currentIndex)
-            ++currentIndex
+            currentIndex += 1
 
             return value
         }

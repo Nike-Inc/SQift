@@ -115,7 +115,7 @@ public class Migrator {
 
             didMigrate?(schemaVersion)
 
-            ++totalMigrationsCompleted
+            totalMigrationsCompleted += 1
         }
 
         return totalMigrationsCompleted
@@ -161,7 +161,7 @@ public class Migrator {
 
             didMigrate?(schemaVersion)
 
-            ++totalMigrationsCompleted
+            totalMigrationsCompleted += 1
         }
 
         return totalMigrationsCompleted

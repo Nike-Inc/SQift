@@ -61,10 +61,10 @@ public protocol Bindable {
 /// The `Extractable` protocol represents any type that can be extracted from the `Database`.
 public protocol Extractable {
     /// The binding type of a parameter to bind to a statement.
-    typealias BindingType
+    associatedtype BindingType
 
     /// The data type of the object to convert to after extracting an object from the database.
-    typealias DataType = Self
+    associatedtype DataType = Self
 
     /// Converts the binding value `Any` object representation to an equivalent `DataType` representation.
     static func fromBindingValue(value: Any) -> DataType

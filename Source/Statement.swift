@@ -297,7 +297,7 @@ extension Statement: SequenceType {
          - returns: The new `AnyGenerator<Row>` instance.
      */
     public func generate() -> AnyGenerator<Row> {
-        return anyGenerator { try! self.step() ? Row(statement: self) : nil }
+        return AnyGenerator { try! self.step() ? Row(statement: self) : nil }
     }
 }
 

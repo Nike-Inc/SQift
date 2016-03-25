@@ -469,8 +469,8 @@ public class Connection {
 
         - throws: An `Error` if SQLite encounters an error running the savepoint.
     */
-    public func savepoint(var name: String, closure: Void throws -> Void) throws {
-        name = name.escape()
+    public func savepoint(name: String, closure: Void throws -> Void) throws {
+        let name = name.escape()
 
         try execute("SAVEPOINT \(name)")
 
