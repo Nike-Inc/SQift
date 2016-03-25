@@ -4,6 +4,15 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.5.0
+
+### Release Notes
+
+#### Updated
+
+* All logic to use Swift 2.2 APIs.
+* The required Xcode version to 7.3.
+
 ## 0.4.0
 
 ### Release Notes
