@@ -60,7 +60,7 @@ use_frameworks!
 source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'SQift', '~> 0.5'
+pod 'SQift', '~> 0.6'
 ```
 
 Then, run the following command:

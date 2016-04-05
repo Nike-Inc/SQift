@@ -4,6 +4,14 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.6.0
+
+### Release Notes
+
+#### Added
+
+* String extension allowing users to safely escape SQL strings.
+
 ## 0.5.0
 
 ### Release Notes
