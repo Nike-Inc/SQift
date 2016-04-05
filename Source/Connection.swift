@@ -470,7 +470,7 @@ public class Connection {
         - throws: An `Error` if SQLite encounters an error running the savepoint.
     */
     public func savepoint(name: String, closure: Void throws -> Void) throws {
-        let name = name.escape()
+        let name = name.sq_stringByAddingSQLEscapes()
 
         try execute("SAVEPOINT \(name)")
 
@@ -496,7 +496,10 @@ public class Connection {
         - throws: An `Error` if SQLite encounters an error attaching the database.
     */
     public func attachDatabase(storageLocation: StorageLocation, withName name: String) throws {
-        try execute("ATTACH DATABASE \(storageLocation.path.escape()) AS \(name.escape())")
+        let escapedStorageLocation = storageLocation.path.sq_stringByAddingSQLEscapes()
+        let escapedName = name.sq_stringByAddingSQLEscapes()
+
+        try execute("ATTACH DATABASE \(escapedStorageLocation) AS \(escapedName)")
     }
 
     /**
@@ -509,7 +512,7 @@ public class Connection {
         - throws: An `Error` if SQLite encounters an error detaching the database.
     */
     public func detachDatabase(name: String) throws {
-        try execute("DETACH DATABASE \(name.escape())")
+        try execute("DETACH DATABASE \(name.sq_stringByAddingSQLEscapes())")
     }
 
     // MARK: - Tracing
@@ -588,7 +591,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error setting the passphrase.
     */
     public func setEncryptionPassphrase(passphrase: String) throws {
-        try execute("PRAGMA key = \(passphrase.escape())")
+        try execute("PRAGMA key = \(passphrase.sq_stringByAddingSQLEscapes())")
     }
 
     /**
@@ -612,7 +615,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error setting the key.
     */
     public func setRawEncryptionKey(key: String) throws {
-        try execute("PRAGMA key = \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
+        try execute("PRAGMA key = \"\(EncryptionKeyBlobCharacter)\(key.sq_stringByAddingSQLEscapes())\"")
     }
 
     /**
@@ -632,7 +635,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error updating the passphrase.
     */
     public func updateEncryptionPassphrase(passphrase: String) throws {
-        try execute("PRAGMA rekey = \(passphrase.escape())")
+        try execute("PRAGMA rekey = \(passphrase.sq_stringByAddingSQLEscapes())")
     }
 
     /**
@@ -655,7 +658,7 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error updating the key.
     */
     public func updateRawEncryptionKey(key: String) throws {
-        try execute("PRAGMA rekey = \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
+        try execute("PRAGMA rekey = \"\(EncryptionKeyBlobCharacter)\(key.sq_stringByAddingSQLEscapes())\"")
     }
 
     /**
@@ -669,11 +672,13 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
     */
     public func exportEncryptedDatabaseToPath(path: String, withEncryptionPassphrase passphrase: String) throws {
-        let name = "encrypted".escape()
+        let escapedPath = path.sq_stringByAddingSQLEscapes()
+        let escapedName = "encrypted".sq_stringByAddingSQLEscapes()
+        let escapedPassphrase = passphrase.sq_stringByAddingSQLEscapes()
 
-        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \(passphrase.escape())")
-        try execute("SELECT sqlcipher_export(\(name))")
-        try execute("DETACH DATABASE \(name)")
+        try execute("ATTACH DATABASE \(escapedPath) AS \(escapedName) KEY \(escapedPassphrase)")
+        try execute("SELECT sqlcipher_export(\(escapedName))")
+        try execute("DETACH DATABASE \(escapedName)")
     }
 
     /**
@@ -690,11 +695,13 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
     */
     public func exportEncryptedDatabaseToPath(path: String, withRawEncryptionKey key: String) throws {
-        let name = "encrypted".escape()
+        let escapedPath = path.sq_stringByAddingSQLEscapes()
+        let escapedName = "encrypted".sq_stringByAddingSQLEscapes()
+        let escapedKey = key.sq_stringByAddingSQLEscapes()
 
-        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY \"\(EncryptionKeyBlobCharacter)\(key.escape())\"")
-        try execute("SELECT sqlcipher_export(\(name))")
-        try execute("DETACH DATABASE \(name)")
+        try execute("ATTACH DATABASE \(escapedPath) AS \(escapedName) KEY \"\(EncryptionKeyBlobCharacter)\(escapedKey)\"")
+        try execute("SELECT sqlcipher_export(\(escapedName))")
+        try execute("DETACH DATABASE \(escapedName)")
     }
 
     /**
@@ -710,11 +717,12 @@ public class Connection {
         - throws: An `Error` if SQLite or SQLCipher encounter an error when exporting the database.
     */
     public func exportDecryptedDatabaseToPath(path: String) throws {
-        let name = "decrypted".escape()
+        let escapedPath = path.sq_stringByAddingSQLEscapes()
+        let escapedName = "decrypted".sq_stringByAddingSQLEscapes()
 
-        try execute("ATTACH DATABASE \(path.escape()) AS \(name) KEY ''")
-        try execute("SELECT sqlcipher_export(\(name))")
-        try execute("DETACH DATABASE \(name)")
+        try execute("ATTACH DATABASE \(escapedPath) AS \(escapedName) KEY ''")
+        try execute("SELECT sqlcipher_export(\(escapedName))")
+        try execute("DETACH DATABASE \(escapedName)")
     }
 
     // MARK: - Internal - Check Result Code

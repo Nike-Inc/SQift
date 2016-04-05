@@ -11,7 +11,7 @@ import Foundation
 private let SingleQuote = Character("'")
 
 extension String {
-    func escape() -> String {
+    public func sq_stringByAddingSQLEscapes() -> String {
         var escapedCharacters: [Character] = []
 
         for character in characters {
