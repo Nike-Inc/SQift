@@ -55,14 +55,18 @@ class ConnectionTestCase: XCTestCase {
             // Given
             var writableConnection: Connection? = try Connection(storageLocation: storageLocation)
             try writableConnection?.execute("PRAGMA foreign_keys = true")
+            let writableForeignKeys: Bool = try writableConnection?.query("PRAGMA foreign_keys") ?? false
             writableConnection = nil
 
             // When
             let readOnlyConnection = try Connection(storageLocation: storageLocation, readOnly: true, multiThreaded: false)
+            let readOnlyForeignKeys: Bool = try readOnlyConnection.query("PRAGMA foreign_keys")
 
             // Then
             XCTAssertTrue(readOnlyConnection.readOnly)
             XCTAssertTrue(readOnlyConnection.threadSafe)
+            XCTAssertTrue(writableForeignKeys)
+            XCTAssertFalse(readOnlyForeignKeys)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }

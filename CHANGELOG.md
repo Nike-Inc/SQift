@@ -4,6 +4,15 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.6.1
+
+### Release Notes
+
+#### Updated
+
+* Submodule reference for SQLCipher to point at Bitbucket clone.
+* Connection tests to verify foreign key settings were connection specific.
+
 ## 0.6.0
 
 ### Release Notes
