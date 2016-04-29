@@ -4,6 +4,20 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.7.1
+
+### Release Notes
+
+Due to CI not being able to always have Xcode live in the /Applications folder, we needed to move away from module maps. The alternative solution is to directly import the `sqlite3.h` header into the project and into the umbrella header. Since the header is the same on all platforms, there's no reason to import different ones for each platform.
+
+#### Added
+
+* The `sqlite3.h` header to the project and the `-lsqlite3` linker flag.
+
+#### Removed
+
+* Modulemaps that created the `CSQLite` framework to import.
+
 ## 0.7.0
 
 ### Release Notes
