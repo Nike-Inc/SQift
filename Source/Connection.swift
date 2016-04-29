@@ -6,7 +6,6 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import CSQLite
 import Foundation
 
 /// The `Connection` class represents a single connection to a SQLite database. For more details about using multiple

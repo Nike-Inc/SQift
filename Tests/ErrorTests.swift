@@ -6,7 +6,6 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import CSQLite
 import Foundation
 import SQift
 import XCTest

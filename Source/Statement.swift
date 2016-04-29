@@ -6,7 +6,6 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import CSQLite
 import Foundation
 
 /// The `Statement` class represents a prepared SQL statement to bind parameters to and execute.

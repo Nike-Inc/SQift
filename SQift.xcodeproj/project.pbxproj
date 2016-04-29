@@ -75,6 +75,10 @@
 		4C3C4D091BFB2BD10080A0C6 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C24B1BF6A57300822606 /* Statement.swift */; };
 		4C3C4D0A1BFB2BD10080A0C6 /* String+SQift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C24C1BF6A57300822606 /* String+SQift.swift */; };
 		4C3C4D0B1BFB2BD10080A0C6 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA8C23A1BF6A4C100822606 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C683C911CD3F8E700CFA4C6 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C683C901CD3F8E700CFA4C6 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C683C921CD3F8E700CFA4C6 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C683C901CD3F8E700CFA4C6 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C683C931CD3F8E700CFA4C6 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C683C901CD3F8E700CFA4C6 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C683C941CD3F8E700CFA4C6 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C683C901CD3F8E700CFA4C6 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4CA8C2291BF6A49400822606 /* SQift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA8C21E1BF6A49400822606 /* SQift.framework */; };
 		4CA8C23C1BF6A4C100822606 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CA8C23A1BF6A4C100822606 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4CA8C24D1BF6A57300822606 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2441BF6A57300822606 /* Binding.swift */; };
@@ -142,7 +146,7 @@
 		4C29B3161BFB28330086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B31F1BFB28330086A2EF /* SQift tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4CA101DA1CD3329900C1B49C /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/sqlite3.h; sourceTree = DEVELOPER_DIR; };
+		4C683C901CD3F8E700CFA4C6 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2391BF6A4C100822606 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -295,7 +299,7 @@
 			isa = PBXGroup;
 			children = (
 				4CA8C23A1BF6A4C100822606 /* SQift.h */,
-				4CA101DA1CD3329900C1B49C /* sqlite3.h */,
+				4C683C901CD3F8E700CFA4C6 /* sqlite3.h */,
 				4CA8C2391BF6A4C100822606 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -332,6 +336,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C683C921CD3F8E700CFA4C6 /* sqlite3.h in Headers */,
 				4C29B3041BFB25DE0086A2EF /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,6 +345,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C683C931CD3F8E700CFA4C6 /* sqlite3.h in Headers */,
 				4C29B3361BFB28D90086A2EF /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,6 +354,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C683C941CD3F8E700CFA4C6 /* sqlite3.h in Headers */,
 				4C3C4D0B1BFB2BD10080A0C6 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -356,6 +363,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C683C911CD3F8E700CFA4C6 /* sqlite3.h in Headers */,
 				4CA8C23C1BF6A4C100822606 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -788,7 +796,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
@@ -812,7 +820,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
@@ -864,7 +872,7 @@
 				INFOPLIST_FILE = "Source/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
@@ -886,7 +894,7 @@
 				INFOPLIST_FILE = "Source/Info-tvOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
@@ -935,7 +943,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
@@ -958,7 +966,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
@@ -1097,7 +1105,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
@@ -1122,7 +1130,7 @@
 				INFOPLIST_FILE = Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
@@ -1214,6 +1222,7 @@
 				4C7F1E9D1CD3507C00098A83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4CA8C2181BF6A49400822606 /* Build configuration list for PBXProject "SQift" */ = {
 			isa = XCConfigurationList;

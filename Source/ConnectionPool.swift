@@ -6,7 +6,6 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
-import CSQLite
 import Foundation
 
 /// The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a
