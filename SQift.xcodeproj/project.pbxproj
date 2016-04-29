@@ -801,7 +801,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/Modulemaps/macosx";
 			};
 			name = Debug;
 		};
@@ -825,7 +824,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/Modulemaps/macosx";
 			};
 			name = Release;
 		};
@@ -877,8 +875,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/Modulemaps/appletvos";
-				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/Modulemaps/appletvsimulator";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
@@ -899,8 +895,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/Modulemaps/appletvos";
-				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/Modulemaps/appletvsimulator";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Release;
@@ -948,8 +942,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/Modulemaps/watchos";
-				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/Modulemaps/watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -971,8 +963,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/Modulemaps/watchos";
-				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/Modulemaps/watchsimulator";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -1109,8 +1099,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/Modulemaps/iphoneos";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(SRCROOT)/Modulemaps/iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -1134,8 +1122,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
-				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "$(SRCROOT)/Modulemaps/iphoneos";
-				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "$(SRCROOT)/Modulemaps/iphonesimulator";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
