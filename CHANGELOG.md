@@ -4,6 +4,25 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.7.0
+
+### Release Notes
+
+Unfortunately the SQLCipher team is having a difficult time keeping up their support for the various Apple platforms. Because of this, we've had to move away from the dependency altogether. This required the database encryption logic to be removed from SQift.
+
+#### Added
+
+* Modulemaps to create `CSQLite` modules for each supported platform.
+
+#### Updated
+
+* Podspec to `preserve_paths` of the new modulemaps and import them using the `SWIFT_INCLUDE_PATHS` build setting.
+
+#### Removed
+
+* SQLCipher dependency and all encryption logic due to instability in the framework.
+* All sections in the README referencing SQLCipher or Encryption.
+
 ## 0.6.1
 
 ### Release Notes
