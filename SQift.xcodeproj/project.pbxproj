@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		4C7F1E9B1CD3507C00098A83 /* Cleanup Whitespace */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 4C7F1E9E1CD3507C00098A83 /* Build configuration list for PBXAggregateTarget "Cleanup Whitespace" */;
+			buildPhases = (
+				4C7F1E9F1CD3508200098A83 /* Cleanup Whitespace */,
+			);
+			dependencies = (
+			);
+			name = "Cleanup Whitespace";
+			productName = "Cleanup Whitespace";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		4C05B9741BF9039600CFC13C /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9731BF9039600CFC13C /* ConnectionPool.swift */; };
 		4C05B9781BF91A6800CFC13C /* ConnectionPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9771BF91A6800CFC13C /* ConnectionPoolTests.swift */; };
@@ -498,6 +512,9 @@
 					4C3C4CF91BFB2B6F0080A0C6 = {
 						CreatedOnToolsVersion = 7.1;
 					};
+					4C7F1E9B1CD3507C00098A83 = {
+						CreatedOnToolsVersion = 7.3;
+					};
 					4CA8C21D1BF6A49400822606 = {
 						CreatedOnToolsVersion = 7.1;
 					};
@@ -525,6 +542,7 @@
 				4C29B3151BFB28330086A2EF /* SQift tvOS */,
 				4C29B31E1BFB28330086A2EF /* SQift tvOS Tests */,
 				4C3C4CF91BFB2B6F0080A0C6 /* SQift watchOS */,
+				4C7F1E9B1CD3507C00098A83 /* Cleanup Whitespace */,
 			);
 		};
 /* End PBXProject section */
@@ -580,6 +598,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4C7F1E9F1CD3508200098A83 /* Cleanup Whitespace */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Cleanup Whitespace";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\ndirectories=(Source Tests)\n\nfor directory in \"${directories[@]}\"\ndo\necho \"Cleaning whitespace in directory: $directory\"\nfind $directory -iregex '.*\\.swift' -exec sed -E -i '' -e 's/^ +$//g' {} \\;\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4C29B2DF1BFB25C00086A2EF /* Sources */ = {
@@ -932,6 +967,20 @@
 			};
 			name = Release;
 		};
+		4C7F1E9C1CD3507C00098A83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4C7F1E9D1CD3507C00098A83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		4CA8C2301BF6A49400822606 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1155,6 +1204,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		4C7F1E9E1CD3507C00098A83 /* Build configuration list for PBXAggregateTarget "Cleanup Whitespace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C7F1E9C1CD3507C00098A83 /* Debug */,
+				4C7F1E9D1CD3507C00098A83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		4CA8C2181BF6A49400822606 /* Build configuration list for PBXProject "SQift" */ = {
 			isa = XCConfigurationList;
