@@ -206,7 +206,7 @@ public struct Row {
         The value extraction logic uses the `sqlite3_column_type` method to determine what the underlying data type
         is at the column index location in the database. It then uses one of the four following functions to extract
         the data as the correct type:
-    
+
             - sqlite3_column_int64:  `INTEGER` binding value.
             - sqlite3_column_double: `REAL` binding value.
             - sqlite3_column_text:   `TEXT` binding value.

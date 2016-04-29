@@ -43,7 +43,7 @@ public class Statement {
         Binds the specified parameters to the statement in their specified order.
 
         Internally, the binding process leverages the following SQLite methods:
-    
+
             - `sqlite3_bind_parameter_count`
             - `sqlite3_reset`
             - `sqlite3_clear_bindings`
@@ -166,7 +166,7 @@ public class Statement {
 
         Fetching the first row of a query can be convenient in cases where you are attempting to SELECT a single
         row. For example, using a LIMIT filter of 1 would be an excellent candidate for a `fetch`.
-     
+
             let row = try db.fetch("SELECT * FROM cars WHERE type='sedan' LIMIT 1")
 
         - throws: An `Error` if SQLite encounters an error stepping through the statement.

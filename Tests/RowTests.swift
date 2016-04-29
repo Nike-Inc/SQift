@@ -52,7 +52,7 @@ class RowTestCase: XCTestCase {
 
                 let name_String: String = row[1]
                 let date_NSDate: NSDate = row[2]
-                
+
                 let jobTitle_NSData: NSData = row[5]
 
                 // Then
@@ -75,7 +75,7 @@ class RowTestCase: XCTestCase {
 
                 XCTAssertEqual(name_String, "Lana Kane")
                 XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
-                
+
                 XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
             } else {
                 XCTFail("row should not be nil")
@@ -132,10 +132,10 @@ class RowTestCase: XCTestCase {
 
                 XCTAssertEqual(salary_Float, 9_600_200.11)
                 XCTAssertEqual(salary_Double, 9_600_200.11)
-                
+
                 XCTAssertEqual(name_String, "Lana Kane")
                 XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
-                
+
                 XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
             } else {
                 XCTFail("row should not be nil")
@@ -192,10 +192,10 @@ class RowTestCase: XCTestCase {
 
                 XCTAssertEqual(salary_Float, 9_600_200.11)
                 XCTAssertEqual(salary_Double, 9_600_200.11)
-                
+
                 XCTAssertEqual(name_String, "Lana Kane")
                 XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
-                
+
                 XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
             } else {
                 XCTFail("row should not be nil")
@@ -252,10 +252,10 @@ class RowTestCase: XCTestCase {
 
                 XCTAssertEqual(salary_Float, 9_600_200.11)
                 XCTAssertEqual(salary_Double, 9_600_200.11)
-                
+
                 XCTAssertEqual(name_String, "Lana Kane")
                 XCTAssertEqual(date_NSDate, BindingDateFormatter.dateFromString("2015-11-06T08:00:00.000")!)
-                
+
                 XCTAssertEqual(jobTitle_NSData, "Top Agent".dataUsingEncoding(NSUTF8StringEncoding))
             } else {
                 XCTFail("row should not be nil")
