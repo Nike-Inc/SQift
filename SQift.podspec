@@ -14,7 +14,15 @@ Pod::Spec.new do |s|
   s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :tag => s.version }
   s.source_files = 'Source/*.{swift,h}'
 
-  s.dependency 'SQLCipher', '~> 3.3'
+  s.preserve_paths = 'Module Maps/**/*'
 
-  s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1' }
+  s.pod_target_xcconfig = {
+    'SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]'  => '$(SRCROOT)/SQift/Module Maps/iphonesimulator',
+    'SWIFT_INCLUDE_PATHS[sdk=iphoneos*]'         => '$(SRCROOT)/SQift/Module Maps/iphoneos',    
+    'SWIFT_INCLUDE_PATHS[sdk=macosx*]'           => '$(SRCROOT)/SQift/Module Maps/macosx',
+    'SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]' => '$(SRCROOT)/SQift/Module Maps/appletvsimulator',
+    'SWIFT_INCLUDE_PATHS[sdk=appletvos*]'        => '$(SRCROOT)/SQift/Module Maps/appletvos',
+    'SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]'   => '$(SRCROOT)/SQift/Module Maps/watchsimulator',
+    'SWIFT_INCLUDE_PATHS[sdk=watchos*]'          => '$(SRCROOT)/SQift/Module Maps/watchos'
+  }
 end
