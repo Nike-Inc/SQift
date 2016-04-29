@@ -14,7 +14,6 @@ SQift is a lightweight Swift wrapper for SQLite.
 - [X] ConnectionPool for Parallel Execution of Read-Only Connections
 - [X] Top-Level Database to Simplify Thread-Safe Reads and Writes
 - [X] Database Migrations Support
-- [X] Database Encryption and Exporting Decrypted or Encrypted Variations
 - [x] Comprehensive Unit Test Coverage
 - [x] Complete Documentation
 
@@ -22,10 +21,6 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 - iOS 8.0+, OSX 10.10+, tvOS 9.0+, watchOS 2.0+
 - Xcode 7.3+
-
-## Dependencies
-
-- [SQLCipher](https://github.com/sqlcipher/sqlcipher) - 256 bit AES Encryption
 
 ## Communication
 
@@ -60,7 +55,7 @@ use_frameworks!
 source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'SQift', '~> 0.6'
+pod 'SQift', '~> 0.7'
 ```
 
 Then, run the following command:
@@ -420,80 +415,6 @@ try migrator.runMigrationsIfNecessary(
 ```
 
 All migrations must start at 1 and increment by 1 with each iteration. For example, the first time you create a `Migrator`, you want to set the `desiredSchemaVersion` to 1 and implement the `migrationSQLForSchemaVersion` closure to return your initial database schema SQL. Then, each time you need to migrate your database, bump the `desiredSchemaVersion` by 1 and add the new case to your `migrationSQLForSchemaVersion` schema closure. In a production application, it would be easiest to write actual SQL files, add them to your bundle and load the SQL string from the file for the required version.
-
-### Encryption
-
-Encrypting a database can help safeguard vulnerabilities and keep your data safe. SQift uses [SQLCipher](https://www.zetetic.net/sqlcipher/design/) to encrypt all data in a database using an encryption passphrase. SQLCipher will lazily convert the passphrase to a key using [PBKDF2 key derivation](http://en.wikipedia.org/wiki/PBKDF2). Once the database has been encrypted, the only way to access the data inside the database is to set the encryption passphrase before accessing the database through a `Connection`.
-
-#### Encrypting a Database Connection
-
-Encrypting a database is simple.
-
-```swift
-let passphrase = "1234567890"
-
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
-try connection.setEncryptionPassphrase(passphrase)
-```
-
-> Make sure to set the encryption passphrase immediately after opening the `Connection`.
-
-#### Updating the Encryption Passphrase
-
-Updating the encryption passphrase of a database can be done after the current encryption passphrase has been set. Otherwise you are essentially attempting to change the passphrase without first confirming you should have access to do so.
-
-```swift
-let currentPassphrase = "1234567890"
-let newPassphrase = "ABCDEFGHIJKLMNOP"
-
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
-try connection.setEncryptionPassphrase(currentPassphrase)
-
-try connection.updateEncryptionPassphrase(newPassphrase)
-```
-
-#### Exporting an Decrypted Form of an Encrypted Database
-
-In the event that you need to inspect a decrypted form of an encrypted database, you can do so by using the `exportDecryptedDatabaseToPath()` method in SQift.
-
-```swift
-let passphrase = "1234567890"
-
-let connection = try Connection(connectionType: .OnDisk("path_to_db"))
-try connection.setEncryptionPassphrase(currentPassphrase)
-
-try connection.exportDecryptedDatabaseToPath("path_to_decrypted_db")
-```
-
-For more information about exporting encrypted or decrypted forms of a database, please refer to the SQLCipher [export documentation](https://www.zetetic.net/sqlcipher/sqlcipher-api/index.html#sqlcipher_export).
-
-#### Inspecting Encrypted Database
-
-So now you've encrypted your database and you're super safe, but how do you inspect your newly encrypted super safe database? The `sqlite3` command line tool does not support encryption. Neither do the widely popular [SQLPro for SQLite](https://itunes.apple.com/us/app/sqlpro-for-sqlite-sql-database/id586001240?mt=12) or [Base - SQLite Editor](https://itunes.apple.com/us/app/base-sqlite-editor/id402383384?mt=12) apps. While this is unfortunate, you still have several options.
-
-First off, you should install the [sqlcipher](http://brewformulas.org/Sqlcipher) Homebrew package. It allows you to inspect encrypted databases using the `sqlcipher` command line tool. Here are some steps to get you going.
-
-```bash
-# Install Homebrew
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-# Update Homebrew
-brew update
-brew doctor
-
-# Install sqlcipher package
-brew install sqlcipher
-
-# Start using sqlcipher
-$ sqlcipher encrypted_stuff.db
-sqlite> PRAGMA key = 'passphrase';
-sqlite> CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL);
-sqlite> SELECT count(*) FROM sqlite_master;
-```
-
-If you prefer graphical interfaces, you could install [SQLiteManager 4](https://itunes.apple.com/us/app/sqlitemanager-4/id604707021?mt=12). While it's not quite as nice as `SQLPro` or `Base`, it's still a fairly solid application. Also, you can always use the `sqlcipher` command line tool to export a decrypted form of the database if you really wanted to a different application.
-
-> You could also write a simple bash script to wrap `sqlcipher` to export the decrypted database by passing in the passphrase.
 
 ---
 
