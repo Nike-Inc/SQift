@@ -6,8 +6,8 @@
 //  Copyright © 2015 Nike. All rights reserved.
 //
 
+import CSQLite
 import Foundation
-import SQLCipher
 
 /// The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a
 /// thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available

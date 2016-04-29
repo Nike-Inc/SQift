@@ -88,10 +88,6 @@
 		4CC288EC1BFD070D009A5577 /* StorageLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC288EA1BFD070D009A5577 /* StorageLocation.swift */; };
 		4CC288ED1BFD070D009A5577 /* StorageLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC288EA1BFD070D009A5577 /* StorageLocation.swift */; };
 		4CC288EE1BFD070D009A5577 /* StorageLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC288EA1BFD070D009A5577 /* StorageLocation.swift */; };
-		4CC289041BFD3D09009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288F91BFD3CE2009A5577 /* SQLCipher.framework */; };
-		4CC289081BFD3F3A009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FB1BFD3CE2009A5577 /* SQLCipher.framework */; };
-		4CC2890B1BFD3F44009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FD1BFD3CE2009A5577 /* SQLCipher.framework */; };
-		4CC2890E1BFD3F4E009A5577 /* SQLCipher.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CC288FF1BFD3CE2009A5577 /* SQLCipher.framework */; };
 		4CF8B4521BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
 		4CF8B4531BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
 		4CF8B4541BFD5DAF00472B19 /* DatabaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */; };
@@ -122,69 +118,6 @@
 			remoteGlobalIDString = 4CA8C21D1BF6A49400822606;
 			remoteInfo = SQift;
 		};
-		4CC288F81BFD3CE2009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4C0041981BFC382400ED2AD5;
-			remoteInfo = "SQLCipher iOS";
-		};
-		4CC288FA1BFD3CE2009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4C0041B11BFC3B2200ED2AD5;
-			remoteInfo = "SQLCipher OSX";
-		};
-		4CC288FC1BFD3CE2009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4C0041C31BFC3CC000ED2AD5;
-			remoteInfo = "SQLCipher tvOS";
-		};
-		4CC288FE1BFD3CE2009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4C0041D61BFC3E2500ED2AD5;
-			remoteInfo = "SQLCipher watchOS";
-		};
-		4CC289001BFD3CE2009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC046055464E500DB518D;
-			remoteInfo = sqlcipher;
-		};
-		4CC289021BFD3D02009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4C0041971BFC382400ED2AD5;
-			remoteInfo = "SQLCipher iOS";
-		};
-		4CC289061BFD3F34009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4C0041B01BFC3B2200ED2AD5;
-			remoteInfo = "SQLCipher OSX";
-		};
-		4CC289091BFD3F41009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4C0041C21BFC3CC000ED2AD5;
-			remoteInfo = "SQLCipher tvOS";
-		};
-		4CC2890C1BFD3F4A009A5577 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4C0041D51BFC3E2500ED2AD5;
-			remoteInfo = "SQLCipher watchOS";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -195,6 +128,7 @@
 		4C29B3161BFB28330086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B31F1BFB28330086A2EF /* SQift tvOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift tvOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CA101DA1CD3329900C1B49C /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/include/sqlite3.h; sourceTree = DEVELOPER_DIR; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2391BF6A4C100822606 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -219,7 +153,6 @@
 		4CA8C25F1BF6A5E000822606 /* TestTables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTables.swift; sourceTree = "<group>"; };
 		4CC288E51BFD0707009A5577 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
 		4CC288EA1BFD070D009A5577 /* StorageLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageLocation.swift; sourceTree = "<group>"; };
-		4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sqlcipher.xcodeproj; path = Submodules/sqlcipher/sqlcipher.xcodeproj; sourceTree = "<group>"; };
 		4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 		4CF8B4571BFD61A900472B19 /* RowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -229,7 +162,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC289081BFD3F3A009A5577 /* SQLCipher.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,7 +177,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC2890B1BFD3F44009A5577 /* SQLCipher.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +192,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC2890E1BFD3F4E009A5577 /* SQLCipher.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,7 +199,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4CC289041BFD3D09009A5577 /* SQLCipher.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +219,6 @@
 				4CA8C2381BF6A4C100822606 /* Source */,
 				4CA8C23D1BF6A4C700822606 /* Tests */,
 				4CA8C21F1BF6A49400822606 /* Products */,
-				4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -351,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				4CA8C23A1BF6A4C100822606 /* SQift.h */,
+				4CA101DA1CD3329900C1B49C /* sqlite3.h */,
 				4CA8C2391BF6A4C100822606 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -378,18 +307,6 @@
 				4CA8C25D1BF6A5E000822606 /* NSFileManager+SQift.swift */,
 			);
 			name = Extensions;
-			sourceTree = "<group>";
-		};
-		4CC288F01BFD3CE2009A5577 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4CC288F91BFD3CE2009A5577 /* SQLCipher.framework */,
-				4CC288FB1BFD3CE2009A5577 /* SQLCipher.framework */,
-				4CC288FD1BFD3CE2009A5577 /* SQLCipher.framework */,
-				4CC288FF1BFD3CE2009A5577 /* SQLCipher.framework */,
-				4CC289011BFD3CE2009A5577 /* libsqlcipher.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -442,7 +359,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4CC289071BFD3F34009A5577 /* PBXTargetDependency */,
 			);
 			name = "SQift OSX";
 			productName = "SQift OSX";
@@ -479,7 +395,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4CC2890A1BFD3F41009A5577 /* PBXTargetDependency */,
 			);
 			name = "SQift tvOS";
 			productName = "SQift tvOS";
@@ -516,7 +431,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4CC2890D1BFD3F4A009A5577 /* PBXTargetDependency */,
 			);
 			name = "SQift watchOS";
 			productName = "SQift watchOS";
@@ -535,7 +449,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4CC289031BFD3D02009A5577 /* PBXTargetDependency */,
 			);
 			name = "SQift iOS";
 			productName = SQift;
@@ -603,12 +516,6 @@
 			mainGroup = 4CA8C2141BF6A49400822606;
 			productRefGroup = 4CA8C21F1BF6A49400822606 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4CC288F01BFD3CE2009A5577 /* Products */;
-					ProjectRef = 4CC288EF1BFD3CE2009A5577 /* sqlcipher.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				4CA8C21D1BF6A49400822606 /* SQift iOS */,
@@ -621,44 +528,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		4CC288F91BFD3CE2009A5577 /* SQLCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLCipher.framework;
-			remoteRef = 4CC288F81BFD3CE2009A5577 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4CC288FB1BFD3CE2009A5577 /* SQLCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLCipher.framework;
-			remoteRef = 4CC288FA1BFD3CE2009A5577 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4CC288FD1BFD3CE2009A5577 /* SQLCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLCipher.framework;
-			remoteRef = 4CC288FC1BFD3CE2009A5577 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4CC288FF1BFD3CE2009A5577 /* SQLCipher.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SQLCipher.framework;
-			remoteRef = 4CC288FE1BFD3CE2009A5577 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4CC289011BFD3CE2009A5577 /* libsqlcipher.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libsqlcipher.a;
-			remoteRef = 4CC289001BFD3CE2009A5577 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4C29B2E21BFB25C00086A2EF /* Resources */ = {
@@ -860,26 +729,6 @@
 			target = 4CA8C21D1BF6A49400822606 /* SQift iOS */;
 			targetProxy = 4CA8C22A1BF6A49400822606 /* PBXContainerItemProxy */;
 		};
-		4CC289031BFD3D02009A5577 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "SQLCipher iOS";
-			targetProxy = 4CC289021BFD3D02009A5577 /* PBXContainerItemProxy */;
-		};
-		4CC289071BFD3F34009A5577 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "SQLCipher OSX";
-			targetProxy = 4CC289061BFD3F34009A5577 /* PBXContainerItemProxy */;
-		};
-		4CC2890A1BFD3F41009A5577 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "SQLCipher tvOS";
-			targetProxy = 4CC289091BFD3F41009A5577 /* PBXContainerItemProxy */;
-		};
-		4CC2890D1BFD3F4A009A5577 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "SQLCipher watchOS";
-			targetProxy = 4CC2890C1BFD3F4A009A5577 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -907,6 +756,7 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Module Maps/macosx\"";
 			};
 			name = Debug;
 		};
@@ -930,6 +780,7 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "\"$(SRCROOT)/Module Maps/macosx\"";
 			};
 			name = Release;
 		};
@@ -981,6 +832,8 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Module Maps/appletvos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Module Maps/appletvsimulator\"";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Debug;
@@ -1001,6 +854,8 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "\"$(SRCROOT)/Module Maps/appletvos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "\"$(SRCROOT)/Module Maps/appletvsimulator\"";
 				TARGETED_DEVICE_FAMILY = 3;
 			};
 			name = Release;
@@ -1048,6 +903,8 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Module Maps/watchos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Module Maps/watchsimulator\"";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Debug;
@@ -1069,6 +926,8 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "\"$(SRCROOT)/Module Maps/watchos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "\"$(SRCROOT)/Module Maps/watchsimulator\"";
 				TARGETED_DEVICE_FAMILY = 4;
 			};
 			name = Release;
@@ -1191,6 +1050,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/Module Maps/iphoneos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/Module Maps/iphonesimulator\"";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
@@ -1214,6 +1075,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
+				"SWIFT_INCLUDE_PATHS[sdk=iphoneos*]" = "\"$(SRCROOT)/Module Maps/iphoneos\"";
+				"SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]" = "\"$(SRCROOT)/Module Maps/iphonesimulator\"";
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
