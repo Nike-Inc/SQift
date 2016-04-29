@@ -1,3 +1,12 @@
+###########################################################################################
+#
+#  NOTE: This podspec will not pass `pod lib lint` until the following issue is resolved:
+#    - https://github.com/CocoaPods/CocoaPods/issues/4607
+#
+#  However, the podspec does `pod spec lint` successfully.
+#
+###########################################################################################
+
 Pod::Spec.new do |s|
   s.name = 'SQift'
   s.version = '0.7.0'
