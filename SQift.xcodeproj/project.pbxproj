@@ -235,6 +235,8 @@
 				4CA8C21F1BF6A49400822606 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
+			wrapsLines = 1;
 		};
 		4CA8C21F1BF6A49400822606 /* Products */ = {
 			isa = PBXGroup;
