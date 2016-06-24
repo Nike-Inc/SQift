@@ -294,7 +294,7 @@ extension NSURL: Binding {
     public typealias BindingType = String
 
     /// The binding value representation of the type to be bound to a `Statement`.
-    public var bindingValue: BindingValue { return .Text(absoluteString) }
+    public var bindingValue: BindingValue { return .Text(absoluteString ?? "") }
 
     /// Converts the binding value `Any` object representation to an equivalent `NSURL` representation.
     public static func fromBindingValue(value: Any) -> NSURL { return NSURL(string: value as! String)! }
