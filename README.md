@@ -19,8 +19,9 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Requirements
 
-- iOS 8.0+, OSX 10.10+, tvOS 9.0+, watchOS 2.0+
-- Xcode 7.3+
+- iOS 9.0+, macOS 10.11+, tvOS 9.0+, watchOS 2.0+
+- Xcode 8.0+
+- Swift 2.3
 
 ## Communication
 
@@ -43,19 +44,19 @@ SQift is a lightweight Swift wrapper for SQLite.
 $ gem install cocoapods
 ```
 
-> CocoaPods 0.39.0+ is required to build SQift.
+> CocoaPods 1.0+ is required to build SQift.
 
 To integrate SQift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 # Spec sources
 source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'SQift', '~> 0.7'
+pod 'SQift', '~> 0.8'
 ```
 
 Then, run the following command:

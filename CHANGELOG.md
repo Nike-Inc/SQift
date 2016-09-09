@@ -4,6 +4,19 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.8.0
+
+### Release Notes
+
+This release is all about updating to Xcode 8 and Swift 2.3. There are no other changes in this release.
+
+#### Updated
+
+- Updated project to Xcode 8 and Swift 2.3 and bumped deployment targets.
+- Set code signing to automatic with no team on framework and test targets.
+
+---
+
 ## 0.7.1
 
 ### Release Notes
@@ -12,11 +25,11 @@ Due to CI not being able to always have Xcode live in the /Applications folder, 
 
 #### Added
 
-* The `sqlite3.h` header to the project and the `-lsqlite3` linker flag.
+- The `sqlite3.h` header to the project and the `-lsqlite3` linker flag.
 
 #### Removed
 
-* Modulemaps that created the `CSQLite` framework to import.
+- Modulemaps that created the `CSQLite` framework to import.
 
 ## 0.7.0
 
@@ -26,16 +39,16 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Added
 
-* Modulemaps to create `CSQLite` modules for each supported platform.
+- Modulemaps to create `CSQLite` modules for each supported platform.
 
 #### Updated
 
-* Podspec to `preserve_paths` of the new modulemaps and import them using the `SWIFT_INCLUDE_PATHS` build setting.
+- Podspec to `preserve_paths` of the new modulemaps and import them using the `SWIFT_INCLUDE_PATHS` build setting.
 
 #### Removed
 
-* SQLCipher dependency and all encryption logic due to instability in the framework.
-* All sections in the README referencing SQLCipher or Encryption.
+- SQLCipher dependency and all encryption logic due to instability in the framework.
+- All sections in the README referencing SQLCipher or Encryption.
 
 ## 0.6.1
 
@@ -43,8 +56,8 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Updated
 
-* Submodule reference for SQLCipher to point at Bitbucket clone.
-* Connection tests to verify foreign key settings were connection specific.
+- Submodule reference for SQLCipher to point at Bitbucket clone.
+- Connection tests to verify foreign key settings were connection specific.
 
 ## 0.6.0
 
@@ -52,7 +65,7 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Added
 
-* String extension allowing users to safely escape SQL strings.
+- String extension allowing users to safely escape SQL strings.
 
 ## 0.5.0
 
@@ -60,8 +73,8 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Updated
 
-* All logic to use Swift 2.2 APIs.
-* The required Xcode version to 7.3.
+- All logic to use Swift 2.2 APIs.
+- The required Xcode version to 7.3.
 
 ## 0.4.0
 
@@ -69,7 +82,7 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Added
 
-* Added `NSURL` binding along with `Row` subscripts and unit tests.
+- Added `NSURL` binding along with `Row` subscripts and unit tests.
 
 ## 0.3.0
 
@@ -77,22 +90,22 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Added
 
-* New `run` and `fetch` variant APIs for arrays and dictionaries to `Connection`.
-* Tests verifying all parameter binding variants work as expected for `fetch` and `query` APIs.
+- New `run` and `fetch` variant APIs for arrays and dictionaries to `Connection`.
+- Tests verifying all parameter binding variants work as expected for `fetch` and `query` APIs.
 
 #### Updated
 
-* `Database` and `Connection` initializers now set `sharedCache` to `false` by default.
+- `Database` and `Connection` initializers now set `sharedCache` to `false` by default.
 
 > Using a `sharedCache` is intended for use with embedded servers to help keep memory usage low for embedded devices. For app development using a WAL journal mode, it is better to not use a shared cache to avoid table locking.
 
 #### Removed
 
-* The `readOnly` parameter from the `Database` initializer.
+- The `readOnly` parameter from the `Database` initializer.
 
 #### Fixed
 
-* Refactored test names to use `Connection` instead of `Database` where applicable.
+- Refactored test names to use `Connection` instead of `Database` where applicable.
 
 ## 0.2.0
 
@@ -100,16 +113,16 @@ Unfortunately the SQLCipher team is having a difficult time keeping up their sup
 
 #### Added
 
-* Test around fetching a `Row` that cannot be found.
-* Method to `Connection` allowing you to query a value with a parameter array.
+- Test around fetching a `Row` that cannot be found.
+- Method to `Connection` allowing you to query a value with a parameter array.
 
 #### Updated
 
-* The connection property ACL on the `ConnectionQueue` to `public`.
-* The writer queue and reader pool property ACLs on the `Database` to `public`.
-* `Connection` and `Statement` fetch functions to return an optional `Row` for cases where the fetch does not find a valid `Row`.
-* The code sample in the README for fetching a single `Row`.
-* `Database` and `ConnectionPool` initializers to take connection preparation closures to allow you to prepare a `Connection` for use. This allows you to set PRAGMAs, custom collation closures, etc. on a connection before starting to use it.
+- The connection property ACL on the `ConnectionQueue` to `public`.
+- The writer queue and reader pool property ACLs on the `Database` to `public`.
+- `Connection` and `Statement` fetch functions to return an optional `Row` for cases where the fetch does not find a valid `Row`.
+- The code sample in the README for fetching a single `Row`.
+- `Database` and `ConnectionPool` initializers to take connection preparation closures to allow you to prepare a `Connection` for use. This allows you to set PRAGMAs, custom collation closures, etc. on a connection before starting to use it.
 
 ## 0.1.0
 
