@@ -4,6 +4,21 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 0.9.0
+
+### Release Notes
+
+#### Updated
+
+- Updated to SQLite 3.14.0 header used in iOS 10.
+- Tracing to use the new `sqlite3_trace_v2` function with support for handling `TraceEvent` instances.
+
+#### Fixed
+
+- Deprecation warning for `sqlite3_trace` function by switching over to `sqlite3_trace_v2`.
+
+---
+
 ## 0.8.0
 
 ### Release Notes
