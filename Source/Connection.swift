@@ -25,7 +25,53 @@ public class Connection {
         case Exclusive = "EXCLUSIVE"
     }
 
-    private typealias TraceCallback = @convention(block) UnsafePointer<Int8> -> Void
+    /**
+        Used to capture all information about a trace event.
+
+        For more info about tracing, see <https://www.sqlite.org/c3ref/trace_v2.html>.
+
+        - Statement:        Invoked when a prepared statement first begins running and possibly at other times during 
+                            the execution of the prepared statement, such as the start of each trigger subprogram. The 
+                            `statement` represents the expanded SQL statement. The `SQL` represents the unexpanded SQL 
+                            text of the prepared statement or a SQL comment that indicates the invocation of a trigger.
+        - Profile:          Invoked when statement execution is complete. The `statement` represents the expanded SQL
+                            statement. The `seconds` represents the estimated number of seconds that the prepared 
+                            statement took to run.
+        - Row:              Invoked whenever a prepared statement generates a single row of result. The `statement` 
+                            represents the expanded SQL statement.
+        - ConnectionClosed: Invoked when a database connection closes. The `connection` is a pointer to the database 
+                            connection.
+    */
+    public enum TraceEvent: CustomStringConvertible {
+        case Statement(statement: String, SQL: String)
+        case Profile(statement: String, seconds: Double)
+        case Row(statement: String)
+        case ConnectionClosed(connection: COpaquePointer)
+
+        /// Returns the `.Statement` bitwise mask.
+        public static let StatementMask        = UInt32(SQLITE_TRACE_STMT)
+        /// Returns the `.Profile` bitwise mask.
+        public static let ProfileMask          = UInt32(SQLITE_TRACE_PROFILE)
+        /// Returns the `.Row` bitwise mask.
+        public static let RowMask              = UInt32(SQLITE_TRACE_ROW)
+        /// Returns the `.ConnectionClosed` bitwise mask.
+        public static let ConnectionMask = UInt32(SQLITE_TRACE_CLOSE)
+
+        public var description: String {
+            switch self {
+            case .Statement(let statement, let SQL):
+                return "TraceEvent (Statement): statement: \"\(statement)\", SQL: \"\(SQL)\""
+            case .Profile(let statement, let seconds):
+                return "TraceEvent (Profile): statement: \"\(statement)\", SQL: \"\(seconds)\""
+            case .Row(let statement):
+                return "TraceEvent (Row): \"\(statement)\""
+            case .ConnectionClosed(let connection):
+                return "TraceEvent (ConnectionClosed): connection: \"\(connection)\""
+            }
+        }
+    }
+
+    private typealias TraceCallback = @convention(block) (UInt32, UnsafePointer<Void>, UnsafePointer<Void>) -> Int32
     private typealias CollationCallback = @convention(block) (UnsafePointer<Void>, Int32, UnsafePointer<Void>, Int32) -> Int32
 
     // MARK: - Properties
@@ -519,21 +565,59 @@ public class Connection {
     /**
         Registers the callback with SQLite to be called each time a statement calls step.
 
-        For more details, please refer to: <https://www.sqlite.org/c3ref/profile.html>.
+        For more details, please refer to: <https://www.sqlite.org/c3ref/trace_v2.html>.
 
+        - parameter mask:     The bitwise OR-ed mask of trace event constants.
         - parameter callback: The callback closure called when SQLite internally calls step on a statement.
     */
-    public func trace(callback: (String -> Void)?) {
+    public func trace(mask mask: UInt32? = nil, callback: (TraceEvent -> Void)?) {
         guard let callback = callback else {
-            sqlite3_trace(handle, nil, nil)
+            sqlite3_trace_v2(handle, 0, nil, nil)
             traceCallback = nil
             return
         }
 
-        traceCallback = { callback(String.fromCString($0)!) }
+        traceCallback = { mask, arg1, arg2 in
+            let statementOrConnection = COpaquePointer(arg1)
+            let event: TraceEvent
+
+            if mask & UInt32(SQLITE_TRACE_STMT) > 0 {
+                guard
+                    let statement = String.fromCString(sqlite3_expanded_sql(statementOrConnection)),
+                    let SQL = String.fromCString(UnsafePointer<CChar>(arg2))
+                else { return 0 }
+
+                event = .Statement(statement: statement, SQL: SQL)
+            } else if mask & UInt32(SQLITE_TRACE_PROFILE) > 0 {
+                guard let statement = String.fromCString(sqlite3_expanded_sql(statementOrConnection)) else { return 0 }
+
+                let nanoseconds = UnsafePointer<Int64>(arg2).memory
+                let seconds = Double(nanoseconds) * 0.000_000_001
+
+                event = .Profile(statement: statement, seconds: seconds)
+            } else if mask & UInt32(SQLITE_TRACE_ROW) > 0 {
+                guard let statement = String.fromCString(sqlite3_expanded_sql(statementOrConnection)) else { return 0 }
+                event = .Row(statement: statement)
+            } else {
+                event = .ConnectionClosed(connection: statementOrConnection)
+            }
+
+            callback(event)
+
+            return 0
+        }
+
+        let mask = mask ?? UInt32(SQLITE_TRACE_STMT | SQLITE_TRACE_PROFILE | SQLITE_TRACE_ROW | SQLITE_TRACE_CLOSE)
         let traceCallbackPointer = unsafeBitCast(traceCallback, UnsafeMutablePointer<Void>.self)
 
-        sqlite3_trace(handle, { unsafeBitCast($0, TraceCallback.self)($1) }, traceCallbackPointer)
+        sqlite3_trace_v2(
+            handle,
+            mask,
+            { mask, context, arg1, arg2 in
+                return unsafeBitCast(context, TraceCallback.self)(mask, arg1, arg2)
+            },
+            traceCallbackPointer
+        )
     }
 
     // MARK: - Collation

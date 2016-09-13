@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SQift
+@testable import SQift
 import XCTest
 
 class ConnectionTestCase: XCTestCase {
@@ -18,8 +18,8 @@ class ConnectionTestCase: XCTestCase {
 
     // MARK: - Setup and Teardown
 
-    override func tearDown() {
-        super.tearDown()
+    override func setUp() {
+        super.setUp()
         NSFileManager.removeItemAtPath(storageLocation.path)
     }
 
@@ -609,32 +609,120 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionCanTraceStatementExecution() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
+            var connection: Connection? = try Connection(storageLocation: storageLocation)
 
-            var statements: [String] = []
+            let mask = (
+                Connection.TraceEvent.StatementMask |
+                Connection.TraceEvent.ProfileMask |
+                Connection.TraceEvent.RowMask |
+                Connection.TraceEvent.ConnectionMask
+            )
+
+            var traceEvents: [Connection.TraceEvent] = []
 
             // When
-            connection.trace { SQL in
-                statements.append(SQL)
+            connection?.trace(mask: mask) { event in
+                traceEvents.append(event)
             }
 
-            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
-            try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
-            try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
+            try connection?.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+            try connection?.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
+            try connection?.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
 
-            try connection.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
+            try connection?.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
 
-            connection.trace(nil)
+            connection = nil
 
             // Then
-            if statements.count == 4 {
-                XCTAssertEqual(statements[0], "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
-                XCTAssertEqual(statements[1], "INSERT INTO agents VALUES(1, 'Sterling Archer')")
-                XCTAssertEqual(statements[2], "INSERT INTO agents VALUES(2, 'Lana Kane')")
-                XCTAssertEqual(statements[3], "SELECT * FROM agents")
+            if traceEvents.count == 11 {
+                XCTAssertEqual(traceEvents[0].rawValue, "Statement")
+                XCTAssertEqual(traceEvents[1].rawValue, "Profile")
+                XCTAssertEqual(traceEvents[2].rawValue, "Statement")
+                XCTAssertEqual(traceEvents[3].rawValue, "Profile")
+                XCTAssertEqual(traceEvents[4].rawValue, "Statement")
+                XCTAssertEqual(traceEvents[5].rawValue, "Profile")
+                XCTAssertEqual(traceEvents[6].rawValue, "Statement")
+                XCTAssertEqual(traceEvents[7].rawValue, "Row")
+                XCTAssertEqual(traceEvents[8].rawValue, "Row")
+                XCTAssertEqual(traceEvents[9].rawValue, "Profile")
+                XCTAssertEqual(traceEvents[10].rawValue, "ConnectionClosed")
+
+                if case .Statement(let statement, let SQL) = traceEvents[0] {
+                    XCTAssertEqual(statement, "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+                    XCTAssertEqual(SQL, "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+                }
+
+                if case .Profile(let statement, let seconds) = traceEvents[1] {
+                    XCTAssertEqual(statement, "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+                    XCTAssertGreaterThanOrEqual(seconds, 0.0)
+                }
+
+                if case .Statement(let statement, let SQL) = traceEvents[2] {
+                    XCTAssertEqual(statement, "INSERT INTO agents VALUES(1, \'Sterling Archer\')")
+                    XCTAssertEqual(SQL, "INSERT INTO agents VALUES(?, ?)")
+                }
+
+                if case .Profile(let statement, let seconds) = traceEvents[3] {
+                    XCTAssertEqual(statement, "INSERT INTO agents VALUES(1, \'Sterling Archer\')")
+                    XCTAssertGreaterThanOrEqual(seconds, 0.0)
+                }
+
+                if case .Statement(let statement, let SQL) = traceEvents[4] {
+                    XCTAssertEqual(statement, "INSERT INTO agents VALUES(2, \'Lana Kane\')")
+                    XCTAssertEqual(SQL, "INSERT INTO agents VALUES(?, ?)")
+                }
+
+                if case .Profile(let statement, let seconds) = traceEvents[5] {
+                    XCTAssertEqual(statement, "INSERT INTO agents VALUES(2, \'Lana Kane\')")
+                    XCTAssertGreaterThanOrEqual(seconds, 0.0)
+                }
+
+                if case .Statement(let statement, let SQL) = traceEvents[6] {
+                    XCTAssertEqual(statement, "SELECT * FROM agents")
+                    XCTAssertEqual(SQL, "SELECT * FROM agents")
+                }
+
+                if case .Row(let statement) = traceEvents[7] {
+                    XCTAssertEqual(statement, "SELECT * FROM agents")
+                }
+
+                if case .Row(let statement) = traceEvents[8] {
+                    XCTAssertEqual(statement, "SELECT * FROM agents")
+                }
+
+                if case .Profile(let statement, let seconds) = traceEvents[9] {
+                    XCTAssertEqual(statement, "SELECT * FROM agents")
+                    XCTAssertGreaterThanOrEqual(seconds, 0.0)
+                }
             } else {
-                XCTFail("statements count should be 4")
+                XCTFail("traceEvents count should be 10")
             }
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanTraceStatementExecutionUsingMask() {
+        do {
+            // Given
+            var connection: Connection? = try Connection(storageLocation: storageLocation)
+            var traceEvents: [Connection.TraceEvent] = []
+
+            // When
+            connection?.trace(mask: Connection.TraceEvent.StatementMask | Connection.TraceEvent.ProfileMask) { event in
+                traceEvents.append(event)
+            }
+
+            try connection?.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
+            try connection?.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
+            try connection?.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
+
+            try connection?.prepare("SELECT * FROM agents").forEach { _ in /** No-op */ }
+
+            connection = nil
+
+            // Then
+            XCTAssertEqual(traceEvents.count, 8)
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
         }
@@ -720,6 +808,23 @@ class ConnectionTestCase: XCTestCase {
             XCTAssertFalse(equal2, "equal 2 should be false when using default compare options")
         } catch {
             XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+}
+
+// MARK: -
+
+extension Connection.TraceEvent {
+    var rawValue: String {
+        switch self {
+        case .Statement:
+            return "Statement"
+        case .Profile:
+            return "Profile"
+        case .Row:
+            return "Row"
+        case .ConnectionClosed:
+            return "ConnectionClosed"
         }
     }
 }
