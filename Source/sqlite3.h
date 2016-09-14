@@ -2795,10 +2795,10 @@ SQLITE_API int SQLITE_STDCALL sqlite3_set_authorizer(
 ** sqlite3_profile() function is considered experimental and is
 ** subject to change in future versions of SQLite.
 */
-SQLITE_API SQLITE_DEPRECATED void *SQLITE_STDCALL sqlite3_trace(sqlite3*,
-   void(*xTrace)(void*,const char*), void*);
-SQLITE_API SQLITE_DEPRECATED void *SQLITE_STDCALL sqlite3_profile(sqlite3*,
-   void(*xProfile)(void*,const char*,sqlite3_uint64), void*);
+SQLITE_API void *SQLITE_STDCALL sqlite3_trace(sqlite3*,
+   void(*xTrace)(void*,const char*), void*); // Removed deprecation - Christian Noon (09/13/16)
+SQLITE_API void *SQLITE_STDCALL sqlite3_profile(sqlite3*,
+   void(*xProfile)(void*,const char*,sqlite3_uint64), void*); // Removed deprecation - Christian Noon (09/13/16)
 
 /*
 ** CAPI3REF: SQL Trace Event Codes
