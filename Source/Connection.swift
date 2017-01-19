@@ -42,7 +42,7 @@
 //        - ConnectionClosed: Invoked when a database connection closes. The `connection` is a pointer to the database 
 //                            connection.
 //    */
-//    @available(iOS 10.0, OSX 10.12.0, tvOS 10.0, watchOS 3.0, *)
+//    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
 //    public enum TraceEvent: CustomStringConvertible {
 //        case Statement(statement: String, SQL: String)
 //        case Profile(statement: String, seconds: Double)
@@ -593,7 +593,7 @@
 //        - parameter mask:     The bitwise OR-ed mask of trace event constants.
 //        - parameter callback: The callback closure called when SQLite internally calls step on a statement.
 //    */
-//    @available(iOS 10.0, OSX 10.12.0, tvOS 10.0, watchOS 3.0, *)
+//    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
 //    public func traceEvent(mask mask: UInt32? = nil, callback: (TraceEvent -> Void)?) {
 //        guard let callback = callback else {
 //            sqlite3_trace_v2(handle, 0, nil, nil)
