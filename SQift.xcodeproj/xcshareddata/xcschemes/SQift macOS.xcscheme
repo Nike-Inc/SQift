@@ -29,7 +29,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4C29B2EC1BFB25C00086A2EF"
-               BuildableName = "SQift macOS Tests.xctest"
+               BuildableName = "SQift Tests.xctest"
                BlueprintName = "SQift macOS Tests"
                ReferencedContainer = "container:SQift.xcodeproj">
             </BuildableReference>
@@ -47,7 +47,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "4C29B2EC1BFB25C00086A2EF"
-               BuildableName = "SQift macOS Tests.xctest"
+               BuildableName = "SQift Tests.xctest"
                BlueprintName = "SQift macOS Tests"
                ReferencedContainer = "container:SQift.xcodeproj">
             </BuildableReference>
