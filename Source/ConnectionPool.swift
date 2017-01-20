@@ -78,7 +78,7 @@
 //
 //        - parameter closure: The closure to execute.
 //
-//        - throws: An `Error` if SQLite encounters an error executing the closure.
+//        - throws: A `SQLiteError` if SQLite encounters an error executing the closure.
 //    */
 //    public func execute(closure: Connection throws -> Void) throws {
 //        var connection: ConnectionQueue!

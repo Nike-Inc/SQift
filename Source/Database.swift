@@ -34,7 +34,7 @@
 //        - parameter writerConnectionPreparation: Closure executed when the writer connection is created. Default is `nil`.
 //        - parameter readerConnectionPreparation: Closure executed when each new reader connection is created. Default is `nil`.
 //
-//        - throws: An `Error` if SQLite encounters an error opening the writable connection.
+//        - throws: A `SQLiteError` if SQLite encounters an error opening the writable connection.
 //
 //        - returns: The new `Database` instance.
 //    */
@@ -78,7 +78,7 @@
 //        - parameter writerConnectionPreparation: Closure executed when the writer connection is created. Default is `nil`.
 //        - parameter readerConnectionPreparation: Closure executed when each new reader connection is created. Default is `nil`.
 //
-//        - throws: An `Error` if SQLite encounters an error opening the writable connection.
+//        - throws: A `SQLiteError` if SQLite encounters an error opening the writable connection.
 //
 //        - returns: The new `Database` instance.
 //    */
@@ -109,7 +109,7 @@
 //
 //        - parameter closure: The closure to execute.
 //
-//        - throws: An `Error` if SQLite encounters an error executing the closure.
+//        - throws: A `SQLiteError` if SQLite encounters an error executing the closure.
 //    */
 //    public func executeRead(closure: Connection throws -> Void) throws {
 //        try readerConnectionPool.execute { connection in
@@ -122,7 +122,7 @@
 //
 //        - parameter closure: The closure to execute.
 //
-//        - throws: An `Error` if SQLite encounters an error executing the closure.
+//        - throws: A `SQLiteError` if SQLite encounters an error executing the closure.
 //    */
 //    public func executeWrite(closure: Connection throws -> Void) throws {
 //        try writerConnectionQueue.execute { connection in
