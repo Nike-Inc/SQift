@@ -54,16 +54,16 @@ public class Connection {
         case row(statement: String)
         case connectionClosed(connection: OpaquePointer)
 
-        /// Returns the `.Statement` bitwise mask.
+        /// Returns the `.statement` bitwise mask.
         public static let statementMask = UInt32(SQLITE_TRACE_STMT)
 
-        /// Returns the `.Profile` bitwise mask.
+        /// Returns the `.profile` bitwise mask.
         public static let profileMask = UInt32(SQLITE_TRACE_PROFILE)
 
-        /// Returns the `.Row` bitwise mask.
+        /// Returns the `.row` bitwise mask.
         public static let rowMask = UInt32(SQLITE_TRACE_ROW)
 
-        /// Returns the `.ConnectionClosed` bitwise mask.
+        /// Returns the `.connectionClosed` bitwise mask.
         public static let connectionClosedMask = UInt32(SQLITE_TRACE_CLOSE)
 
         /// A textual description of the `TraceEvent`.
