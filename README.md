@@ -20,8 +20,8 @@ SQift is a lightweight Swift wrapper for SQLite.
 ## Requirements
 
 - iOS 9.0+, macOS 10.11+, tvOS 9.0+, watchOS 2.0+
-- Xcode 8.0+
-- Swift 2.3
+- Xcode 8.2+
+- Swift 3.0+
 
 ## Communication
 
@@ -44,7 +44,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.0+ is required to build SQift.
+> CocoaPods 1.1+ is required to build SQift.
 
 To integrate SQift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -56,7 +56,9 @@ use_frameworks!
 source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'SQift', '~> 0.8'
+target '<Your Target Name>' do
+    pod 'SQift', '~> 1.0'
+end
 ```
 
 Then, run the following command:
@@ -81,16 +83,16 @@ SQift heavily leverages the new error handling model released with Swift 2.0. It
 Creating a database connection is simple.
 
 ```swift
-let onDiskConnection = try Connection(storageLocation: .OnDisk("path_to_db"))
-let inMemoryConnection = try Connection(storageLocation: .InMemory)
-let tempConnection = try Connection(storageLocation: .Temporary)
+let onDiskConnection = try Connection(storageLocation: .onDisk("path_to_db"))
+let inMemoryConnection = try Connection(storageLocation: .inMemory)
+let tempConnection = try Connection(storageLocation: .temporary)
 ```
 
 There are also convenience parameters to make it easy to customize the flags when initializing the database connection:
 
 ```swift
 let connection = try Connection(
-	storageLocation: .OnDisk("path_to_db"),
+	storageLocation: .onDisk("path_to_db"),
 	readOnly: true,
 	multiThreaded: false,
 	sharedCache: false
@@ -104,7 +106,7 @@ let connection = try Connection(
 To execute a SQL statement on the `Connection`, you need to first create a `Connection`, then call `execute`.
 
 ```swift
-let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .onDisk("path_to_db"))
 
 try connection.execute("PRAGMA foreign_keys = true")
 try connection.execute("PRAGMA journal_mode = WAL")
@@ -143,7 +145,7 @@ While the `Bindable` protocol helps move Swift data types into the database, the
 public protocol Extractable {
     typealias BindingType
     typealias DataType = Self
-    static func fromBindingValue(value: Any) -> DataType
+    static func fromBindingValue(_ value: Any) -> DataType
 }
 ```
 
@@ -160,8 +162,8 @@ In order to make it as easy as possible to use SQift, SQift extends the followin
 - **NULL:** `NSNull`
 - **INTEGER:** `Bool`, `Int8`, `Int16`, `Int32`, `Int64`, `Int`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt`
 - **REAL:** `Float`, `Double`
-- **TEXT:** `String`, `NSDate`
-- **BLOB:** `NSData`
+- **TEXT:** `String`, `Date`
+- **BLOB:** `Data`
 
 > Additional Swift data types can easily add `Bindable` protocol conformance if necessary.
 
@@ -170,7 +172,7 @@ In order to make it as easy as possible to use SQift, SQift extends the followin
 Safely binding parameters to a `Statement` is easy thanks to the `Binding` protocol. First you need to `prepare` a `Statement` object, then `bind` the parameters and `run` it using method chaining.
 
 ```swift
-let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .onDisk("path_to_db"))
 
 try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52_642).run()
 try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id": 1, ":name": "Audi", ":price": 52_642]).run()
@@ -179,7 +181,7 @@ try connection.prepare("INSERT INTO cars VALUES(:id, :name, :price)").bind([":id
 There are also convenience methods on the `Connection` for preparing a `Statement`, binding parameters and running it all in a single method named `run`.
 
 ```swift
-let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .onDisk("path_to_db"))
 
 try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52_642)
 try connection.run("INSERT INTO cars VALUES(:id, :name, :price)", parameters: [":id": 1, ":name": "Audi", ":price": 52_642])
@@ -193,7 +195,7 @@ Fetching data from the database also leverages the `Binding` protocol extensivel
 
 #### Iterating through Rows
 
-To iterate through all the rows of a `Statement`, the `Statement` class conforms to the `SequenceType` protocol. This allows you to iterate through a `Statement` using fast enumeration.
+To iterate through all the rows of a `Statement`, the `Statement` class conforms to the `Sequence` protocol. This allows you to iterate through a `Statement` using fast enumeration.
 
 ```swift
 for row in try connection.prepare("SELECT * FROM cars") {
@@ -219,7 +221,7 @@ for row in try connection.prepare("SELECT * FROM cars") {
 }
 ```
 
-The `SequenceType` conformance also let's you use methods like `map` on the `Statement`.
+The `Sequence` conformance also let's you use methods like `map` and `flatMap` on the `Statement`.
 
 ```swift
 let cars: [Car] = try connection.prepare("SELECT name, price FROM cars").map { Car(name: $0[0], price: $0[1]) }
@@ -262,10 +264,10 @@ let synchronous: Int = try db.query("PRAGMA synchronous")
 Since SQLite already has builtin support for dates, it's critical that SQift leverage that capability for things like being able to store dates in the database, run range queries against them and be able to extract them back out. SQift handles all this functionality through the `NSDate` binding as well as the `BindingDateFormatter`. By default, all `NSDate` types will be stored in the database as `TEXT`, so make sure to set your column types accordingly.
 
 ```swift
-let date1975: NSDate!
-let date1983: NSDate!
-let date1992: NSDate!
-let date2001: NSDate!
+let date1975: Date!
+let date1983: Date!
+let date1992: Date!
+let date2001: Date!
 
 try connection.execute(
 	"CREATE TABLE cars(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, release_date TEXT)"
@@ -280,8 +282,8 @@ try connection.execute("INSERT INTO cars(?, ?)", "00s car", date2001)
 Once you have your dates stored in the database, you can run date range queries to narrow down your data.
 
 ```swift
-let date1980: NSDate!
-let date2000: NSDate!
+let date1980: Date!
+let date2000: Date!
 
 let carCount: Int = try connection.query(
 	"SELECT count(*) FROM cars WHERE release_date >= date(?) AND release_date <= date(?)",
@@ -294,10 +296,10 @@ print("Total Cars from the 80s and 90s: \(carCount)") // should equal 2
 
 > You can swap the default date formatting, but be careful when doing so. You need to make sure the new date format complies with the SQLite [requirements](https://www.sqlite.org/lang_datefunc.html) so date range queries will continue to work as expected.
 
-You can also extract dates out of each row as an `NSDate`.
+You can also extract dates out of each row as an `Date`.
 
 ```swift
-let releaseDate: NSDate = try connection.fetch(
+let releaseDate: Date = try connection.fetch(
 	"SELECT release_date WHERE name = ? LIMIT 1", "80s car"
 )[0]
 ```
@@ -327,7 +329,7 @@ Another important note is that SQLite can only perform write operations serially
 The `ConnectionQueue` class in SQift was designed to help guarantee thread-safety for a database `Connection` that could be accessed from multiple threads. It executes all operations on an internal serial dispatch queue. This ensures all operations on the connection operation in a serial fashion. The `ConnectionQueue` also supports executing logic inside a transaction and savepoint.
 
 ```swift
-let queue = try ConnectionQueue(connection: Connection(storageLocation: .OnDisk("path_to_db")))
+let queue = try ConnectionQueue(connection: Connection(storageLocation: .onDisk("path_to_db")))
 
 try queue.execute { connection in
     try connection.execute("PRAGMA foreign_keys = true")
@@ -350,7 +352,7 @@ try queue.executeInSavepoint("drop_cars_table") { connection in
 The `ConnectionPool` class allows multiple read-only connections to access a database simultaneously in a thread-safe manner. Internally, the pool manages two different sets of connections, ones that are available and ones that are currently busy executing SQL logic. The pool will reuse available connections when they are available, and initializes new connections when all available connections are busy until the max connection count is reached.
 
 ```swift
-let pool = try ConnectionPool(storageLocation: .OnDisk("path_to_db"))
+let pool = try ConnectionPool(storageLocation: .onDisk("path_to_db"))
 
 try pool.execute { connection in
     let count: Int = try connection.query("SELECT count(*) FROM cars")
@@ -366,7 +368,7 @@ Since SQLite has no limit on the maximum number of open connections to a single 
 The `Database` class is a lightweight way to create a single writable connection queue and connection pool for all read statements. The read and write APIs are designed to make it simple to execute SQL statements on the appropriate type of `Connection` in a thread-safe manner.
 
 ```swift
-let database = try Database(storageLocation: .OnDisk("path_to_db"))
+let database = try Database(storageLocation: .onDisk("path_to_db"))
 
 try database.executeWrite { connection in
     try connection.execute("PRAGMA foreign_keys = true")
@@ -388,7 +390,7 @@ This is the easiest way to operate in a 100% thread-safe manner without having t
 Production applications generally need to migrate the database schema from time-to-time. Whether it requires some new tables or possibly alterations to a table, you need to have a way to manage the migration logic. SQift has migration support already built-in for you through the `Migrator` class. All you need to do is create the `Migrator` instance and tell it to run. Everything else is handled internally by SQift.
 
 ```swift
-let connection = try Connection(storageLocation: .OnDisk("path_to_db"))
+let connection = try Connection(storageLocation: .onDisk("path_to_db"))
 let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
 try migrator.runMigrationsIfNecessary(
@@ -398,8 +400,10 @@ try migrator.runMigrationsIfNecessary(
 		switch version {
 		case 1:
 			return "CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)"
+
 		case 2:
 			return "CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT, address TEXT)"
+
 		default:
 			break
 		}
@@ -439,5 +443,5 @@ There are many Swift SQLite libraries current on GitHub. Unfortunatey, none of t
 
 ## Creators
 
-- [Dave Camp](http://mobile-stash.nike.com:7990/users/dcam15) ([@thinbits](https://twitter.com/thinbits))
-- [Christian Noon](http://mobile-stash.nike.com:7990/users/cnoon) ([@Christian_Noon](https://twitter.com/Christian_Noon))
+- [Dave Camp](https://bitbucket.nike.com/users/dcam15) ([@thinbits](https://twitter.com/thinbits))
+- [Christian Noon](https://bitbucket.nike.com/users/cnoon) ([@Christian_Noon](https://twitter.com/Christian_Noon))
