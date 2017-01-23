@@ -35,7 +35,7 @@ class MigratorTestCase: XCTestCase {
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
-            try migrator.createMigrationsTable()
+            try migrator.createMigrationTable()
             let exists: Bool = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
@@ -56,8 +56,8 @@ class MigratorTestCase: XCTestCase {
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
-            try migrator.createMigrationsTable()
-            try migrator.createMigrationsTable()
+            try migrator.createMigrationTable()
+            try migrator.createMigrationTable()
 
             let exists: Bool = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
@@ -80,7 +80,7 @@ class MigratorTestCase: XCTestCase {
 
             // When
             try connection.execute("DROP TABLE IF EXISTS schema_migrations")
-            let tableExists = migrator.migrationsTableExists
+            let tableExists = migrator.migrationTableExists
 
             // Then
             XCTAssertFalse(tableExists, "table exists should be false")
@@ -96,8 +96,8 @@ class MigratorTestCase: XCTestCase {
             let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
             // When
-            try migrator.createMigrationsTable()
-            let tableExists = migrator.migrationsTableExists
+            try migrator.createMigrationTable()
+            let tableExists = migrator.migrationTableExists
 
             // Then
             XCTAssertTrue(tableExists, "table exists should be true")

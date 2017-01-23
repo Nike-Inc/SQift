@@ -36,7 +36,7 @@ public class Migrator {
     /// Whether a migration is required to update the attached database connection to the desired schema version.
     public var migrationRequired: Bool { return currentSchemaVersion < desiredSchemaVersion }
 
-    var migrationsTableExists: Bool {
+    var migrationTableExists: Bool {
         var exists = false
 
         do {
@@ -92,7 +92,7 @@ public class Migrator {
     {
         guard migrationRequired else { return 0 }
 
-        if !migrationsTableExists { try createMigrationsTable() }
+        if !migrationTableExists { try createMigrationTable() }
 
         var totalMigrationsCompleted: UInt64 = 0
 
@@ -146,7 +146,7 @@ public class Migrator {
     {
         guard migrationRequired else { return 0 }
 
-        if !migrationsTableExists { try createMigrationsTable() }
+        if !migrationTableExists { try createMigrationTable() }
 
         var totalMigrationsCompleted: UInt64 = 0
 
@@ -166,7 +166,7 @@ public class Migrator {
 
     // MARK: - Internal - Migrations Table Helpers
 
-    func createMigrationsTable() throws {
+    func createMigrationTable() throws {
         let SQL = [
             "CREATE TABLE IF NOT EXISTS \(Migrator.migrationTableName)",
             "(version INTEGER UNIQUE NOT NULL, migration_timestamp TEXT NOT NULL)"
