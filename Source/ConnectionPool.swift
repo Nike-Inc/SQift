@@ -70,14 +70,6 @@ public class ConnectionPool {
 
     // MARK: - Execution
 
-    /**
-        Executes the specified closure on the first available connection inside a connection queue.
-
-        - parameter closure: The closure to execute.
-
-        - throws: A `SQLiteError` if SQLite encounters an error executing the closure.
-    */
-
     /// Executes the specified closure on the first available connection inside a connection queue.
     ///
     /// - Parameter closure: The closure to execute.
