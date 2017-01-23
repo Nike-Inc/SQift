@@ -724,7 +724,7 @@ class ConnectionTestCase: XCTestCase {
                     if case let .row(statement) = traceEvents[8] {
                         XCTAssertEqual(statement, "SELECT * FROM agents")
                     }
-                    
+
                     if case let .profile(statement, seconds) = traceEvents[9] {
                         XCTAssertEqual(statement, "SELECT * FROM agents")
                         XCTAssertGreaterThanOrEqual(seconds, 0.0)
