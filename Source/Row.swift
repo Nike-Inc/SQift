@@ -210,7 +210,7 @@ public struct Row {
     ///     - sqlite3_column_text:   `TEXT` binding value.
     ///     - sqlite3_column_blob:   `BLOB` binding value.
     ///
-    /// For more information, please refer to the following: <https://www.sqlite.org/c3ref/column_blob.html>.
+    /// For more information, please refer to the [documentation](https://www.sqlite.org/c3ref/column_blob.html).
     ///
     /// - Parameter columnIndex: The column index to extract the value from.
     ///

@@ -8,15 +8,17 @@
 
 import Foundation
 
-/// The `Connection` class represents a single connection to a SQLite database. For more details about using multiple
-/// database connections to improve concurrency, see <https://www.sqlite.org/isolation.html>.
+/// The `Connection` class represents a single connection to a SQLite database. 
+///
+/// For more details about using multiple database connections to improve concurrency, please refer to the 
+/// [documentation](https://www.sqlite.org/isolation.html).
 public class Connection {
 
     // MARK: - Helper Types
 
     /// Used to declare the transaction behavior when executing a transaction.
     ///
-    /// For more info about transactions, see <https://www.sqlite.org/lang_transaction.html>.
+    /// For more info about transactions, please see the [documentation](https://www.sqlite.org/lang_transaction.html).
     ///
     /// - deferred:  No locks are acquired on the database until the database is first accessed.
     /// - immediate: Other connections can read from the database, but cannot write until the transaction completes.
@@ -29,7 +31,7 @@ public class Connection {
 
     /// Used to capture all information about a trace event.
     ///
-    /// For more info about tracing, see <https://www.sqlite.org/c3ref/trace_v2.html>.
+    /// For more info about tracing, please see the [documentation](https://www.sqlite.org/c3ref/trace_v2.html).
     ///
     /// - statement:        Invoked when a prepared statement first begins running and possibly at other times during 
     ///                     the execution of the prepared statement, such as the start of each trigger subprogram. The 
@@ -89,27 +91,27 @@ public class Connection {
     // MARK: - Properties
 
     /// Returns the fileName of the database connection.
-    /// For more details, please refer to <https://www.sqlite.org/c3ref/db_filename.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/db_filename.html).
     public var fileName: String { return String(cString: sqlite3_db_filename(handle, nil)) }
 
     /// Returns whether the database connection is readOnly.
-    /// For more details, please refer to <https://www.sqlite.org/c3ref/stmt_readonly.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/stmt_readonly.html).
     public var readOnly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }
 
     /// Returns whether the database connection is threadSafe.
-    /// For more details, please refer to <https://www.sqlite.org/c3ref/threadsafe.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/threadsafe.html).
     public var threadSafe: Bool { return sqlite3_threadsafe() > 0 }
 
     /// Returns the last insert row id of the database connection.
-    /// For more details, please refer to <https://www.sqlite.org/c3ref/last_insert_rowid.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/last_insert_rowid.html).
     public var lastInsertRowID: Int64 { return sqlite3_last_insert_rowid(handle) }
 
     /// Returns the number of changes for the most recently completed INSERT, UPDATE or DELETE statement.
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/changes.html>.
+    /// For more details, please refer to: the [documentation](https://www.sqlite.org/c3ref/changes.html).
     public var changes: Int { return Int(sqlite3_changes(handle)) }
 
     /// Returns the total number of changes for all INSERT, UPDATE or DELETE statements since the connection was opened.
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/total_changes.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/total_changes.html).
     public var totalChanges: Int { return Int(sqlite3_total_changes(handle)) }
 
     var handle: OpaquePointer!
@@ -147,7 +149,7 @@ public class Connection {
 
     /// Creates the database `Connection` with the specified storage location and initialization flags.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/open.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/open.html).
     ///
     /// - Parameters:
     ///   - storageLocation: The storage location path to use during initialization.
@@ -212,7 +214,7 @@ public class Connection {
     ///     try db.execute("PRAGMA foreign_keys = true")
     ///     try db.execute("PRAGMA journal_mode = WAL")
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/exec.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/exec.html).
     ///
     /// - Parameter sql: The SQL string to execute.
     ///
@@ -468,7 +470,7 @@ public class Connection {
     ///
     /// If an error occurs when running the transaction, it is automatically rolled back before throwing.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/exec.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/exec.html).
     ///
     /// - Parameters:
     ///   - transactionType: The transaction type.
@@ -491,7 +493,7 @@ public class Connection {
     ///
     /// If an error occurs when running the savepoint, it is automatically rolled back before throwing.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/lang_savepoint.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/lang_savepoint.html).
     ///
     /// - Parameters:
     ///   - name:    The name of the savepoint.
@@ -516,7 +518,7 @@ public class Connection {
 
     /// Attaches another database with the specified name.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/lang_attach.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/lang_attach.html).
     ///
     /// - Parameters:
     ///   - storageLocation: The storage location of the database to attach.
@@ -532,7 +534,7 @@ public class Connection {
 
     /// Detaches a previously attached database connection.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/lang_detach.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/lang_detach.html).
     ///
     /// - Parameter name: The name of the database connection to detach.
     ///
@@ -545,7 +547,7 @@ public class Connection {
 
     /// Registers the callback with SQLite to be called each time a statement calls step.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/profile.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/profile.html).
     ///
     /// - Parameter callback: The callback closure called when SQLite internally calls step on a statement.
     public func trace(_ callback: ((String) -> Void)?) {
@@ -574,7 +576,7 @@ public class Connection {
 
     /// Registers the callback with SQLite to be called each time a statement calls step.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/trace_v2.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/trace_v2.html).
     ///
     /// - Parameters:
     ///   - mask:     The bitwise OR-ed mask of trace event constants.
@@ -652,7 +654,7 @@ public class Connection {
 
     /// Registers the custom collation name with SQLite to execute the compare closure when collating.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/datatype3.html#collation>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/datatype3.html#collation).
     ///
     /// - Parameters:
     ///   - name:    The name of the custom collation.

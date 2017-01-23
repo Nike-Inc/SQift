@@ -10,9 +10,9 @@ import Foundation
 
 /// Used to specify the path of the database for initialization.
 ///
-/// - onDisk:    Creates an on-disk database: <https://www.sqlite.org/uri.html>.
-/// - inMemory:  Creates an in-memory database: <https://www.sqlite.org/inmemorydb.html#sharedmemdb>.
-/// - temporary: Creates a temporary on-disk database: <https://www.sqlite.org/inmemorydb.html#temp_db>.
+/// - onDisk:    Creates an [on-disk database](https://www.sqlite.org/uri.html).
+/// - inMemory:  Creates an [in-memory database](https://www.sqlite.org/inmemorydb.html#sharedmemdb).
+/// - temporary: Creates a [temporary on-disk database](https://www.sqlite.org/inmemorydb.html#temp_db).
 public enum StorageLocation {
     case onDisk(String)
     case inMemory

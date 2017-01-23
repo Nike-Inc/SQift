@@ -17,7 +17,7 @@ public class Statement {
 
     /// Creates a `Statement` instance by compiling the SQL statement on the specified database.
     ///
-    /// For more details, please refer to: <https://www.sqlite.org/c3ref/prepare.html>.
+    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/prepare.html).
     ///
     /// - Parameters:
     ///   - connection: The database connection to create a statement for.
@@ -52,7 +52,8 @@ public class Statement {
     /// - `sqlite3_bind_text`
     /// - `sqlite3_bind_blob`
     ///
-    /// For more information about parameter binding, please refer to: <https://www.sqlite.org/c3ref/bind_blob.html>.
+    /// For more information about parameter binding, please refer to the 
+    /// [documentation](https://www.sqlite.org/c3ref/bind_blob.html).
     ///
     /// - Parameter parameters: The parameters to bind to the statement.
     ///
@@ -78,7 +79,8 @@ public class Statement {
     /// - `sqlite3_bind_text`
     /// - `sqlite3_bind_blob`
     ///
-    /// For more information about parameter binding, please refer to: <https://www.sqlite.org/c3ref/bind_blob.html>.
+    /// For more information about parameter binding, please refer to the 
+    /// [documentation](https://www.sqlite.org/c3ref/bind_blob.html).
     ///
     /// - Parameter parameters: The parameters to bind to the statement.
     ///
@@ -118,7 +120,8 @@ public class Statement {
     /// - `sqlite3_bind_text`
     /// - `sqlite3_bind_blob`
     ///
-    /// For more information about parameter binding, please refer to: <https://www.sqlite.org/c3ref/bind_blob.html>.
+    /// For more information about parameter binding, please refer to the 
+    /// [documentation](https://www.sqlite.org/c3ref/bind_blob.html).
     ///
     /// - Parameter parameters: A dictionary of key-value pairs to bind to the statement.
     ///
