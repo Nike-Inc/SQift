@@ -4,6 +4,16 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 1.0.0
+
+### Release Notes
+
+#### Updated
+
+- All source and test APIs to compile against Swift 3 and follow the Swift API Design Guidelines.
+
+---
+
 ## 0.9.0
 
 ### Release Notes
