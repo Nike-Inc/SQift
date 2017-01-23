@@ -284,7 +284,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: The parameters to bind to the statement.
     ///
-    /// - Returns: The first `Row` of the query.
+    /// - Returns: The first `Row` of the query when a result is found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
     public func fetch(_ sql: String, _ parameters: Bindable?...) throws -> Row? {
@@ -304,7 +304,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: The parameters to bind to the statement.
     ///
-    /// - Returns: The first `Row` of the query.
+    /// - Returns: The first `Row` of the query when a result is found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
     public func fetch(_ sql: String, _ parameters: [Bindable?]) throws -> Row? {
@@ -324,7 +324,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: A dictionary of key-value pairs to bind to the statement.
     ///
-    /// - Returns: The first `Row` of the query.
+    /// - Returns: The first `Row` of the query when a result is found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
     public func fetch(_ sql: String, _ parameters: [String: Bindable?]) throws -> Row? {
@@ -416,7 +416,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: The parameters to bind to the statement.
     ///
-    /// - Returns: The first column value of the first row of the query.
+    /// - Returns: The first column value of the first row of the query if found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
     public func query<T: Binding>(_ sql: String, _ parameters: Bindable?...) throws -> T? {
@@ -437,7 +437,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: The parameters to bind to the statement.
     ///
-    /// - Returns: The first column value of the first row of the query.
+    /// - Returns: The first column value of the first row of the query if found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
     public func query<T: Binding>(_ sql: String, _ parameters: [Bindable?]) throws -> T? {
@@ -457,7 +457,7 @@ public class Connection {
     ///   - sql:        The SQL string to run.
     ///   - parameters: A dictionary of key-value pairs to bind to the statement.
     ///
-    /// - Returns: The first column value of the first row of the query.
+    /// - Returns: The first column value of the first row of the query if found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
     public func query<T: Binding>(_ sql: String, _ parameters: [String: Bindable?]) throws -> T? {
