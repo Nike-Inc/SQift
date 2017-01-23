@@ -1,5 +1,5 @@
 //
-//  String+SQift.swift
+//  StringExtension.swift
 //  SQift
 //
 //  Created by Dave Camp on 3/14/15.
