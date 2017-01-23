@@ -23,7 +23,7 @@ public class Migrator {
         var version: UInt64 = 0
 
         do {
-            if let tableVersion: UInt64 = try connection.query("SELECT MAX(version) FROM \(Migrator.MigrationTableName)") {
+            if let tableVersion: UInt64 = try connection.query("SELECT MAX(version) FROM \(Migrator.migrationTableName)") {
                 version = tableVersion
             }
         } catch {
@@ -43,7 +43,7 @@ public class Migrator {
             exists = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
-                Migrator.MigrationTableName
+                Migrator.migrationTableName
             )
         } catch {
             // No-op
@@ -54,7 +54,7 @@ public class Migrator {
 
     let connection: Connection
 
-    private static let MigrationTableName = "schema_migrations"
+    private static let migrationTableName = "schema_migrations"
 
     // MARK: - Initialization
 
@@ -104,7 +104,7 @@ public class Migrator {
             try connection.transaction {
                 try self.connection.execute(SQL)
                 try self.connection.run(
-                    "INSERT INTO \(Migrator.MigrationTableName) VALUES(?, ?)",
+                    "INSERT INTO \(Migrator.migrationTableName) VALUES(?, ?)",
                     schemaVersion,
                     BindingDateFormatter.string(from: Date())
                 )
@@ -154,7 +154,7 @@ public class Migrator {
             willMigrate?(schemaVersion)
 
             try migrate(schemaVersion, connection)
-            try connection.run("INSERT INTO \(Migrator.MigrationTableName) VALUES(?, ?)", schemaVersion, Date())
+            try connection.run("INSERT INTO \(Migrator.migrationTableName) VALUES(?, ?)", schemaVersion, Date())
 
             didMigrate?(schemaVersion)
 
@@ -168,7 +168,7 @@ public class Migrator {
 
     func createMigrationsTable() throws {
         let SQL = [
-            "CREATE TABLE IF NOT EXISTS \(Migrator.MigrationTableName)",
+            "CREATE TABLE IF NOT EXISTS \(Migrator.migrationTableName)",
             "(version INTEGER UNIQUE NOT NULL, migration_timestamp TEXT NOT NULL)"
         ]
 
