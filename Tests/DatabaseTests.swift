@@ -12,7 +12,7 @@ import XCTest
 
 class DatabaseTestCase: XCTestCase {
     let storageLocation: StorageLocation = {
-        let path = FileManager.documentsDirectory.appending("/database_tests.db")
+        let path = FileManager.cachesDirectory.appending("/database_tests.db")
         return .onDisk(path)
     }()
 
