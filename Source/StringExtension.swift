@@ -18,7 +18,8 @@ extension String {
 /// Used to extend the String type inside a `swift` namespace.
 public struct StringExtension {
     private let string: String
-    private let singleQuote = Character("'")
+    private let singleQuote = "'"
+    private let escapedQuote = "''"
 
     init(string: String) {
         self.string = string
@@ -28,13 +29,6 @@ public struct StringExtension {
     ///
     /// - Returns: The new escaped `String`.
     public func addingSQLEscapes() -> String {
-        var escapedCharacters: [Character] = []
-
-        for character in string.characters {
-            if character == singleQuote { escapedCharacters.append(character) }
-            escapedCharacters.append(character)
-        }
-
-        return String(singleQuote) + String(escapedCharacters) + String(singleQuote)
+        return singleQuote + string.replacingOccurrences(of: singleQuote, with: escapedQuote) + singleQuote
     }
 }
