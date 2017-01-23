@@ -1,5 +1,5 @@
 //
-//  ErrorTests.swift
+//  SQLiteErrorTests.swift
 //  SQift
 //
 //  Created by Christian Noon on 11/12/15.
@@ -10,7 +10,7 @@ import Foundation
 import SQift
 import XCTest
 
-class ErrorTestCase: XCTestCase {
+class SQLiteErrorTestCase: XCTestCase {
     let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/error_tests.db")
         return .onDisk(path)

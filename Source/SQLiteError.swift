@@ -1,5 +1,5 @@
 //
-//  Error.swift
+//  SQLiteError.swift
 //  SQift
 //
 //  Created by Christian Noon on 11/8/15.
