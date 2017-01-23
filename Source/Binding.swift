@@ -300,7 +300,7 @@ extension URL: Binding {
     /// The binding value representation of the type to be bound to a `Statement`.
     public var bindingValue: BindingValue { return .text(absoluteString) }
 
-    /// Converts the binding value `Any` object representation to an equivalent `NSURL` representation.
+    /// Converts the binding value `Any` object representation to an equivalent `URL` representation.
     public static func fromBindingValue(_ value: Any) -> URL { return URL(string: value as! String)! }
 }
 
@@ -311,7 +311,7 @@ extension Date: Binding {
     /// The binding value representation of the type to be bound to a `Statement`.
     public var bindingValue: BindingValue { return .text(BindingDateFormatter.string(from: self)) }
 
-    /// Converts the binding value `Any` object representation to an equivalent `NSDate` representation.
+    /// Converts the binding value `Any` object representation to an equivalent `Date` representation.
     public static func fromBindingValue(_ value: Any) -> Date {
         if let value = value as? String {
             return BindingDateFormatter.date(from: value)!

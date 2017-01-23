@@ -279,7 +279,7 @@ class BindingTestCase: XCTestCase {
 
     // MARK: - Blob Binding Tests
 
-    func testNSDataBinding() {
+    func testDataBinding() {
         // Given, When
         let data = "VMOpxaF0xK/FhGcg8J+RjfCfj7zwn46J8J+UpQ==".data(using: .utf8)!
         let bindingValue = data.bindingValue

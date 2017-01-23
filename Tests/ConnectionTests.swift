@@ -159,7 +159,7 @@ class ConnectionTestCase: XCTestCase {
             // number of rows on CI machines due to running inside a VM.
 
             // When
-            let start = NSDate()
+            let start = Date()
 
             try connection.transaction {
                 let jobTitle = "Superman".data(using: .utf8)!
