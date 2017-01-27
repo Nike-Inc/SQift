@@ -11,7 +11,7 @@ import Foundation
 /// The `Migrator` class handles data migrations between schema versions for an attached database connection.
 /// The migrations MUST be numerically ordered by integers starting by 1, and incrementing by one each 
 /// migration. i.e. [1, 2, 3, 4, etc.].
-public class Migrator {
+open class Migrator {
 
     // MARK: - Properties
 
