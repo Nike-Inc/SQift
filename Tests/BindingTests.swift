@@ -266,12 +266,12 @@ class BindingTestCase: XCTestCase {
 
         // When
         let bindingValue = now.bindingValue
-        let fromStringBindingValue = Date.fromBindingValue(BindingDateFormatter.string(from: now))
+        let fromStringBindingValue = Date.fromBindingValue(bindingDateFormatter.string(from: now))
         let fromInt64BindingValue = Date.fromBindingValue(Int64(now.timeIntervalSince1970))
         let fromDoubleBindingValue = Date.fromBindingValue(now.timeIntervalSince1970)
 
         // Then
-        XCTAssertTrue(bindingValue == .text(BindingDateFormatter.string(from: now)))
+        XCTAssertTrue(bindingValue == .text(bindingDateFormatter.string(from: now)))
         XCTAssertEqualWithAccuracy(fromStringBindingValue.timeIntervalSince(now), 0.0, accuracy: 0.001)
         XCTAssertEqualWithAccuracy(fromInt64BindingValue.timeIntervalSince(now), 0.0, accuracy: 1.0)
         XCTAssertEqualWithAccuracy(fromDoubleBindingValue.timeIntervalSince(now), 0.0, accuracy: 0.000001)

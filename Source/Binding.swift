@@ -310,12 +310,12 @@ extension Date: Binding {
     public typealias BindingType = String
 
     /// The binding value representation of the type to be bound to a `Statement`.
-    public var bindingValue: BindingValue { return .text(BindingDateFormatter.string(from: self)) }
+    public var bindingValue: BindingValue { return .text(bindingDateFormatter.string(from: self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Date` representation.
     public static func fromBindingValue(_ value: Any) -> Date {
         if let value = value as? String {
-            return BindingDateFormatter.date(from: value)!
+            return bindingDateFormatter.date(from: value)!
         } else if let value = value as? Int64 {
             return Date(timeIntervalSince1970: TimeInterval(value))
         } else if let value = value as? Double {
@@ -330,7 +330,7 @@ extension Date: Binding {
 /// dates much more human readable and also works with all SQLite date functionality.
 ///
 /// For more information, please refer to the [documentation](https://www.sqlite.org/lang_datefunc.html).
-public var BindingDateFormatter: DateFormatter = {
+public var bindingDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
     formatter.locale = Locale(identifier: "en_US_POSIX")

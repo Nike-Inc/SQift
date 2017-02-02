@@ -106,7 +106,7 @@ open class Migrator {
                 try self.connection.run(
                     "INSERT INTO \(Migrator.migrationTableName) VALUES(?, ?)",
                     schemaVersion,
-                    BindingDateFormatter.string(from: Date())
+                    bindingDateFormatter.string(from: Date())
                 )
             }
 

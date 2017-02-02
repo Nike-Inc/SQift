@@ -53,7 +53,7 @@ class FetchTestCase: XCTestCase {
                 let car: String = row?["car"]
             {
                 XCTAssertEqual(name, "Sterling Archer")
-                XCTAssertEqual(date, BindingDateFormatter.date(from: "2015-10-02T08:20:00.000"))
+                XCTAssertEqual(date, bindingDateFormatter.date(from: "2015-10-02T08:20:00.000"))
                 XCTAssertEqual(missions, 485)
                 XCTAssertEqual(salary, 2_500_000.56)
                 XCTAssertEqual(String(data: jobTitle, encoding: .utf8), "The world's greatest secret agent")

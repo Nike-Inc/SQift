@@ -361,7 +361,7 @@ class ConnectionTestCase: XCTestCase {
                 XCTAssertEqual(row[2] as? Int64, 52642, "item 2 should be 52642")
 
                 if let dateString = row[3] as? String {
-                    let insertedDate = BindingDateFormatter.date(from: dateString)
+                    let insertedDate = bindingDateFormatter.date(from: dateString)
                     XCTAssertEqual(insertedDate, date, "item 3 converted date should equal original date")
                 } else {
                     XCTFail("item 4 should be a String type")

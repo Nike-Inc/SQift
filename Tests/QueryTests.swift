@@ -117,7 +117,7 @@ class QueryTestCase: XCTestCase {
                 comps.month = 10
                 comps.day = 1
 
-                return BindingDateFormatter.string(from: calendar.date(from: comps)!)
+                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
             }()
 
             let endOfOctober: String = {
@@ -126,7 +126,7 @@ class QueryTestCase: XCTestCase {
                 comps.month = 10
                 comps.day = 31
 
-                return BindingDateFormatter.string(from: calendar.date(from: comps)!)
+                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
             }()
 
             let endOfNovember: String = {
@@ -135,7 +135,7 @@ class QueryTestCase: XCTestCase {
                 comps.month = 11
                 comps.day = 30
 
-                return BindingDateFormatter.string(from: calendar.date(from: comps)!)
+                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
             }()
 
             // When

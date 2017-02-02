@@ -74,7 +74,7 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(salary_Double, 9_600_200.11)
 
                 XCTAssertEqual(name_String, "Lana Kane")
-                XCTAssertEqual(date_Date, BindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
+                XCTAssertEqual(date_Date, bindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
 
                 XCTAssertEqual(jobTitle_Data, "Top Agent".data(using: .utf8))
             } else {
@@ -134,7 +134,7 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(salary_Double, 9_600_200.11)
 
                 XCTAssertEqual(name_String, "Lana Kane")
-                XCTAssertEqual(date_Date, BindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
+                XCTAssertEqual(date_Date, bindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
 
                 XCTAssertEqual(jobTitle_Data, "Top Agent".data(using: .utf8))
             } else {
@@ -194,7 +194,7 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(salary_Double, 9_600_200.11)
 
                 XCTAssertEqual(name_String, "Lana Kane")
-                XCTAssertEqual(date_Date, BindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
+                XCTAssertEqual(date_Date, bindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
 
                 XCTAssertEqual(jobTitle_Data, "Top Agent".data(using: .utf8))
             } else {
@@ -254,7 +254,7 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(salary_Double, 9_600_200.11)
 
                 XCTAssertEqual(name_String, "Lana Kane")
-                XCTAssertEqual(date_Date, BindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
+                XCTAssertEqual(date_Date, bindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!)
 
                 XCTAssertEqual(jobTitle_Data, "Top Agent".data(using: .utf8))
             } else {
