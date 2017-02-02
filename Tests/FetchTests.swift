@@ -11,9 +11,9 @@ import SQift
 import XCTest
 
 class FetchTestCase: XCTestCase {
-    var connection: Connection!
+    private var connection: Connection!
 
-    let storageLocation: StorageLocation = {
+    private let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/fetch_tests.db")
         return .onDisk(path)
     }()

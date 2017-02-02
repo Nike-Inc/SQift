@@ -11,7 +11,7 @@ import SQift
 import XCTest
 
 class DatabaseTestCase: XCTestCase {
-    let storageLocation: StorageLocation = {
+    private let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/database_tests.db")
         return .onDisk(path)
     }()

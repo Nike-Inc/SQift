@@ -11,7 +11,7 @@ import Foundation
 import XCTest
 
 class ConnectionPoolTestCase: XCTestCase {
-    let storageLocation: StorageLocation = {
+    private let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/connection_pool_tests.db")
         return .onDisk(path)
     }()
