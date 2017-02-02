@@ -9,7 +9,7 @@
 import Foundation
 import SQift
 
-struct TestTables {
+enum TestTables {
     static func createAndPopulateAgentsTable(using connection: Connection) throws {
         try connection.transaction {
             try connection.run(
