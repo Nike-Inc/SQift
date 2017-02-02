@@ -57,7 +57,7 @@ source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
 target '<Your Target Name>' do
-    pod 'SQift', '~> 1.0'
+    pod 'SQift', '~> 1.1'
 end
 ```
 

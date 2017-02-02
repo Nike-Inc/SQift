@@ -4,6 +4,16 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 1.1.0
+
+### Release Notes
+
+#### Updated
+
+- The `Migrator` to an `open` ACL to allow subclassing.
+
+---
+
 ## 1.0.0
 
 ### Release Notes
