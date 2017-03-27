@@ -258,7 +258,6 @@ public class Statement {
         return try connection.check(sqlite3_step(handle)) == SQLITE_ROW
     }
 
-    @discardableResult
     fileprivate func bind(_ parameter: Bindable?, atIndex index: Int32) throws {
         guard let parameter = parameter else {
             try connection.check(sqlite3_bind_null(handle, index))
