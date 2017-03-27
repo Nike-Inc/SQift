@@ -4,6 +4,16 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 1.1.1
+
+### Release Notes
+
+#### Updated
+
+- Enabled `APPLICATION_EXTENSION_API_ONLY` for iOS, macOS and tvOS targets (was already on for watchOS).
+
+---
+
 ## 1.1.0
 
 ### Release Notes
