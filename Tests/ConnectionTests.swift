@@ -852,6 +852,7 @@ class ConnectionTestCase: XCTestCase {
 
 // MARK: -
 
+@available(iOS 10.0, OSX 10.12.0, tvOS 10.0, watchOS 3.0, *)
 extension Connection.TraceEvent {
     var rawValue: String {
         switch self {
