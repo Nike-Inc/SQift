@@ -4,6 +4,13 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## master
+
+### Updated
+
+- Remove @discardableResult attribute on a function that does not return a result.
+- Fix API unavailable compiler error when building the unit tests project.
+
 ## 1.1.1
 
 ### Release Notes
