@@ -4,12 +4,12 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
-## master
+## 1.1.2
 
-### Updated
+### Fixed
 
-- Remove @discardableResult attribute on a function that does not return a result.
-- Fix API unavailable compiler error when building the unit tests project.
+- Issue where `@discardableResult` attribute was used incorrectly on `bind` API that does not return a value.
+- Issue where `TraceEvent` extension did not correctly use availability checks in the test suite.
 
 ## 1.1.1
 
