@@ -16,7 +16,7 @@ class StringExtensionTestCase: XCTestCase {
         let strings = [
             "database_name",
             "'",
-            "SELECT * FROM table WHERE column = 'column_name'", // TODO, figure out why we only escape the beginning
+            "SELECT * FROM table WHERE column = 'column_name'",
             "SELECT * FROM table WHERE column = 'column_'_name'"
         ]
 
