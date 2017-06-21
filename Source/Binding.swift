@@ -71,8 +71,8 @@ public protocol Extractable {
     /// The data type of the object to convert to after extracting an object from the database.
     associatedtype DataType = Self
 
-    /// Converts the binding value `Any` object representation to an equivalent `DataType` representation.
-    static func fromBindingValue(_ value: Any) -> DataType
+    /// Converts the binding value `Any` representation into an equivalent `DataType` representation if possible.
+    static func fromBindingValue(_ value: Any) -> DataType?
 }
 
 /// The `Binding` protocol represents a type that is both `Bindable` as a parameter and `Extractable` from the database.
@@ -95,7 +95,10 @@ extension Bool: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self ? 1 : 0)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Bool` representation.
-    public static func fromBindingValue(_ value: Any) -> Bool { return (value as! Int64) != 0 }
+    public static func fromBindingValue(_ value: Any) -> Bool? {
+        guard let value = value as? Int64 else { return nil }
+        return value != 0
+    }
 }
 
 extension Int8: Binding {
@@ -106,13 +109,13 @@ extension Int8: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int8` representation.
-    public static func fromBindingValue(_ value: Any) -> Int8 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> Int8? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(Int8.min) else { return Int8.min }
-        guard castValue <= Int64(Int8.max) else { return Int8.max }
+        guard value >= Int64(Int8.min) else { return Int8.min }
+        guard value <= Int64(Int8.max) else { return Int8.max }
 
-        return Int8(castValue)
+        return Int8(value)
     }
 }
 
@@ -124,13 +127,13 @@ extension Int16: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int16` representation.
-    public static func fromBindingValue(_ value: Any) -> Int16 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> Int16? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(Int16.min) else { return Int16.min }
-        guard castValue <= Int64(Int16.max) else { return Int16.max }
+        guard value >= Int64(Int16.min) else { return Int16.min }
+        guard value <= Int64(Int16.max) else { return Int16.max }
 
-        return Int16(castValue)
+        return Int16(value)
     }
 }
 
@@ -142,13 +145,13 @@ extension Int32: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int32` representation.
-    public static func fromBindingValue(_ value: Any) -> Int32 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> Int32? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(Int32.min) else { return Int32.min }
-        guard castValue <= Int64(Int32.max) else { return Int32.max }
+        guard value >= Int64(Int32.min) else { return Int32.min }
+        guard value <= Int64(Int32.max) else { return Int32.max }
 
-        return Int32(castValue)
+        return Int32(value)
     }
 }
 
@@ -160,7 +163,9 @@ extension Int64: Binding {
     public var bindingValue: BindingValue { return .integer(self) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int64` representation.
-    public static func fromBindingValue(_ value: Any) -> Int64 { return value as! Int64 }
+    public static func fromBindingValue(_ value: Any) -> Int64? {
+        return value as? Int64
+    }
 }
 
 extension Int: Binding {
@@ -171,13 +176,13 @@ extension Int: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int` representation.
-    public static func fromBindingValue(_ value: Any) -> Int {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> Int? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(Int.min) else { return Int.min }
-        guard castValue <= Int64(Int.max) else { return Int.max }
+        guard value >= Int64(Int.min) else { return Int.min }
+        guard value <= Int64(Int.max) else { return Int.max }
 
-        return Int(castValue)
+        return Int(value)
     }
 }
 
@@ -189,13 +194,13 @@ extension UInt8: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Int8` representation.
-    public static func fromBindingValue(_ value: Any) -> UInt8 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> UInt8? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(UInt8.min) else { return UInt8.min }
-        guard castValue <= Int64(UInt8.max) else { return UInt8.max }
+        guard value >= Int64(UInt8.min) else { return UInt8.min }
+        guard value <= Int64(UInt8.max) else { return UInt8.max }
 
-        return UInt8(castValue)
+        return UInt8(value)
     }
 }
 
@@ -207,13 +212,13 @@ extension UInt16: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `UInt16` representation.
-    public static func fromBindingValue(_ value: Any) -> UInt16 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> UInt16? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(UInt16.min) else { return UInt16.min }
-        guard castValue <= Int64(UInt16.max) else { return UInt16.max }
+        guard value >= Int64(UInt16.min) else { return UInt16.min }
+        guard value <= Int64(UInt16.max) else { return UInt16.max }
 
-        return UInt16(castValue)
+        return UInt16(value)
     }
 }
 
@@ -225,13 +230,13 @@ extension UInt32: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `UInt32` representation.
-    public static func fromBindingValue(_ value: Any) -> UInt32 {
-        let castValue = value as! Int64
+    public static func fromBindingValue(_ value: Any) -> UInt32? {
+        guard let value = value as? Int64 else { return nil }
 
-        guard castValue >= Int64(UInt32.min) else { return UInt32.min }
-        guard castValue <= Int64(UInt32.max) else { return UInt32.max }
+        guard value >= Int64(UInt32.min) else { return UInt32.min }
+        guard value <= Int64(UInt32.max) else { return UInt32.max }
 
-        return UInt32(castValue)
+        return UInt32(value)
     }
 }
 
@@ -243,7 +248,10 @@ extension UInt64: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(bitPattern: self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `UInt64` representation.
-    public static func fromBindingValue(_ value: Any) -> UInt64 { return UInt64(bitPattern: value as! Int64) }
+    public static func fromBindingValue(_ value: Any) -> UInt64? {
+        guard let value = value as? Int64 else { return nil }
+        return UInt64(bitPattern: value)
+    }
 }
 
 extension UInt: Binding {
@@ -254,7 +262,10 @@ extension UInt: Binding {
     public var bindingValue: BindingValue { return .integer(Int64(bitPattern: UInt64(self))) }
 
     /// Converts the binding value `Any` object representation to an equivalent `UInt` representation.
-    public static func fromBindingValue(_ value: Any) -> UInt { return UInt(UInt64(bitPattern: value as! Int64)) }
+    public static func fromBindingValue(_ value: Any) -> UInt? {
+        guard let value = value as? Int64 else { return nil }
+        return UInt(UInt64(bitPattern: value))
+    }
 }
 
 // MARK: - Real Bindings
@@ -267,7 +278,10 @@ extension Float: Binding {
     public var bindingValue: BindingValue { return .real(Double(self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Float` representation.
-    public static func fromBindingValue(_ value: Any) -> Float { return Float(value as! Double) }
+    public static func fromBindingValue(_ value: Any) -> Float? {
+        guard let value = value as? Double else { return nil }
+        return Float(value)
+    }
 }
 
 extension Double: Binding {
@@ -278,7 +292,9 @@ extension Double: Binding {
     public var bindingValue: BindingValue { return .real(self) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Double` representation.
-    public static func fromBindingValue(_ value: Any) -> Double { return value as! Double }
+    public static func fromBindingValue(_ value: Any) -> Double? {
+        return value as? Double
+    }
 }
 
 // MARK: - Text Bindings
@@ -291,7 +307,9 @@ extension String: Binding {
     public var bindingValue: BindingValue { return .text(self) }
 
     /// Converts the binding value `Any` object representation to an equivalent `String` representation.
-    public static func fromBindingValue(_ value: Any) -> String { return value as! String }
+    public static func fromBindingValue(_ value: Any) -> String? {
+        return value as? String
+    }
 }
 
 extension URL: Binding {
@@ -302,7 +320,10 @@ extension URL: Binding {
     public var bindingValue: BindingValue { return .text(absoluteString) }
 
     /// Converts the binding value `Any` object representation to an equivalent `URL` representation.
-    public static func fromBindingValue(_ value: Any) -> URL { return URL(string: value as! String)! }
+    public static func fromBindingValue(_ value: Any) -> URL? {
+        guard let value = value as? String else { return nil }
+        return URL(string: value)
+    }
 }
 
 extension Date: Binding {
@@ -313,16 +334,9 @@ extension Date: Binding {
     public var bindingValue: BindingValue { return .text(bindingDateFormatter.string(from: self)) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Date` representation.
-    public static func fromBindingValue(_ value: Any) -> Date {
-        if let value = value as? String {
-            return bindingDateFormatter.date(from: value)!
-        } else if let value = value as? Int64 {
-            return Date(timeIntervalSince1970: TimeInterval(value))
-        } else if let value = value as? Double {
-            return Date(timeIntervalSince1970: value)
-        } else {
-            fatalError("Cannot convert `\(type(of: value))` to Date")
-        }
+    public static func fromBindingValue(_ value: Any) -> Date? {
+        guard let value = value as? String else { return nil }
+        return bindingDateFormatter.date(from: value)
     }
 }
 
@@ -349,5 +363,7 @@ extension Data: Binding {
     public var bindingValue: BindingValue { return .blob(self) }
 
     /// Converts the binding value `Any` object representation to an equivalent `Data` representation.
-    public static func fromBindingValue(_ value: Any) -> Data { return value as! Data }
+    public static func fromBindingValue(_ value: Any) -> Data? {
+        return value as? Data
+    }
 }
