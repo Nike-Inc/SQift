@@ -57,7 +57,7 @@ source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
 source 'https://github.com/CocoaPods/Specs.git'
 
 target '<Your Target Name>' do
-    pod 'SQift', '~> 1.1'
+    pod 'SQift', '~> 2.0'
 end
 ```
 
@@ -145,7 +145,7 @@ While the `Bindable` protocol helps move Swift data types into the database, the
 public protocol Extractable {
     typealias BindingType
     typealias DataType = Self
-    static func fromBindingValue(_ value: Any) -> DataType
+    static func fromBindingValue(_ value: Any) -> DataType?
 }
 ```
 
@@ -162,7 +162,7 @@ In order to make it as easy as possible to use SQift, SQift extends the followin
 - **NULL:** `NSNull`
 - **INTEGER:** `Bool`, `Int8`, `Int16`, `Int32`, `Int64`, `Int`, `UInt8`, `UInt16`, `UInt32`, `UInt64`, `UInt`
 - **REAL:** `Float`, `Double`
-- **TEXT:** `String`, `Date`
+- **TEXT:** `String`, `URL`, `Date`
 - **BLOB:** `Data`
 
 > Additional Swift data types can easily add `Bindable` protocol conformance if necessary.

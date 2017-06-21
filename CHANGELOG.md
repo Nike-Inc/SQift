@@ -4,9 +4,45 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 2.0.0
+
+### Breaking Changes
+
+#### Extractable API
+
+This major release contains only a single API change. The `Extractable` protocol has been updated to allow optional return values instead of non-optional.
+
+```swift
+public protocol Extractable {
+    associatedtype BindingType
+    associatedtype DataType = Self
+
+    static func fromBindingValue(_ value: Any) -> DataType?
+}
+```
+
+To update to SQift 2.x, you only need to make the `DataType` return value of the `fromBindingValue` API optional in all your custom `Binding` implementations. You'll also want to investigate your `fromBindingValue` implementations to see if you can add some additional safety now that the return type is optional.
+
+#### Extractable Implementation for Numeric Types
+
+The `Extractable` implementation of the numeric types has been updated to no longer clamp values outside the bounds of the type to the bounds of the type. The implementations now return `nil` if the underlying value lies outside the bounds of the type. The best way to demonstrate this is through an example.
+
+If you store a value in the database with a value of `1_000`, and try to extract it as a `UInt8`, you will no longer receive `255`, but instead `nil` since the value does not fit within the `0...255` range.
+
+### Release Notes
+
+#### Updated
+
+- The `Extractable` protocol to allow safe conversions of `Any` values into `DataType` by returning an optional value instead of non-optional.
+- The `Extractable` implementations for all number types (`UInt8`, `Int32`, etc.) to no longer "clamp" values outside the type's bounds.
+
+---
+
 ## 1.1.2
 
-### Fixed
+### Release Notes
+
+#### Fixed
 
 - Issue where `@discardableResult` attribute was used incorrectly on `bind` API that does not return a value.
 - Issue where `TraceEvent` extension did not correctly use availability checks in the test suite.
