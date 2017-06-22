@@ -107,6 +107,18 @@ class RowTestCase: XCTestCase {
                 let id_UInt64: UInt64? = row[0]
                 let id_UInt: UInt? = row[0]
 
+                let missions_Int8: Int8? = row[3]
+                let missions_Int16: Int16? = row[3]
+                let missions_Int32: Int32? = row[3]
+                let missions_Int64: Int64? = row[3]
+                let missions_Int: Int? = row[3]
+
+                let missions_UInt8: UInt8? = row[3]
+                let missions_UInt16: UInt16? = row[3]
+                let missions_UInt32: UInt32? = row[3]
+                let missions_UInt64: UInt64? = row[3]
+                let missions_UInt: UInt? = row[3]
+
                 let salary_Float: Float? = row[4]
                 let salary_Double: Double? = row[4]
 
@@ -129,6 +141,18 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(id_UInt32, 2)
                 XCTAssertEqual(id_UInt64, 2)
                 XCTAssertEqual(id_UInt, 2)
+
+                XCTAssertEqual(missions_Int8, nil)
+                XCTAssertEqual(missions_Int16, 2_315)
+                XCTAssertEqual(missions_Int32, 2_315)
+                XCTAssertEqual(missions_Int64, 2_315)
+                XCTAssertEqual(missions_Int, 2_315)
+
+                XCTAssertEqual(missions_UInt8, nil)
+                XCTAssertEqual(missions_UInt16, 2_315)
+                XCTAssertEqual(missions_UInt32, 2_315)
+                XCTAssertEqual(missions_UInt64, 2_315)
+                XCTAssertEqual(missions_UInt, 2_315)
 
                 XCTAssertEqual(salary_Float, 9_600_200.11)
                 XCTAssertEqual(salary_Double, 9_600_200.11)
@@ -227,6 +251,18 @@ class RowTestCase: XCTestCase {
                 let id_UInt64: UInt64? = row["id"]
                 let id_UInt: UInt? = row["id"]
 
+                let missions_Int8: Int8? = row["missions"]
+                let missions_Int16: Int16? = row["missions"]
+                let missions_Int32: Int32? = row["missions"]
+                let missions_Int64: Int64? = row["missions"]
+                let missions_Int: Int? = row["missions"]
+
+                let missions_UInt8: UInt8? = row["missions"]
+                let missions_UInt16: UInt16? = row["missions"]
+                let missions_UInt32: UInt32? = row["missions"]
+                let missions_UInt64: UInt64? = row["missions"]
+                let missions_UInt: UInt? = row["missions"]
+
                 let salary_Float: Float? = row["salary"]
                 let salary_Double: Double? = row["salary"]
 
@@ -249,6 +285,18 @@ class RowTestCase: XCTestCase {
                 XCTAssertEqual(id_UInt32, 2)
                 XCTAssertEqual(id_UInt64, 2)
                 XCTAssertEqual(id_UInt, 2)
+
+                XCTAssertEqual(missions_Int8, nil)
+                XCTAssertEqual(missions_Int16, 2_315)
+                XCTAssertEqual(missions_Int32, 2_315)
+                XCTAssertEqual(missions_Int64, 2_315)
+                XCTAssertEqual(missions_Int, 2_315)
+
+                XCTAssertEqual(missions_UInt8, nil)
+                XCTAssertEqual(missions_UInt16, 2_315)
+                XCTAssertEqual(missions_UInt32, 2_315)
+                XCTAssertEqual(missions_UInt64, 2_315)
+                XCTAssertEqual(missions_UInt, 2_315)
 
                 XCTAssertEqual(salary_Float, 9_600_200.11)
                 XCTAssertEqual(salary_Double, 9_600_200.11)

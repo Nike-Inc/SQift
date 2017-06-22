@@ -12,6 +12,10 @@ import XCTest
 
 class BindingTestCase: XCTestCase {
 
+    // MARK: - Properties
+
+    private var is64Bit: Bool { return MemoryLayout<Int>.size == MemoryLayout<Int64>.size }
+
     // MARK: - Null Bindable Tests
 
     func testNSNullBinding() {
@@ -48,7 +52,10 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = Int8(120).bindingValue
 
+        let fromBindingValueMin = Int8.fromBindingValue(Int64(Int8.min))
+        let fromBindingValueMax = Int8.fromBindingValue(Int64(Int8.max))
         let fromBindingValueWithinBounds = Int8.fromBindingValue(Int64(120))
+
         let fromBindingValueOutOfMinBounds = Int8.fromBindingValue(Int64(-140))
         let fromBindingValueOutOfMaxBounds = Int8.fromBindingValue(Int64(140))
         let fromInvalidBindingValue = Int8.fromBindingValue("invalid")
@@ -56,9 +63,12 @@ class BindingTestCase: XCTestCase {
         // Then
         XCTAssertTrue(bindingValue == .integer(120))
 
+        XCTAssertEqual(fromBindingValueMin, Int8.min)
+        XCTAssertEqual(fromBindingValueMax, Int8.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 120)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, Int8.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, Int8.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
+        XCTAssertEqual(fromBindingValueOutOfMaxBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -66,7 +76,10 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = Int16(2_543).bindingValue
 
+        let fromBindingValueMin = Int16.fromBindingValue(Int64(Int16.min))
+        let fromBindingValueMax = Int16.fromBindingValue(Int64(Int16.max))
         let fromBindingValueWithinBounds = Int16.fromBindingValue(Int64(2_543))
+
         let fromBindingValueOutOfMinBounds = Int16.fromBindingValue(Int64(-35_000))
         let fromBindingValueOutOfMaxBounds = Int16.fromBindingValue(Int64(35_000))
         let fromInvalidBindingValue = Int16.fromBindingValue("invalid")
@@ -74,9 +87,12 @@ class BindingTestCase: XCTestCase {
         // Then
         XCTAssertTrue(bindingValue == .integer(2_543))
 
+        XCTAssertEqual(fromBindingValueMin, Int16.min)
+        XCTAssertEqual(fromBindingValueMax, Int16.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 2_543)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, Int16.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, Int16.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
+        XCTAssertEqual(fromBindingValueOutOfMaxBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -84,7 +100,10 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = Int32(234_567).bindingValue
 
+        let fromBindingValueMin = Int32.fromBindingValue(Int64(Int32.min))
+        let fromBindingValueMax = Int32.fromBindingValue(Int64(Int32.max))
         let fromBindingValueWithinBounds = Int32.fromBindingValue(Int64(234_567))
+
         let fromBindingValueOutOfMinBounds = Int32.fromBindingValue(Int64.min)
         let fromBindingValueOutOfMaxBounds = Int32.fromBindingValue(Int64.max)
         let fromInvalidBindingValue = Int32.fromBindingValue("invalid")
@@ -92,9 +111,12 @@ class BindingTestCase: XCTestCase {
         // Then
         XCTAssertTrue(bindingValue == .integer(234_567))
 
+        XCTAssertEqual(fromBindingValueMin, Int32.min)
+        XCTAssertEqual(fromBindingValueMax, Int32.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 234_567)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, Int32.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, Int32.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
+        XCTAssertEqual(fromBindingValueOutOfMaxBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -102,17 +124,19 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = Int64(Int64.max - 10_000).bindingValue
 
-        let fromBindingValueWithinBounds = Int64.fromBindingValue(Int64.max - 10_000)
         let fromBindingValueMin = Int64.fromBindingValue(Int64.min)
         let fromBindingValueMax = Int64.fromBindingValue(Int64.max)
+        let fromBindingValueWithinBounds = Int64.fromBindingValue(Int64.max - 10_000)
+
         let fromInvalidBindingValue = Int64.fromBindingValue("invalid")
 
         // Then
         XCTAssertTrue(bindingValue == .integer(Int64.max - 10_000))
 
-        XCTAssertEqual(fromBindingValueWithinBounds, Int64.max - 10_000)
         XCTAssertEqual(fromBindingValueMin, Int64.min)
         XCTAssertEqual(fromBindingValueMax, Int64.max)
+        XCTAssertEqual(fromBindingValueWithinBounds, Int64.max - 10_000)
+
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -120,17 +144,29 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = Int(123_456).bindingValue
 
+        let fromBindingValueMin = Int.fromBindingValue(Int64(Int.min))
+        let fromBindingValueMax = Int.fromBindingValue(Int64(Int.max))
         let fromBindingValueWithinBounds = Int.fromBindingValue(Int64(123_456))
-        let fromBindingValueOutOfMinBounds = Int.fromBindingValue(Int64.min)
-        let fromBindingValueOutOfMaxBounds = Int.fromBindingValue(Int64.max)
+
+        let fromBindingValuePossiblyOutOfMinBounds = Int.fromBindingValue(Int64.min)
+        let fromBindingValuePossiblyOutOfMaxBounds = Int.fromBindingValue(Int64.max)
         let fromInvalidBindingValue = Int.fromBindingValue("invalid")
 
         // Then
         XCTAssertTrue(bindingValue == .integer(123_456))
 
+        XCTAssertEqual(fromBindingValueMin, Int.min)
+        XCTAssertEqual(fromBindingValueMax, Int.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 123_456)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, Int.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, Int.max)
+
+        if is64Bit {
+            XCTAssertEqual(fromBindingValuePossiblyOutOfMinBounds, Int.min)
+            XCTAssertEqual(fromBindingValuePossiblyOutOfMaxBounds, Int.max)
+        } else {
+            XCTAssertEqual(fromBindingValuePossiblyOutOfMinBounds, nil)
+            XCTAssertEqual(fromBindingValuePossiblyOutOfMaxBounds, nil)
+        }
+
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -138,7 +174,10 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = UInt8(120).bindingValue
 
+        let fromBindingValueMin = UInt8.fromBindingValue(Int64(UInt8.min))
+        let fromBindingValueMax = UInt8.fromBindingValue(Int64(UInt8.max))
         let fromBindingValueWithinBounds = UInt8.fromBindingValue(Int64(120))
+
         let fromBindingValueOutOfMinBounds = UInt8.fromBindingValue(Int64(-10))
         let fromBindingValueOutOfMaxBounds = UInt8.fromBindingValue(Int64(260))
         let fromInvalidBindingValue = UInt8.fromBindingValue("invalid")
@@ -146,9 +185,12 @@ class BindingTestCase: XCTestCase {
         // Then
         XCTAssertTrue(bindingValue == .integer(120))
 
+        XCTAssertEqual(fromBindingValueMin, UInt8.min)
+        XCTAssertEqual(fromBindingValueMax, UInt8.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 120)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, UInt8.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, UInt8.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
+        XCTAssertEqual(fromBindingValueOutOfMaxBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -156,7 +198,10 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = UInt16(64_123).bindingValue
 
+        let fromBindingValueMin = UInt16.fromBindingValue(Int64(UInt16.min))
+        let fromBindingValueMax = UInt16.fromBindingValue(Int64(UInt16.max))
         let fromBindingValueWithinBounds = UInt16.fromBindingValue(Int64(64_123))
+
         let fromBindingValueOutOfMinBounds = UInt16.fromBindingValue(Int64(-10))
         let fromBindingValueOutOfMaxBounds = UInt16.fromBindingValue(Int64(68_000))
         let fromInvalidBindingValue = UInt16.fromBindingValue("invalid")
@@ -164,9 +209,12 @@ class BindingTestCase: XCTestCase {
         // Then
         XCTAssertTrue(bindingValue == .integer(64_123))
 
+        XCTAssertEqual(fromBindingValueMin, UInt16.min)
+        XCTAssertEqual(fromBindingValueMax, UInt16.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 64_123)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, UInt16.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, UInt16.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
+        XCTAssertEqual(fromBindingValueOutOfMaxBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -174,17 +222,21 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = UInt32(1_234_567_890).bindingValue
 
+        let fromBindingValueMin = UInt32.fromBindingValue(Int64(UInt32.min))
+        let fromBindingValueMax = UInt32.fromBindingValue(Int64(UInt32.max))
         let fromBindingValueWithinBounds = UInt32.fromBindingValue(Int64(1_234_567_890))
+
         let fromBindingValueOutOfMinBounds = UInt32.fromBindingValue(Int64(-10))
-        let fromBindingValueOutOfMaxBounds = UInt32.fromBindingValue(Int64(UInt32.max))
         let fromInvalidBindingValue = UInt32.fromBindingValue("invalid")
 
         // Then
         XCTAssertTrue(bindingValue == .integer(1_234_567_890))
 
+        XCTAssertEqual(fromBindingValueMin, UInt32.min)
+        XCTAssertEqual(fromBindingValueMax, UInt32.max)
         XCTAssertEqual(fromBindingValueWithinBounds, 1_234_567_890)
-        XCTAssertEqual(fromBindingValueOutOfMinBounds, UInt32.min)
-        XCTAssertEqual(fromBindingValueOutOfMaxBounds, UInt32.max)
+
+        XCTAssertEqual(fromBindingValueOutOfMinBounds, nil)
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -192,17 +244,19 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = (UInt64.max - 40).bindingValue
 
-        let fromBindingValueWithinBounds = UInt64.fromBindingValue(Int64(-41))
         let fromBindingValueMin = UInt64.fromBindingValue(Int64(bitPattern: UInt64.min))
         let fromBindingValueMax = UInt64.fromBindingValue(Int64(bitPattern: UInt64.max))
+        let fromBindingValueWithinBounds = UInt64.fromBindingValue(Int64(-41))
+
         let fromInvalidBindingValue = UInt64.fromBindingValue("invalid")
 
         // Then
         XCTAssertTrue(bindingValue == .integer(-41))
 
-        XCTAssertEqual(fromBindingValueWithinBounds, UInt64.max - UInt64(40))
         XCTAssertEqual(fromBindingValueMin, UInt64.min)
         XCTAssertEqual(fromBindingValueMax, UInt64.max)
+        XCTAssertEqual(fromBindingValueWithinBounds, UInt64.max - UInt64(40))
+
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
@@ -210,17 +264,19 @@ class BindingTestCase: XCTestCase {
         // Given, When
         let bindingValue = UInt(UInt32.max).bindingValue
 
-        let fromBindingValueWithinBounds = UInt.fromBindingValue(Int64(4_000))
         let fromBindingValueMin = UInt.fromBindingValue(Int64(bitPattern: UInt64(UInt.min)))
         let fromBindingValueMax = UInt.fromBindingValue(Int64(bitPattern: UInt64(UInt.max)))
+        let fromBindingValueWithinBounds = UInt.fromBindingValue(Int64(4_000))
+
         let fromInvalidBindingValue = UInt.fromBindingValue("invalid")
 
         // Then
         XCTAssertTrue(bindingValue == .integer(Int64(UInt32.max)))
 
-        XCTAssertEqual(fromBindingValueWithinBounds, 4_000)
         XCTAssertEqual(fromBindingValueMin, UInt.min)
         XCTAssertEqual(fromBindingValueMax, UInt.max)
+        XCTAssertEqual(fromBindingValueWithinBounds, 4_000)
+
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
