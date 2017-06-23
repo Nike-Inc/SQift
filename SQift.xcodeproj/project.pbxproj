@@ -65,6 +65,13 @@
 		4C29B33F1BFB28E40086A2EF /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25E1BF6A5E000822606 /* QueryTests.swift */; };
 		4C29B3401BFB28E40086A2EF /* TestTables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25F1BF6A5E000822606 /* TestTables.swift */; };
 		4C29B3411BFB28E40086A2EF /* FileManager+SQift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C25D1BF6A5E000822606 /* FileManager+SQift.swift */; };
+		4C2AE8DE1EFD9E6C00EC1A2D /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */; };
+		4C2AE8DF1EFD9E6C00EC1A2D /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */; };
+		4C2AE8E01EFD9E6C00EC1A2D /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */; };
+		4C2AE8E11EFD9E6C00EC1A2D /* Function.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */; };
+		4C2AE8E31EFDA29400EC1A2D /* FunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8E21EFDA29400EC1A2D /* FunctionTests.swift */; };
+		4C2AE8E41EFDA29400EC1A2D /* FunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8E21EFDA29400EC1A2D /* FunctionTests.swift */; };
+		4C2AE8E51EFDA29400EC1A2D /* FunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C2AE8E21EFDA29400EC1A2D /* FunctionTests.swift */; };
 		4C3C4D021BFB2BD10080A0C6 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2441BF6A57300822606 /* Binding.swift */; };
 		4C3C4D031BFB2BD10080A0C6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA8C2451BF6A57300822606 /* Connection.swift */; };
 		4C3C4D041BFB2BD10080A0C6 /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C05B9731BF9039600CFC13C /* ConnectionPool.swift */; };
@@ -148,6 +155,8 @@
 		4C29B2ED1BFB25C00086A2EF /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B3161BFB28330086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B31F1BFB28330086A2EF /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Function.swift; sourceTree = "<group>"; };
+		4C2AE8E21EFDA29400EC1A2D /* FunctionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionTests.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C683C901CD3F8E700CFA4C6 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -268,6 +277,7 @@
 				4C05B9731BF9039600CFC13C /* ConnectionPool.swift */,
 				4CA8C2461BF6A57300822606 /* ConnectionQueue.swift */,
 				4CC288E51BFD0707009A5577 /* Database.swift */,
+				4C2AE8DD1EFD9E6C00EC1A2D /* Function.swift */,
 				4CA8C2481BF6A57300822606 /* Migrator.swift */,
 				4CA8C2491BF6A57300822606 /* Row.swift */,
 				4CA8C2471BF6A57300822606 /* SQLiteError.swift */,
@@ -288,6 +298,7 @@
 				4CA8C2581BF6A5E000822606 /* ConnectionQueueTests.swift */,
 				4CF8B4511BFD5DAF00472B19 /* DatabaseTests.swift */,
 				4CA8C25B1BF6A5E000822606 /* FetchTests.swift */,
+				4C2AE8E21EFDA29400EC1A2D /* FunctionTests.swift */,
 				4CA8C25C1BF6A5E000822606 /* MigratorTests.swift */,
 				4CA8C25E1BF6A5E000822606 /* QueryTests.swift */,
 				4CF8B4571BFD61A900472B19 /* RowTests.swift */,
@@ -648,6 +659,7 @@
 				4C29B2FD1BFB25DE0086A2EF /* ConnectionPool.swift in Sources */,
 				4C29B2FE1BFB25DE0086A2EF /* ConnectionQueue.swift in Sources */,
 				4C29B3001BFB25DE0086A2EF /* Migrator.swift in Sources */,
+				4C2AE8DF1EFD9E6C00EC1A2D /* Function.swift in Sources */,
 				4C29B3031BFB25DE0086A2EF /* StringExtension.swift in Sources */,
 				4C29B2FB1BFB25DE0086A2EF /* Binding.swift in Sources */,
 				4C29B2FF1BFB25DE0086A2EF /* SQLiteError.swift in Sources */,
@@ -670,6 +682,7 @@
 				4C29B30A1BFB25F20086A2EF /* SQLiteErrorTests.swift in Sources */,
 				4CF74DAD1E36A4110040854E /* StringExtensionTests.swift in Sources */,
 				4C29B30D1BFB25F20086A2EF /* QueryTests.swift in Sources */,
+				4C2AE8E41EFDA29400EC1A2D /* FunctionTests.swift in Sources */,
 				4C29B30E1BFB25F20086A2EF /* TestTables.swift in Sources */,
 				4C29B30F1BFB25F20086A2EF /* FileManager+SQift.swift in Sources */,
 				4CF8B4531BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,
@@ -686,6 +699,7 @@
 				4C29B32F1BFB28D90086A2EF /* ConnectionPool.swift in Sources */,
 				4C29B3301BFB28D90086A2EF /* ConnectionQueue.swift in Sources */,
 				4C29B3321BFB28D90086A2EF /* Migrator.swift in Sources */,
+				4C2AE8E01EFD9E6C00EC1A2D /* Function.swift in Sources */,
 				4C29B3351BFB28D90086A2EF /* StringExtension.swift in Sources */,
 				4C29B32D1BFB28D90086A2EF /* Binding.swift in Sources */,
 				4C29B3311BFB28D90086A2EF /* SQLiteError.swift in Sources */,
@@ -708,6 +722,7 @@
 				4C29B33C1BFB28E40086A2EF /* SQLiteErrorTests.swift in Sources */,
 				4CF74DAE1E36A4110040854E /* StringExtensionTests.swift in Sources */,
 				4C29B33F1BFB28E40086A2EF /* QueryTests.swift in Sources */,
+				4C2AE8E51EFDA29400EC1A2D /* FunctionTests.swift in Sources */,
 				4C29B3401BFB28E40086A2EF /* TestTables.swift in Sources */,
 				4C29B3411BFB28E40086A2EF /* FileManager+SQift.swift in Sources */,
 				4CF8B4541BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,
@@ -724,6 +739,7 @@
 				4C3C4D041BFB2BD10080A0C6 /* ConnectionPool.swift in Sources */,
 				4C3C4D051BFB2BD10080A0C6 /* ConnectionQueue.swift in Sources */,
 				4C3C4D071BFB2BD10080A0C6 /* Migrator.swift in Sources */,
+				4C2AE8E11EFD9E6C00EC1A2D /* Function.swift in Sources */,
 				4C3C4D0A1BFB2BD10080A0C6 /* StringExtension.swift in Sources */,
 				4C3C4D021BFB2BD10080A0C6 /* Binding.swift in Sources */,
 				4C3C4D061BFB2BD10080A0C6 /* SQLiteError.swift in Sources */,
@@ -742,6 +758,7 @@
 				4CA8C2541BF6A57300822606 /* Statement.swift in Sources */,
 				4CA8C2501BF6A57300822606 /* SQLiteError.swift in Sources */,
 				4C05B9741BF9039600CFC13C /* ConnectionPool.swift in Sources */,
+				4C2AE8DE1EFD9E6C00EC1A2D /* Function.swift in Sources */,
 				4CA8C24E1BF6A57300822606 /* Connection.swift in Sources */,
 				4CA8C24F1BF6A57300822606 /* ConnectionQueue.swift in Sources */,
 				4CA8C2511BF6A57300822606 /* Migrator.swift in Sources */,
@@ -764,6 +781,7 @@
 				4CA8C2631BF6A5E000822606 /* SQLiteErrorTests.swift in Sources */,
 				4CF74DAC1E36A4110040854E /* StringExtensionTests.swift in Sources */,
 				4CA8C2641BF6A5E000822606 /* FetchTests.swift in Sources */,
+				4C2AE8E31EFDA29400EC1A2D /* FunctionTests.swift in Sources */,
 				4CA8C2661BF6A5E000822606 /* FileManager+SQift.swift in Sources */,
 				4CA8C2601BF6A5E000822606 /* BindingTests.swift in Sources */,
 				4CF8B4521BFD5DAF00472B19 /* DatabaseTests.swift in Sources */,

@@ -650,7 +650,7 @@ public class Connection {
         )
     }
 
-    // MARK: - Collation
+    // MARK: - Collations
 
     /// Registers the custom collation name with SQLite to execute the compare closure when collating.
     ///
