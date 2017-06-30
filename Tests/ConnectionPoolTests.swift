@@ -150,7 +150,6 @@ class ConnectionPoolTestCase: XCTestCase {
 
             // When
             try pool.execute { connection in
-                print("Is connection read-only? \(connection.readOnly)")
                 try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)")
             }
 
