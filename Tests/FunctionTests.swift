@@ -184,6 +184,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             let text = self.text
+            let date = Date(timeIntervalSince1970: 123456)
             let data = self.data
             let zeroData = self.zeroData
 
@@ -196,8 +197,9 @@ class FunctionTestCase: XCTestCase {
                 case 2:  return .long(123_456_789)
                 case 3:  return .double(1234.5678)
                 case 4:  return .text(text)
-                case 5:  return .data(data)
-                case 6:  return .zeroData(10)
+                case 5:  return .date(date)
+                case 6:  return .data(data)
+                case 7:  return .zeroData(10)
                 default: return .null
                 }
             }
@@ -210,8 +212,9 @@ class FunctionTestCase: XCTestCase {
             let longResult: Int? = try connection.prepare(sql, 2).query()
             let doubleResult: Double? = try connection.prepare(sql, 3).query()
             let textResult: String? = try connection.prepare(sql, 4).query()
-            let dataResult: Data? = try connection.prepare(sql, 5).query()
-            let zeroDataResult: Data? = try connection.prepare(sql, 6).query()
+            let dateResult: Date? = try connection.prepare(sql, 5).query()
+            let dataResult: Data? = try connection.prepare(sql, 6).query()
+            let zeroDataResult: Data? = try connection.prepare(sql, 7).query()
 
             // Then
             XCTAssertEqual(nilResult, nil)
@@ -219,6 +222,7 @@ class FunctionTestCase: XCTestCase {
             XCTAssertEqual(longResult, 123_456_789)
             XCTAssertEqual(doubleResult, 1234.5678)
             XCTAssertEqual(textResult, text)
+            XCTAssertEqual(dateResult, date)
             XCTAssertEqual(dataResult, data)
             XCTAssertEqual(zeroDataResult, zeroData)
         } catch {
@@ -233,6 +237,7 @@ class FunctionTestCase: XCTestCase {
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
             let text = self.text
+            let date = Date(timeIntervalSince1970: 123456)
             let data = self.data
             let zeroData = self.zeroData
 
@@ -257,8 +262,9 @@ class FunctionTestCase: XCTestCase {
                     case 2:  return .long(123_456_789)
                     case 3:  return .double(1234.5678)
                     case 4:  return .text(text)
-                    case 5:  return .data(data)
-                    case 6:  return .zeroData(10)
+                    case 5:  return .date(date)
+                    case 6:  return .data(data)
+                    case 7:  return .zeroData(10)
                     default: return .null
                     }
                 }
@@ -272,8 +278,9 @@ class FunctionTestCase: XCTestCase {
             let longResult: Int? = try connection.prepare(sql, 2).query()
             let doubleResult: Double? = try connection.prepare(sql, 3).query()
             let textResult: String? = try connection.prepare(sql, 4).query()
-            let dataResult: Data? = try connection.prepare(sql, 5).query()
-            let zeroDataResult: Data? = try connection.prepare(sql, 6).query()
+            let dateResult: Date? = try connection.prepare(sql, 5).query()
+            let dataResult: Data? = try connection.prepare(sql, 6).query()
+            let zeroDataResult: Data? = try connection.prepare(sql, 7).query()
 
             // Then
             XCTAssertEqual(nilResult, nil)
@@ -281,6 +288,7 @@ class FunctionTestCase: XCTestCase {
             XCTAssertEqual(longResult, 123_456_789)
             XCTAssertEqual(doubleResult, 1234.5678)
             XCTAssertEqual(textResult, text)
+            XCTAssertEqual(dateResult, date)
             XCTAssertEqual(dataResult, data)
             XCTAssertEqual(zeroDataResult, zeroData)
         } catch {
