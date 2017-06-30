@@ -219,7 +219,7 @@ extension Connection {
         case long(Int64)
         case double(Double)
         case text(String)
-        case date(Date) // TODO: add test here...
+        case date(Date)
         case data(Data)
         case zeroData(UInt64)
         case error(message: String, code: Int32?)
