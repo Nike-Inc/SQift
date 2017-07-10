@@ -73,10 +73,10 @@ extension Connection {
     public typealias AggregateFunction = (AggregateFunctionContext, [FunctionValue]) -> FunctionResult
 
     // TODO: docstring
-    public typealias AggregrateContextObject = () -> AnyObject
+    public typealias AggregateContextObjectFactory = () -> AnyObject
 
     // TODO: docstring
-    public typealias AggregrateStepFunction = (AggregateFunctionContext, [FunctionValue]) -> Void
+    public typealias AggregateStepFunction = (AggregateFunctionContext, [FunctionValue]) -> Void
 
     // TODO: docstring
     public typealias AggregateFinalFunction = (AggregateFunctionContext) -> FunctionResult
@@ -87,8 +87,8 @@ extension Connection {
         named name: String,
         argumentCount: Int8,
         deterministic: Bool = false,
-        contextObject: @escaping AggregrateContextObject,
-        stepFunction: @escaping AggregrateStepFunction,
+        contextObjectFactory: @escaping AggregateContextObjectFactory,
+        stepFunction: @escaping AggregateStepFunction,
         finalFunction: @escaping AggregateFinalFunction)
         -> Int32
     {
@@ -96,22 +96,26 @@ extension Connection {
         let flags = deterministic ? SQLITE_UTF8 | SQLITE_DETERMINISTIC : SQLITE_UTF8
 
         class AggregateFunctionBox {
-            let contextObject: AggregrateContextObject
-            let stepFunction: AggregrateStepFunction
+            let contextObjectFactory: AggregateContextObjectFactory
+            let stepFunction: AggregateStepFunction
             let finalFunction: AggregateFinalFunction
 
             init(
-                contextObject: @escaping AggregrateContextObject,
-                stepFunction: @escaping AggregrateStepFunction,
+                contextObjectFactory: @escaping AggregateContextObjectFactory,
+                stepFunction: @escaping AggregateStepFunction,
                 finalFunction: @escaping AggregateFinalFunction)
             {
-                self.contextObject = contextObject
+                self.contextObjectFactory = contextObjectFactory
                 self.stepFunction = stepFunction
                 self.finalFunction = finalFunction
             }
         }
 
-        let box = AggregateFunctionBox(contextObject: contextObject, stepFunction: stepFunction, finalFunction: finalFunction)
+        let box = AggregateFunctionBox(
+            contextObjectFactory: contextObjectFactory,
+            stepFunction: stepFunction,
+            finalFunction: finalFunction
+        )
 
         return sqlite3_create_function_v2(
             handle,
@@ -123,13 +127,21 @@ extension Connection {
             { (context: OpaquePointer?, count: Int32, values: UnsafeMutablePointer<OpaquePointer?>?) in
                 let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
                 let parameters = FunctionValue.functionValues(fromCount: Int(count), values: values)
-                let functionContext = AggregateFunctionContext(context: context, contextObject: box.contextObject)
+
+                let functionContext = AggregateFunctionContext(
+                    context: context,
+                    contextObjectFactory: box.contextObjectFactory
+                )
 
                 box.stepFunction(functionContext, parameters)
             },
             { (context: OpaquePointer?) in
                 let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
-                let functionContext = AggregateFunctionContext(context: context, contextObject: box.contextObject)
+
+                let functionContext = AggregateFunctionContext(
+                    context: context,
+                    contextObjectFactory: box.contextObjectFactory
+                )
 
                 let result = box.finalFunction(functionContext)
                 result.apply(to: context)
@@ -327,12 +339,12 @@ extension Connection {
         public var finalObject: AnyObject? { return aggregateContextObject() }
 
         private let context: OpaquePointer?
-        private let contextObject: AggregrateContextObject
+        private let contextObjectFactory: AggregateContextObjectFactory
 
         // TODO: docstring
-        public init(context: OpaquePointer?, contextObject: @escaping AggregrateContextObject) {
+        public init(context: OpaquePointer?, contextObjectFactory: @escaping AggregateContextObjectFactory) {
             self.context = context
-            self.contextObject = contextObject
+            self.contextObjectFactory = contextObjectFactory
         }
 
         func aggregateContextObject() -> AnyObject? {
@@ -340,7 +352,7 @@ extension Connection {
             let pointer = sqlite3_aggregate_context(context, Int32(length))
 
             guard let object = pointer?.assumingMemoryBound(to: AnyObject.self).pointee else {
-                let object = contextObject()
+                let object = contextObjectFactory()
                 pointer?.initializeMemory(as: AnyObject.self, to: object)
                 return object
             }

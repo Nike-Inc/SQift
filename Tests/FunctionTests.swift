@@ -244,7 +244,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_switch",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { context, values in
                     guard
                         let value = values.first,
@@ -394,7 +394,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_switch",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { context, values in
                     guard
                         let value = values.first,
@@ -496,7 +496,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .null }
             )
@@ -548,7 +548,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(1) }
             )
@@ -556,7 +556,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 2,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(2) }
             )
@@ -564,7 +564,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 3,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(3) }
             )
@@ -572,7 +572,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 4,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(4) }
             )
@@ -625,7 +625,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(1) }
             )
@@ -638,7 +638,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { _, _ in },
                 finalFunction: { _ in return .integer(1) }
             )
@@ -815,7 +815,7 @@ class FunctionTestCase: XCTestCase {
             let addResult = connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { context, values in
                     guard
                         let value = values.first,
@@ -851,7 +851,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 1,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { context, values in
                     guard
                         let value = values.first,
@@ -895,7 +895,7 @@ class FunctionTestCase: XCTestCase {
             connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 2,
-                contextObject: { return MutableNumber() },
+                contextObjectFactory: { return MutableNumber() },
                 stepFunction: { context, values in
                     guard
                         values.count == 2,
