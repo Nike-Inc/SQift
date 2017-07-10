@@ -58,9 +58,9 @@ extension Connection {
 
     // TODO: docstring
     @discardableResult
-    public func removeFunction(named name: String, argumentCount: Int8, deterministic: Bool = false) -> Int32 {
+    public func removeFunction(named name: String, argumentCount: Int8) -> Int32 {
         let nArg = argumentCount < 0 ? -1 : Int32(argumentCount)
-        let flags = deterministic ? SQLITE_UTF8 | SQLITE_DETERMINISTIC : SQLITE_UTF8
+        let flags = SQLITE_UTF8
 
         return sqlite3_create_function_v2(handle, name, nArg, flags, nil, nil, nil, nil, nil)
     }
