@@ -49,7 +49,10 @@ extension Connection {
             },
             nil,
             nil,
-            { Unmanaged<ScalarFunctionBox>.fromOpaque($0!).release() }
+            { (boxPointer: UnsafeMutableRawPointer?) in
+                guard let boxPointer = boxPointer else { return }
+                Unmanaged<ScalarFunctionBox>.fromOpaque(boxPointer).release()
+            }
         )
     }
 
@@ -133,7 +136,10 @@ extension Connection {
 
                 functionContext.deallocateAggregateContextObject()
             },
-            { Unmanaged<AggregateFunctionBox>.fromOpaque($0!).release() }
+            { (boxPointer: UnsafeMutableRawPointer?) in
+                guard let boxPointer = boxPointer else { return }
+                Unmanaged<AggregateFunctionBox>.fromOpaque(boxPointer).release()
+            }
         )
     }
 }
@@ -193,7 +199,7 @@ extension Connection {
         // TODO: docstring
         public var isData: Bool { return type == .data }
 
-        var blob: UnsafeRawPointer! { return sqlite3_value_blob(value) }
+        var blob: UnsafeRawPointer { return sqlite3_value_blob(value) }
         var byteLength: Int { return Int(sqlite3_value_bytes(value)) }
 
         let value: OpaquePointer?
@@ -282,7 +288,10 @@ extension Connection {
                             context,
                             index,
                             Unmanaged.passRetained(newValue).toOpaque(),
-                            { Unmanaged<AnyObject>.fromOpaque($0!).release() }
+                            { (valuePointer: UnsafeMutableRawPointer?) in
+                                guard let valuePointer = valuePointer else { return }
+                                Unmanaged<AnyObject>.fromOpaque(valuePointer).release()
+                            }
                         )
                     } else {
                         sqlite3_set_auxdata(context, index, nil, nil)
