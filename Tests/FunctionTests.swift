@@ -803,6 +803,37 @@ class FunctionTestCase: XCTestCase {
         }
     }
 
+    func testThatScalarFunctionThrowsWhenCalledWithInvalidNumberOfArguments() {
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in
+                return .integer(1)
+            }
+
+            try connection.addScalarFunction(named: "sq_variable_echo", argumentCount: -1) { _, args in
+                return .integer(Int32(args.count))
+            }
+
+            // When
+            let result1: Int64? = try connection.prepare("SELECT sq_echo(?)", 1).query()
+            let result2: Int64? = try connection.prepare("SELECT sq_variable_echo(?)", 1).query()
+            let result3: Int64? = try connection.prepare("SELECT sq_variable_echo(?, ?)", 1, 2).query()
+            let result4: Int64? = try connection.prepare("SELECT sq_variable_echo(?, ?, ?)", 1, 2, 3).query()
+
+            // Then
+            XCTAssertEqual(result1, 1)
+            XCTAssertEqual(result2, 1)
+            XCTAssertEqual(result3, 2)
+            XCTAssertEqual(result4, 3)
+
+            XCTAssertThrowsError(try connection.prepare("SELECT sq_echo(?, ?)", 1, 2))
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
     // MARK: - Aggregate Functions
 
     func testThatAggregateFunctionCanSumIntegerValuesWithOneFunctionValue() {
@@ -914,6 +945,52 @@ class FunctionTestCase: XCTestCase {
 
             // Then
             XCTAssertEqual(sumResult, 59)
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
+    func testThatAggregateFunctionThrowsWhenCalledWithInvalidNumberOfArguments() {
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+            try loadTablesAndDataForAggregateFunctions(using: connection)
+
+            try connection.addAggregateFunction(
+                named: "sq_echo",
+                argumentCount: 1,
+                contextObjectFactory: { return MutableNumber() },
+                stepFunction: { _, _ in },
+                finalFunction: { _ in return .long(1) }
+            )
+
+            try connection.addAggregateFunction(
+                named: "sq_variable_echo",
+                argumentCount: -1,
+                contextObjectFactory: { return MutableNumber() },
+                stepFunction: { context, values in
+                    guard let sumNumber = context.stepObject as? MutableNumber else { return }
+                    sumNumber.number = Int64(values.count)
+                },
+                finalFunction: { context in
+                    guard let sumNumber = context.stepObject as? MutableNumber else { return .null }
+                    return .long(sumNumber.number)
+                }
+            )
+
+            // When
+            let result1: Int64? = try connection.prepare("SELECT sq_echo(grp) FROM sq_values").query()
+            let result2: Int64? = try connection.prepare("SELECT sq_variable_echo(grp) FROM sq_values").query()
+            let result3: Int64? = try connection.prepare("SELECT sq_variable_echo(grp, value) FROM sq_values").query()
+            let result4: Int64? = try connection.prepare("SELECT sq_variable_echo(grp, value, grp) FROM sq_values").query()
+
+            // Then
+            XCTAssertEqual(result1, 1)
+            XCTAssertEqual(result2, 1)
+            XCTAssertEqual(result3, 2)
+            XCTAssertEqual(result4, 3)
+
+            XCTAssertThrowsError(try connection.prepare("SELECT sq_echo(grp, value) FROM sq_values"))
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
