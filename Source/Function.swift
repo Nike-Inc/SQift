@@ -15,13 +15,12 @@ extension Connection {
     public typealias ScalarFunction = (ScalarFunctionContext, [FunctionValue]) -> FunctionResult
 
     // TODO: docstring
-    @discardableResult
     public func addScalarFunction(
         named name: String,
         argumentCount: Int8,
         deterministic: Bool = false,
         function: @escaping ScalarFunction)
-        -> Int32
+        throws
     {
         let nArg = argumentCount < 0 ? -1 : Int32(argumentCount)
         let flags = deterministic ? SQLITE_UTF8 | SQLITE_DETERMINISTIC : SQLITE_UTF8
@@ -33,36 +32,37 @@ extension Connection {
 
         let box = ScalarFunctionBox(function)
 
-        return sqlite3_create_function_v2(
-            handle,
-            name,
-            nArg,
-            flags,
-            Unmanaged<ScalarFunctionBox>.passRetained(box).toOpaque(),
-            { (context: OpaquePointer?, count: Int32, values: UnsafeMutablePointer<OpaquePointer?>?) in
-                let box: ScalarFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
-                let parameters = FunctionValue.functionValues(fromCount: Int(count), values: values)
-                let functionContext = ScalarFunctionContext(context: context)
+        try check(
+            sqlite3_create_function_v2(
+                handle,
+                name,
+                nArg,
+                flags,
+                Unmanaged<ScalarFunctionBox>.passRetained(box).toOpaque(),
+                { (context: OpaquePointer?, count: Int32, values: UnsafeMutablePointer<OpaquePointer?>?) in
+                    let box: ScalarFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
+                    let parameters = FunctionValue.functionValues(fromCount: Int(count), values: values)
+                    let functionContext = ScalarFunctionContext(context: context)
 
-                let result = box.function(functionContext, parameters)
-                result.apply(to: context)
-            },
-            nil,
-            nil,
-            { (boxPointer: UnsafeMutableRawPointer?) in
-                guard let boxPointer = boxPointer else { return }
-                Unmanaged<ScalarFunctionBox>.fromOpaque(boxPointer).release()
-            }
+                    let result = box.function(functionContext, parameters)
+                    result.apply(to: context)
+                },
+                nil,
+                nil,
+                { (boxPointer: UnsafeMutableRawPointer?) in
+                    guard let boxPointer = boxPointer else { return }
+                    Unmanaged<ScalarFunctionBox>.fromOpaque(boxPointer).release()
+                }
+            )
         )
     }
 
     // TODO: docstring
-    @discardableResult
-    public func removeFunction(named name: String, argumentCount: Int8) -> Int32 {
+    public func removeFunction(named name: String, argumentCount: Int8) throws {
         let nArg = argumentCount < 0 ? -1 : Int32(argumentCount)
         let flags = SQLITE_UTF8
 
-        return sqlite3_create_function_v2(handle, name, nArg, flags, nil, nil, nil, nil, nil)
+        try check(sqlite3_create_function_v2(handle, name, nArg, flags, nil, nil, nil, nil, nil))
     }
 }
 
@@ -82,7 +82,6 @@ extension Connection {
     public typealias AggregateFinalFunction = (AggregateFunctionContext) -> FunctionResult
 
     // TODO: docstring
-    @discardableResult
     public func addAggregateFunction(
         named name: String,
         argumentCount: Int8,
@@ -90,7 +89,7 @@ extension Connection {
         contextObjectFactory: @escaping AggregateContextObjectFactory,
         stepFunction: @escaping AggregateStepFunction,
         finalFunction: @escaping AggregateFinalFunction)
-        -> Int32
+        throws
     {
         let nArg = argumentCount < 0 ? -1 : Int32(argumentCount)
         let flags = deterministic ? SQLITE_UTF8 | SQLITE_DETERMINISTIC : SQLITE_UTF8
@@ -117,41 +116,43 @@ extension Connection {
             finalFunction: finalFunction
         )
 
-        return sqlite3_create_function_v2(
-            handle,
-            name,
-            nArg,
-            flags,
-            Unmanaged<AggregateFunctionBox>.passRetained(box).toOpaque(),
-            nil,
-            { (context: OpaquePointer?, count: Int32, values: UnsafeMutablePointer<OpaquePointer?>?) in
-                let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
-                let parameters = FunctionValue.functionValues(fromCount: Int(count), values: values)
+        try check(
+            sqlite3_create_function_v2(
+                handle,
+                name,
+                nArg,
+                flags,
+                Unmanaged<AggregateFunctionBox>.passRetained(box).toOpaque(),
+                nil,
+                { (context: OpaquePointer?, count: Int32, values: UnsafeMutablePointer<OpaquePointer?>?) in
+                    let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
+                    let parameters = FunctionValue.functionValues(fromCount: Int(count), values: values)
 
-                let functionContext = AggregateFunctionContext(
-                    context: context,
-                    contextObjectFactory: box.contextObjectFactory
-                )
+                    let functionContext = AggregateFunctionContext(
+                        context: context,
+                        contextObjectFactory: box.contextObjectFactory
+                    )
 
-                box.stepFunction(functionContext, parameters)
-            },
-            { (context: OpaquePointer?) in
-                let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
+                    box.stepFunction(functionContext, parameters)
+                },
+                { (context: OpaquePointer?) in
+                    let box: AggregateFunctionBox = Unmanaged.fromOpaque(sqlite3_user_data(context)).takeUnretainedValue()
 
-                let functionContext = AggregateFunctionContext(
-                    context: context,
-                    contextObjectFactory: box.contextObjectFactory
-                )
+                    let functionContext = AggregateFunctionContext(
+                        context: context,
+                        contextObjectFactory: box.contextObjectFactory
+                    )
 
-                let result = box.finalFunction(functionContext)
-                result.apply(to: context)
+                    let result = box.finalFunction(functionContext)
+                    result.apply(to: context)
 
-                functionContext.deallocateAggregateContextObject()
-            },
-            { (boxPointer: UnsafeMutableRawPointer?) in
-                guard let boxPointer = boxPointer else { return }
-                Unmanaged<AggregateFunctionBox>.fromOpaque(boxPointer).release()
-            }
+                    functionContext.deallocateAggregateContextObject()
+                },
+                { (boxPointer: UnsafeMutableRawPointer?) in
+                    guard let boxPointer = boxPointer else { return }
+                    Unmanaged<AggregateFunctionBox>.fromOpaque(boxPointer).release()
+                }
+            )
         )
     }
 }

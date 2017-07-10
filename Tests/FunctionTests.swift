@@ -50,7 +50,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             let date = Date(timeIntervalSince1970: 123456)
 
-            connection.addScalarFunction(named: "sq_value", argumentCount: 2) { _, values in
+            try connection.addScalarFunction(named: "sq_value", argumentCount: 2) { _, values in
                 guard values.count == 2, values[0].type == .integer else { return .null }
 
                 let value1 = values[0]
@@ -142,7 +142,7 @@ class FunctionTestCase: XCTestCase {
             let intData = "1".data(using: .utf8)!
             let doubleData = "12.34".data(using: .utf8)!
 
-            connection.addScalarFunction(named: "sq_num_value", argumentCount: 1) { _, values in
+            try connection.addScalarFunction(named: "sq_num_value", argumentCount: 1) { _, values in
                 guard let value = values.first else { return .null }
 
                 switch value.numericType {
@@ -188,7 +188,7 @@ class FunctionTestCase: XCTestCase {
             let data = self.data
             let zeroData = self.zeroData
 
-            connection.addScalarFunction(named: "sq_switch", argumentCount: 1) { _, values in
+            try connection.addScalarFunction(named: "sq_switch", argumentCount: 1) { _, values in
                 guard let value = values.first else { return .null }
 
                 switch value.integer {
@@ -241,7 +241,7 @@ class FunctionTestCase: XCTestCase {
             let data = self.data
             let zeroData = self.zeroData
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_switch",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -304,7 +304,7 @@ class FunctionTestCase: XCTestCase {
             let message = self.errorMessage
             let messageWithUnicode = self.errorMessageWithUnicode
 
-            connection.addScalarFunction(named: "sq_throw", argumentCount: 1) { _, values in
+            try connection.addScalarFunction(named: "sq_throw", argumentCount: 1) { _, values in
                 guard let value = values.first else { return .null }
 
                 switch value.integer {
@@ -378,7 +378,7 @@ class FunctionTestCase: XCTestCase {
             let message = self.errorMessage
             let messageWithUnicode = self.errorMessageWithUnicode
 
-            connection.addScalarFunction(named: "sq_throw", argumentCount: 1) { _, values in
+            try connection.addScalarFunction(named: "sq_throw", argumentCount: 1) { _, values in
                 guard let value = values.first else { return .null }
 
                 switch value.integer {
@@ -391,7 +391,7 @@ class FunctionTestCase: XCTestCase {
                 }
             }
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_switch",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -475,7 +475,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
 
             // When
             let result: Int64? = try connection.prepare("SELECT sq_echo(?) FROM sq_values WHERE value = 'invalid'").query()
@@ -493,7 +493,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -518,10 +518,10 @@ class FunctionTestCase: XCTestCase {
             // Given
             let connection = try Connection(storageLocation: storageLocation)
 
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 2) { _, _ in return .integer(2) }
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 3) { _, _ in return .integer(3) }
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 4) { _, _ in return .integer(4) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 2) { _, _ in return .integer(2) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 3) { _, _ in return .integer(3) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 4) { _, _ in return .integer(4) }
 
             // When
             let result1: Int64? = try connection.prepare("SELECT sq_echo(?)", 1).query()
@@ -545,7 +545,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -553,7 +553,7 @@ class FunctionTestCase: XCTestCase {
                 finalFunction: { _ in return .integer(1) }
             )
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 2,
                 contextObjectFactory: { return MutableNumber() },
@@ -561,7 +561,7 @@ class FunctionTestCase: XCTestCase {
                 finalFunction: { _ in return .integer(2) }
             )
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 3,
                 contextObjectFactory: { return MutableNumber() },
@@ -569,7 +569,7 @@ class FunctionTestCase: XCTestCase {
                 finalFunction: { _ in return .integer(3) }
             )
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 4,
                 contextObjectFactory: { return MutableNumber() },
@@ -599,13 +599,13 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
             let result1: Int64? = try connection.prepare("SELECT sq_echo(?)", 1).query()
 
-            connection.removeFunction(named: "sq_echo", argumentCount: 1)
+            try connection.removeFunction(named: "sq_echo", argumentCount: 1)
             XCTAssertThrowsError(try connection.prepare("SELECT sq_echo(?)", 1).run())
 
-            connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, _ in return .integer(1) }
             let result2: Int64? = try connection.prepare("SELECT sq_echo(?)", 1).query()
 
             // Then
@@ -622,7 +622,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -632,10 +632,10 @@ class FunctionTestCase: XCTestCase {
 
             let result1: Int64? = try connection.prepare("SELECT sq_echo(?)", 1).query()
 
-            connection.removeFunction(named: "sq_echo", argumentCount: 1)
+            try connection.removeFunction(named: "sq_echo", argumentCount: 1)
             XCTAssertThrowsError(try connection.prepare("SELECT sq_echo(?)", 1).run())
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_echo",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -664,7 +664,7 @@ class FunctionTestCase: XCTestCase {
             let textWithUnicode = self.textWithUnicode
             let data = self.data
 
-            let addResult = connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, values in
+            try connection.addScalarFunction(named: "sq_echo", argumentCount: 1) { _, values in
                 guard let value = values.first else { return .null }
 
                 switch value.type {
@@ -687,7 +687,6 @@ class FunctionTestCase: XCTestCase {
             let dataResult: Data? = try connection.prepare(sql, data).query()
 
             // Then
-            XCTAssertEqual(addResult, 0)
             XCTAssertEqual(nilResult, nil)
             XCTAssertEqual(intResult, 10)
             XCTAssertEqual(doubleResult, 1234.5678)
@@ -708,7 +707,7 @@ class FunctionTestCase: XCTestCase {
             let data2 = "ć".data(using: .utf8)!
             let data3 = "âć".data(using: .utf8)!
 
-            connection.addScalarFunction(named: "sq_add", argumentCount: 2) { _, values in
+            try connection.addScalarFunction(named: "sq_add", argumentCount: 2) { _, values in
                 guard values.count == 2 else { return .null }
 
                 let value1 = values[0]
@@ -762,7 +761,7 @@ class FunctionTestCase: XCTestCase {
 
             var dateFormattersInitializedCount = 0
 
-            connection.addScalarFunction(named: "format_date", argumentCount: 2) { context, values in
+            try connection.addScalarFunction(named: "format_date", argumentCount: 2) { context, values in
                 guard values.count == 2 else { return .null }
 
                 let value1 = values[0]
@@ -812,7 +811,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            let addResult = connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -835,7 +834,6 @@ class FunctionTestCase: XCTestCase {
             let sumResult: Int64? = try connection.prepare("SELECT sq_sum(value) FROM sq_values").query()
 
             // Then
-            XCTAssertEqual(addResult, 0)
             XCTAssertEqual(sumResult, 45)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
@@ -848,7 +846,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 1,
                 contextObjectFactory: { return MutableNumber() },
@@ -892,7 +890,7 @@ class FunctionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
             try loadTablesAndDataForAggregateFunctions(using: connection)
 
-            connection.addAggregateFunction(
+            try connection.addAggregateFunction(
                 named: "sq_sum",
                 argumentCount: 2,
                 contextObjectFactory: { return MutableNumber() },
