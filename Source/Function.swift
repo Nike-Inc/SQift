@@ -320,11 +320,6 @@ extension Connection {
         public init(context: OpaquePointer?) {
             self.auxilaryData = AuxilaryData(context: context)
         }
-
-        // TODO: docstring
-        public func subType(value: UInt8) {
-            sqlite3_result_subtype(auxilaryData.context, UInt32(value))
-        }
     }
 }
 
