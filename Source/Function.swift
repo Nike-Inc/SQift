@@ -20,10 +20,10 @@ extension Connection {
     /// If the `argumentCount` parameter is `-1`, then the scalar function may take any number of arguments between
     /// 0 and 127. If the number of arguments passed is greater than 127, the behavior is undefined.
     ///
-    /// It is permitted to register multiple implementations of the same functions with the same name but with either
-    /// differing numbers of arguments or differing preferred text encodings. SQLite will use the implementation that
-    /// most closely matches the way in which the SQL function is used. A function implementation with a non-negative 
-    /// `argumentCount` parameter is a better match than a function implementation with a negative `argumentCount`.
+    /// It is permitted to register multiple implementations of the same functions with the same name but differing 
+    /// numbers of arguments. SQLite will use the implementation that most closely matches the way in which the SQL 
+    /// function is used. A function implementation with a non-negative `argumentCount` parameter is a better match 
+    /// than a function implementation with a negative `argumentCount`.
     ///
     /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/create_function.html).
     ///
@@ -115,10 +115,10 @@ extension Connection {
     /// If the `argumentCount` parameter is `-1`, then the aggregate function may take any number of arguments between
     /// 0 and 127. If the number of arguments passed is greater than 127, the behavior is undefined.
     ///
-    /// It is permitted to register multiple implementations of the same functions with the same name but with either
-    /// differing numbers of arguments or differing preferred text encodings. SQLite will use the implementation that
-    /// most closely matches the way in which the SQL function is used. A function implementation with a non-negative
-    /// `argumentCount` parameter is a better match than a function implementation with a negative `argumentCount`.
+    /// It is permitted to register multiple implementations of the same functions with the same name but differing 
+    /// numbers of arguments. SQLite will use the implementation that most closely matches the way in which the SQL 
+    /// function is used. A function implementation with a non-negative `argumentCount` parameter is a better match 
+    /// than a function implementation with a negative `argumentCount`.
     ///
     /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/create_function.html).
     ///
@@ -383,7 +383,7 @@ extension Connection {
     public class ScalarFunctionContext {
         /// Used to associate metadata with argument values in scalar function contexts. If the same value is passed
         /// to multiple invocations of the same SQL function during query execution, under some circumstances, the
-        /// assoicated metadata may be preserved. An example of where this may be useful is in a date conversion
+        /// associated metadata may be preserved. An example of where this may be useful is in a date conversion
         /// function. The date formatter could be initialized once, then stored as metadata along with the date
         /// format string. Then as long as the format string remains the same, the same date formatter can be reused
         /// on multiple invocations of the same function.
@@ -434,7 +434,7 @@ extension Connection {
 extension Connection {
     /// Represents the aggregate function context responsible for allocating and deallocating the context object
     /// for step and final functions. Aggregate functions use the context object to store state between subsequent
-    /// calls to the step function as well as the single call to the final function.
+    /// calls to the step function as well as the aggregating call to the final function.
     ///
     /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/aggregate_context.html).
     public class AggregateFunctionContext {
