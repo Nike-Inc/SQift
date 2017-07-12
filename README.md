@@ -304,6 +304,51 @@ let releaseDate: Date = try connection.fetch(
 )[0]
 ```
 
+### Transactions
+
+Changes cannot be made to the database except within a transaction. By default, any command that changes the database will automatically start a transaction if one is not already in effect. Transactions can also be started manually in SQift when multiple operations need to be run inside a single transaction.
+
+```swift
+try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+
+try connection.transaction {
+    try connection.prepare("INSERT INTO cars VALUES(?, ?, ?)").bind(1, "Audi", 52642).run()
+    try connection.prepare("INSERT IN cars VALUES(?, ?, ?)").bind(2, "Mercedes", 57127).run()
+}
+```
+
+> If any error occurs within the transaction, all the changes are automatically rolled back by SQift.
+
+### Functions
+
+While SQLite is a very robust library, sometimes you will run into cases where you need to extend the functionality of SQLite where it is limited. For example, you may need to create a custom function to determine what month of a calendar year a particular date falls within. SQLite cannot do this directly since it lacks calendar support.
+
+SQift supports custom scalar and aggregate functions. The following is a simple example of how you could extend SQLite to support a `strip_unicode` function.
+
+```swift
+try connection.addScalarFunction(named: "strip_unicode", argumentCount: 1) { _, values in
+    guard
+        let value = values.first, value.isText,
+        let valueData = value.text.data(using: .ascii, allowLossyConversion: true),
+        let asciiValue = String(data: valueData, encoding: .ascii)
+    else { return .null }
+
+    return .text(asciiValue)
+}
+
+let sql = "SELECT strip_unicode(?)"
+
+let result1: String? = try connection.prepare(sql, "å").query()
+let result2: String? = try connection.prepare(sql, "ć").query()
+let result3: String? = try connection.prepare(sql, "áč").query()
+
+// result1 = "a"
+// result2 = "c"
+// result3 = "ac"
+```
+
+> For more advanced examples of scalar and aggregate functions, please refer to the test suite.
+
 ---
 
 ## Advanced
