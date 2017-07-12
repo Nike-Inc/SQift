@@ -268,7 +268,12 @@ extension Connection {
                 data.withUnsafeBytes { sqlite3_result_blob64(context, $0, UInt64(data.count), SQLITE_TRANSIENT) }
 
             case .zeroData(let length):
-                sqlite3_result_zeroblob64(context, length)
+                if #available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *) {
+                    sqlite3_result_zeroblob64(context, length)
+                } else {
+                    let clampedLength = Int32(exactly: length) ?? Int32.max
+                    sqlite3_result_zeroblob(context, clampedLength)
+                }
 
             case .error(let message, let code):
                 sqlite3_result_error(context, message, Int32(message.utf8.count))
