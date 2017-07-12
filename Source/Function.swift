@@ -11,10 +11,30 @@ import Foundation
 // MARK: Scalar Functions
 
 extension Connection {
-    // TODO: docstring
+    /// A closure representing a SQLite scalar function that takes a scalar function context and an array of function
+    /// values and returns a function result.
     public typealias ScalarFunction = (ScalarFunctionContext, [FunctionValue]) -> FunctionResult
 
-    // TODO: docstring
+    /// Adds the scalar function to SQLite with the specified name, parameters, and implementation.
+    ///
+    /// If the `argumentCount` parameter is `-1`, then the scalar function may take any number of arguments between
+    /// 0 and 127. If the number of arguments passed is greater than 127, the behavior is undefined.
+    ///
+    /// It is permitted to register multiple implementations of the same functions with the same name but with either
+    /// differing numbers of arguments or differing preferred text encodings. SQLite will use the implementation that
+    /// most closely matches the way in which the SQL function is used. A function implementation with a non-negative 
+    /// `argumentCount` parameter is a better match than a function implementation with a negative `argumentCount`.
+    ///
+    /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/create_function.html).
+    ///
+    /// - Parameters:
+    ///   - name:          The name of the scalar function to be created or redefined.
+    ///   - argumentCount: The number of arguments the scalar function takes.
+    ///   - deterministic: Whether the function will always return the same result given the same inputs within a 
+    ///                    single SQL statement. `false` by default.
+    ///   - function:      The closure representing the scalar function implementation.
+    ///
+    /// - Throws: A `SQLiteError` if SQLite encounters an error when adding the scalar function.
     public func addScalarFunction(
         named name: String,
         argumentCount: Int8,
@@ -57,7 +77,17 @@ extension Connection {
         )
     }
 
-    // TODO: docstring
+    /// Removes the function with the specified name and argument count from SQLite.
+    ///
+    /// This method should be used to remove both scalar and aggregate functions.
+    ///
+    /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/create_function.html).
+    ///
+    /// - Parameters:
+    ///   - name:          The name of the SQL function to remove.
+    ///   - argumentCount: The number of arguments the SQL function takes.
+    ///
+    /// - Throws: A `SQLiteError` if SQLite encounters an error when removing the SQL function.
     public func removeFunction(named name: String, argumentCount: Int8) throws {
         let nArg = argumentCount < 0 ? -1 : Int32(argumentCount)
         let flags = SQLITE_UTF8
@@ -69,19 +99,39 @@ extension Connection {
 // MARK: - Aggregate Functions
 
 extension Connection {
-    // TODO: docstring
-    public typealias AggregateFunction = (AggregateFunctionContext, [FunctionValue]) -> FunctionResult
-
-    // TODO: docstring
+    /// A closure used as a factory to return an aggregate context object.
     public typealias AggregateContextObjectFactory = () -> AnyObject
 
-    // TODO: docstring
+    /// A closure representing a SQLite aggregate step function that takes an aggregate function context and an array 
+    /// of function values and returns a function result.
     public typealias AggregateStepFunction = (AggregateFunctionContext, [FunctionValue]) -> Void
 
-    // TODO: docstring
+    /// A closure representing a SQLite aggregate final function that takes an aggregate function context and returns
+    /// a function result.
     public typealias AggregateFinalFunction = (AggregateFunctionContext) -> FunctionResult
 
-    // TODO: docstring
+    /// Adds the aggregate function to SQLite with the specified name, parameters, object factory, and implementations.
+    ///
+    /// If the `argumentCount` parameter is `-1`, then the aggregate function may take any number of arguments between
+    /// 0 and 127. If the number of arguments passed is greater than 127, the behavior is undefined.
+    ///
+    /// It is permitted to register multiple implementations of the same functions with the same name but with either
+    /// differing numbers of arguments or differing preferred text encodings. SQLite will use the implementation that
+    /// most closely matches the way in which the SQL function is used. A function implementation with a non-negative
+    /// `argumentCount` parameter is a better match than a function implementation with a negative `argumentCount`.
+    ///
+    /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/create_function.html).
+    ///
+    /// - Parameters:
+    ///   - name:                 The name of the aggregate function to be created or redefined.
+    ///   - argumentCount:        The number of arguments the aggregate function takes.
+    ///   - deterministic:        Whether the function will always return the same result given the same inputs within a
+    ///                           single SQL statement. `false` by default.
+    ///   - contextObjectFactory: A closure which returns the a new aggregate context object for the function.
+    ///   - stepFunction:         The closure executed when stepping through each of the results.
+    ///   - finalFunction:        The closure executed after all the results have been stepped through.
+    ///
+    /// - Throws: A `SQLiteError` if SQLite encounters an error when adding the aggregate function.
     public func addAggregateFunction(
         named name: String,
         argumentCount: Int8,
@@ -160,9 +210,18 @@ extension Connection {
 // MARK: - Function Values
 
 extension Connection {
-    // TODO: docstring
+    /// Represents a function value being passed into a scalar or aggregate function as an argument. Convenience
+    /// properties exist to convert the function value into primitive types.
+    ///
+    /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/value.html).
     public struct FunctionValue {
-        // TODO: docstring
+        /// Represents the type of data stored within a function value.
+        ///
+        /// - null:    Represents a `NULL` value.
+        /// - integer: Represents an `INTEGER` value.
+        /// - float:  Represents a `FLOAT` value.
+        /// - text:    Represents a `TEXT` value.
+        /// - blob:    Represents a `BLOB` value.
         public enum DataType {
             case null, integer, double, text, data
 
@@ -177,39 +236,63 @@ extension Connection {
             }
         }
 
-        // TODO: docstring
+        /// Returns the function value as an integer.
+        ///
+        /// The result is `0` if the value cannot be represented as an integer (i.e. non-numeric text or data). The
+        /// result is floor'd if the underlying value is a double.
         public var integer: Int32 { return sqlite3_value_int(value) }
-        // TODO: docstring
+
+        /// Returns the function value as a long.
+        ///
+        /// The result is `0` if the value cannot be represented as a long (i.e. non-numeric text or data). The result
+        /// is floor'd if the underlying value is a double.
         public var long: Int64 { return sqlite3_value_int64(value) }
-        // TODO: docstring
+
+        /// Returns the function value as a double.
+        ///
+        /// The result is `0.0` if the value cannot be represented as a double (i.e. non-numeric text or data). The
+        /// result is floor'd if the underlying value is a double.
         public var double: Double { return sqlite3_value_double(value) }
-        // TODO: docstring
+
+        /// Returns the function value as a string.
         public var text: String { return String(cString: sqlite3_value_text(value)) }
-        // TODO: docstring
+
+        /// Returns the function value as data.
         public var data: Data { return Data(bytes: blob, count: byteLength) }
-        // TODO: docstring
+
+        /// Returns the function value as a buffer.
         public var buffer: UnsafeRawBufferPointer { return UnsafeRawBufferPointer(start: blob, count: byteLength) }
 
-        // TODO: docstring (and add tests)
+        /// Returns the function value as a date if the value can be converted with the binding date formatter.
         public var date: Date? {
             guard isText else { return nil }
             return bindingDateFormatter.date(from: text)
         }
 
-        // TODO: docstring
+        /// Returns the data type of the function value.
         public var type: DataType { return DataType(sqlite3_value_type(value)) }
-        // TODO: docstring
+
+        /// Returns the numeric type of the function value.
+        ///
+        /// Checking the numeric type attempts to convert the value to an integer or floating point number. If the
+        /// conversion is possible without loss of information, then the conversion is performed. Otherwise, no
+        /// conversion is performed. An example of such a conversion would be converting a "12.34" string into 
+        /// a `.float` data type of `12.34`.
         public var numericType: DataType { return DataType(sqlite3_value_numeric_type(value)) }
 
-        // TODO: docstring
+        /// Whether the underlying value is a `.null` value.
         public var isNull: Bool { return type == .null }
-        // TODO: docstring
+
+        /// Whether the underlying value is an integer.
         public var isInteger: Bool { return type == .integer }
-        // TODO: docstring
+
+        /// Whether the underlying value is a double.
         public var isDouble: Bool { return type == .double }
-        // TODO: docstring
+
+        /// Whether the underlying value is text.
         public var isText: Bool { return type == .text }
-        // TODO: docstring
+
+        /// Whether the underlying value is data.
         public var isData: Bool { return type == .data }
 
         var blob: UnsafeRawPointer { return sqlite3_value_blob(value) }
@@ -231,7 +314,17 @@ extension Connection {
 // MARK: - Function Results
 
 extension Connection {
-    // TODO: docstring
+    /// Represents a result object passed back to SQLite in a scalar or aggregate function.
+    ///
+    /// - null:     Sets the return value of the function to `NULL`.
+    /// - integer:  Sets the return value of the function to a 32-bit signed integer.
+    /// - long:     Sets the return value of the function to a 64-bit signed integer.
+    /// - double:   Sets the return value of the function to a double.
+    /// - text:     Sets the return value of the function to a text string represented as UTF-8.
+    /// - date:     Sets the return value of the function to a text string formatted with the binding date formatter.
+    /// - data:     Sets the return value of the function to a data blob.
+    /// - zeroData: Sets the return value of the function to a data blob of the specified size containing all zero bytes.
+    /// - error:    Causes the function to throw an exception with the specified message and code.
     public enum FunctionResult {
         case null
         case integer(Int32)
@@ -286,13 +379,22 @@ extension Connection {
 // MARK: - Scalar Function Context
 
 extension Connection {
-    // TODO: docstring
+    /// Represents the scalar function context for storing and retrieving auxilary data for scalar constant expressions.
     public class ScalarFunctionContext {
-        // TODO: docstring
+        /// Used to associate metadata with argument values in scalar function contexts. If the same value is passed
+        /// to multiple invocations of the same SQL function during query execution, under some circumstances, the
+        /// assoicated metadata may be preserved. An example of where this may be useful is in a date conversion
+        /// function. The date formatter could be initialized once, then stored as metadata along with the date
+        /// format string. Then as long as the format string remains the same, the same date formatter can be reused
+        /// on multiple invocations of the same function.
+        ///
+        /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/get_auxdata.html).
         public struct AuxilaryData {
             let context: OpaquePointer?
 
-            // TODO: docstring
+            /// Gets and sets the auxilary data value for an argument value at the specified index.
+            ///
+            /// - Parameter index: The index of the object to get or set.
             public subscript(index: Int32) -> AnyObject? {
                 get {
                     guard let opaque = sqlite3_get_auxdata(context, index) else { return nil }
@@ -318,11 +420,10 @@ extension Connection {
             }
         }
 
-        // TODO: docstring
+        /// The auxilary data associated with the function used to store metadata alongside argument values.
         public var auxilaryData: AuxilaryData
 
-        // TODO: docstring
-        public init(context: OpaquePointer?) {
+        init(context: OpaquePointer?) {
             self.auxilaryData = AuxilaryData(context: context)
         }
     }
@@ -331,19 +432,24 @@ extension Connection {
 // MARK: - Aggregate Function Context
 
 extension Connection {
-    // TODO: docstring
+    /// Represents the aggregate function context responsible for allocating and deallocating the context object
+    /// for step and final functions. Aggregate functions use the context object to store state between subsequent
+    /// calls to the step function as well as the single call to the final function.
+    ///
+    /// For more details, please refer to the [documentation](https://sqlite.org/c3ref/aggregate_context.html).
     public class AggregateFunctionContext {
-        // TODO: docstring
+        /// Returns the context object to be used in the step function. The context object is lazily instantiated
+        /// and reused over multiple invocations of the same query.
         public var stepObject: AnyObject { return aggregateContextObject()! }
 
-        // TODO: docstring
+        /// Returns the context object to be used in the final function. The context object will only exist if it
+        /// was created due to an invocation of the step function and the step object property.
         public var finalObject: AnyObject? { return aggregateContextObject() }
 
         private let context: OpaquePointer?
         private let contextObjectFactory: AggregateContextObjectFactory
 
-        // TODO: docstring
-        public init(context: OpaquePointer?, contextObjectFactory: @escaping AggregateContextObjectFactory) {
+        init(context: OpaquePointer?, contextObjectFactory: @escaping AggregateContextObjectFactory) {
             self.context = context
             self.contextObjectFactory = contextObjectFactory
         }
