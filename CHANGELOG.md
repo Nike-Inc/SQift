@@ -4,6 +4,16 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 2.1.0
+
+### Release Notes
+
+#### Added
+
+- Support for adding and removing custom scalar and aggregate functions to SQLite.
+
+---
+
 ## 2.0.0
 
 ### Breaking Changes
