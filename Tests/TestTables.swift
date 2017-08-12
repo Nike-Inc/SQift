@@ -12,9 +12,9 @@ import SQift
 enum TestTables {
     static func createAndPopulateAgentsTable(using connection: Connection) throws {
         try connection.transaction {
-            try connection.run(
+            try connection.execute(
                 "CREATE TABLE agents(" +
-                    "  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                    "  id INTEGER PRIMARY KEY," +
                     "  name TEXT NOT NULL," +
                     "  date TEXT NOT NULL," +
                     "  missions INTEGER NOT NULL," +
@@ -24,7 +24,8 @@ enum TestTables {
                 ")"
             )
 
-            let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
+            let insertSQL = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
+            let insert = try connection.prepare(insertSQL)
 
             let archersJobTitleData = "The world's greatest secret agent".data(using: .utf8)
             try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485, 2_500_000.56, archersJobTitleData, "Charger").run()

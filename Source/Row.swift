@@ -12,7 +12,55 @@ import Foundation
 /// internal generic methods to extract values from the database.
 public struct Row {
 
+    // MARK: - Helper Types
+
+    // TODO: test and docstring
+    public enum ColumnType: RawRepresentable {
+        case integer
+        case float
+        case text
+        case blob
+        case null
+
+        public var rawValue: Int32 {
+            switch self {
+            case .integer: return SQLITE_INTEGER
+            case .float:   return SQLITE_FLOAT
+            case .text:    return SQLITE_TEXT
+            case .blob:    return SQLITE_BLOB
+            case .null:    return SQLITE_NULL
+            }
+        }
+
+        public var name: String {
+            switch self {
+            case .integer: return "integer"
+            case .float:   return "float"
+            case .text:    return "text"
+            case .blob:    return "blob"
+            case .null:    return "null"
+            }
+        }
+
+        public init?(rawValue: Int32) {
+            switch rawValue {
+            case ColumnType.integer.rawValue: self = .integer
+            case ColumnType.float.rawValue:   self = .float
+            case ColumnType.text.rawValue:    self = .text
+            case ColumnType.blob.rawValue:    self = .blob
+            case ColumnType.null.rawValue:    self = .null
+            default:                          return nil
+            }
+        }
+    }
+
     // MARK: Properties
+
+    // TODO: test and docstring
+    public var columnCount: Int { return statement.columnCount }
+
+    // TODO: test and docstring
+    public var columnNames: [String] { return statement.columnNames }
 
     fileprivate let statement: Statement
     private var handle: OpaquePointer { return statement.handle }
@@ -21,6 +69,23 @@ public struct Row {
 
     init(statement: Statement) {
         self.statement = statement
+    }
+
+    // MARK: Columns
+
+    // TODO: test and docstring
+    public func columnType(at index: Int) -> ColumnType? {
+        return ColumnType(rawValue: statement.columnType(at: index))
+    }
+
+    // TODO: test and docstring
+    public func columnName(at index: Int) -> String {
+        return statement.columnName(at: index)
+    }
+
+    // TODO: test and docstring
+    public func columnIndex(forName name: String) -> Int? {
+        return statement.columnIndex(forName: name)
     }
 
     //=========================== Column Index Subscripts ============================
@@ -309,5 +374,63 @@ extension Row: CustomStringConvertible {
         }
 
         return "[" + stringValues.joined(separator: ", ") + "]"
+    }
+}
+
+// MARK: - ExpressibleByRow
+
+/// A type that can be initialized using a row.
+public protocol ExpressibleByRow {
+    /// Creates an instance using the specified row.
+    ///
+    /// - Parameter row: The row to use for initialization.
+    init(row: Row) throws
+}
+
+// MARK: - ExpressibleByRowError
+
+// TODO: test and docstring
+public struct ExpressibleByRowError: Error {
+    struct Column: CustomStringConvertible {
+        let name: String
+        let type: String
+        let value: Any?
+
+        var description: String {
+            return "{ name: \"\(name)\", type: \"\(type)\", value: \(value ?? "nil") }"
+        }
+    }
+
+    let type: ExpressibleByRow.Type
+    let columns: [Column]
+
+    public init(type: ExpressibleByRow.Type, row: Row) {
+        self.type = type
+
+        self.columns = row.values.enumerated().map { index, value in
+            return Column(
+                name: row.columnName(at: index),
+                type: row.columnType(at: index)?.name ?? "unknown",
+                value: value
+            )
+        }
+    }
+}
+
+extension ExpressibleByRowError: CustomStringConvertible {
+    public var description: String {
+        return "ExpressibleByRowError: \(errorDescription)"
+    }
+}
+
+extension ExpressibleByRowError: LocalizedError {
+    public var errorDescription: String {
+        let columnDescriptions = columns.enumerated().map { "Column \($0.offset): \($0.element)" }
+        return "Failed to initialize \(type) from Row with columns: \(columnDescriptions)"
+    }
+
+    public var failureReason: String {
+        let columnDescriptions = columns.enumerated().map { "Column \($0.offset): \($0.element)" }
+        return "\(type) could not be initialized from Row with columns: \(columnDescriptions)"
     }
 }

@@ -10,7 +10,17 @@ import Foundation
 
 /// The `Statement` class represents a prepared SQL statement to bind parameters to and execute.
 public class Statement {
+
+    // MARK: - Properties
+
     var handle: OpaquePointer!
+
+    lazy var columnCount: Int = Int(sqlite3_column_count(self.handle))
+
+    lazy var columnNames: [String] = {
+        return (0..<self.columnCount).map { String(cString: sqlite3_column_name(self.handle, Int32($0))) }
+    }()
+
     fileprivate let connection: Connection
 
     // MARK: - Initialization
@@ -21,7 +31,7 @@ public class Statement {
     ///
     /// - Parameters:
     ///   - connection: The database connection to create a statement for.
-    ///   - sql: The SQL string to create the statement with.
+    ///   - sql:        The SQL string to create the statement with.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement.
     public init(connection: Connection, sql: String) throws {
@@ -156,23 +166,11 @@ public class Statement {
     /// - Throws: A `SQLiteError` if SQLite encounters an error running the statement.
     @discardableResult
     public func run() throws -> Statement {
-        repeat {} while try step()
+        while try step() {}
         return self
     }
 
-    /// Steps through the statement once and fetches the first `Row` of the query.
-    ///
-    /// Fetching the first row of a query can be convenient in cases where you are attempting to SELECT a single
-    /// row. For example, using a LIMIT filter of 1 would be an excellent candidate for a `fetch`.
-    ///
-    ///     let row = try db.fetch("SELECT * FROM cars WHERE type='sedan' LIMIT 1")
-    ///
-    /// - Returns: The first `Row` of the query.
-    /// - Throws: A `SQLiteError` if SQLite encounters an error stepping through the statement.
-    public func fetch() throws -> Row? {
-        guard try step() else { return nil }
-        return Row(statement: self)
-    }
+    // MARK: - Query Value
 
     /// Returns the first column value of the first row by stepping through the statement once.
     ///
@@ -188,11 +186,9 @@ public class Statement {
     /// - Returns: The first column value of the first row of the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error stepping through the statement.
-    public func query<T: Binding>() throws -> T {
-        try step()
-        let value = Row(statement: self).value(at: 0)
-
-        return T.fromBindingValue(value!) as! T
+    public func query<T: Extractable>() throws -> T {
+        let result: T? = try query()
+        return result!
     }
 
     /// Returns the first column value of the first row by stepping through the statement once.
@@ -206,8 +202,8 @@ public class Statement {
     /// - Returns: The first column value of the first row of the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error stepping through the statement.
-    public func query<T: Binding>() throws -> T? {
-        try step()
+    public func query<T: Extractable>() throws -> T? {
+        guard try step() else { return nil }
 
         let value = Row(statement: self).value(at: 0)
         guard let bindingValue = value as? T.BindingType else { return nil }
@@ -215,20 +211,107 @@ public class Statement {
         return T.fromBindingValue(bindingValue) as? T
     }
 
-    // MARK: - Internal - Columns
+    // TODO: Change fetch to query and add ExpressibleByRow option for it as well
 
-    lazy var columnCount: Int = Int(sqlite3_column_count(self.handle))
+    /// Steps through the statement once and fetches the first `Row` of the query.
+    ///
+    /// Fetching the first row of a query can be convenient in cases where you are attempting to SELECT a single
+    /// row. For example, using a LIMIT filter of 1 would be an excellent candidate for a `fetch`.
+    ///
+    ///     let row = try db.fetch("SELECT * FROM cars WHERE type='sedan' LIMIT 1")
+    ///
+    /// - Returns: The first `Row` of the query.
+    /// - Throws: A `SQLiteError` if SQLite encounters an error stepping through the statement.
+    public func query() throws -> Row? {
+        guard try step() else { return nil }
+        return Row(statement: self)
+    }
 
-    lazy var columnNames: [String] = {
-        var names: [String] = []
+    // TODO: docstring and tests
+    public func query<T: ExpressibleByRow>() throws -> T? {
+        guard try step() else { return nil }
+        let row = Row(statement: self)
 
-        for index in 0..<self.columnCount {
-            let columnName = String(cString: sqlite3_column_name(self.handle, Int32(index)))
-            names.append(columnName)
+        return try T(row: row)
+    }
+
+    public func query<T>(_ body: (Row) throws -> T) throws -> T? {
+        guard try step() else { return nil }
+        let row = Row(statement: self)
+
+        return try body(row)
+    }
+
+    // MARK: - Query Collection
+
+    // TODO: docstring and tests
+    public func query<T: Extractable>() throws -> [T] {
+        var results: [T] = []
+
+        while let result: T = try query() {
+            results.append(result)
         }
 
-        return names
-    }()
+        return results
+    }
+
+    // TODO: docstring and tests
+    public func query<T: ExpressibleByRow>() throws -> [T] {
+        var results: [T] = []
+
+        while try step() {
+            let row = Row(statement: self)
+            let object = try T(row: row)
+
+            results.append(object)
+        }
+
+        return results
+    }
+
+    // TODO: docstring and tests
+    public func query<T>(_ body: (Row) throws -> T) throws -> [T] {
+        var results: [T] = []
+
+        while try step() {
+            let row = Row(statement: self)
+            let object = try body(row)
+
+            results.append(object)
+        }
+
+        return results
+    }
+
+    // TODO: docstring and tests
+    public func query<Key: Hashable, Value>(_ body: (Row) throws -> (Key, Value)) throws -> [Key: Value] {
+        var results: [Key: Value] = [:]
+
+        while try step() {
+            let row = Row(statement: self)
+            let (key, value) = try body(row)
+
+            results[key] = value
+        }
+
+        return results
+    }
+
+    // TODO: docstring and tests
+    public func query<Key: Hashable, Value>(_ body: ([Key: Value], Row) throws -> (Key, Value)) throws -> [Key: Value] {
+        var results: [Key: Value] = [:]
+
+        while try step() {
+            let row = Row(statement: self)
+            let (key, value) = try body(results, row)
+            
+            results[key] = value
+        }
+        
+        return results
+    }
+
+    // MARK: - Internal - Columns
 
     func columnType(at index: Int) -> Int32 {
         return sqlite3_column_type(handle, Int32(index))
@@ -253,8 +336,7 @@ public class Statement {
         try connection.check(sqlite3_clear_bindings(handle))
     }
 
-    @discardableResult
-    fileprivate func step() throws -> Bool {
+    func step() throws -> Bool {
         return try connection.check(sqlite3_step(handle)) == SQLITE_ROW
     }
 
@@ -282,19 +364,6 @@ public class Statement {
                 try connection.check(sqlite3_bind_blob(handle, index, bytes, Int32(value.count), SQLITE_TRANSIENT))
             }
         }
-    }
-}
-
-// MARK: - Sequence
-
-extension Statement: Sequence {
-    /// Returns an `AnyIterator<Row>` to satisfy the `Sequence` protocol conformance.
-    ///
-    /// This enables `Statement` objects to be iterated over using fast enumeration, `map`, `flatMap`, etc.
-    ///
-    /// - Returns: The new `AnyIterator<Row>` instance.
-    public func makeIterator() -> AnyIterator<Row> {
-        return AnyIterator { try! self.step() ? Row(statement: self) : nil }
     }
 }
 

@@ -32,7 +32,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(using: connection)
 
             // When
-            if let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'") {
+            if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool = row[0]
 
                 let id_Int8: Int8 = row[0]
@@ -92,7 +92,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(using: connection)
 
             // When
-            if let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'") {
+            if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool? = row[0]
 
                 let id_Int8: Int8? = row[0]
@@ -176,7 +176,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(using: connection)
 
             // When
-            if let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'") {
+            if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool = row["id"]
 
                 let id_Int8: Int8 = row["id"]
@@ -236,7 +236,7 @@ class RowTestCase: XCTestCase {
             try TestTables.createAndPopulateAgentsTable(using: connection)
 
             // When
-            if let row = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'") {
+            if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool? = row["id"]
 
                 let id_Int8: Int8? = row["id"]
@@ -321,7 +321,7 @@ class RowTestCase: XCTestCase {
 
             // When
             if
-                let values = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")?.values,
+                let values = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'")?.values,
                 values.count == 7
             {
                 // Then

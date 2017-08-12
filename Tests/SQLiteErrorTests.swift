@@ -164,7 +164,7 @@ class SQLiteErrorTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When
-            try connection.savepoint("save it good") {
+            try connection.savepoint(named: "save it good") {
                 try connection.execute("CREATE TABE testing(id)")
             }
 

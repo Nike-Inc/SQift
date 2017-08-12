@@ -12,7 +12,7 @@ import XCTest
 
 class ConnectionQueueTestCase: XCTestCase {
     private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/database_queue_tests.db")
+        let path = FileManager.cachesDirectory.appending("/connection_queue_tests.db")
         return .onDisk(path)
     }()
 
@@ -119,7 +119,7 @@ class ConnectionQueueTestCase: XCTestCase {
             var rowCount: Int64 = 0
 
             // When, Then
-            try queue.executeInSavepoint("savepoint name with spaces") { connection in
+            try queue.executeInSavepoint(named: "savepoint name with spaces") { connection in
                 try connection.execute("DROP TABLE IF EXISTS agents")
                 try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
                 try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
@@ -141,7 +141,7 @@ class ConnectionQueueTestCase: XCTestCase {
             let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
             // When
-            try queue.executeInSavepoint("create_table") { connection in
+            try queue.executeInSavepoint(named: "create_table") { connection in
                 try connection.execute("CREATE TBL agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
             }
 

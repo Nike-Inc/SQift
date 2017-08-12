@@ -88,12 +88,12 @@ public class ConnectionQueue {
     ///   - closure: The closure to execute.
     ///
     /// - Throws: A `SQLiteError` if executing the transaction or closure encounters an error.
-    public func executeInSavepoint(_ name: String, closure: (Connection) throws -> Void) throws {
+    public func executeInSavepoint(named name: String, closure: (Connection) throws -> Void) throws {
         var executionError: Error?
 
         queue.sync {
             do {
-                try self.connection.savepoint(name) {
+                try self.connection.savepoint(named: name) {
                     try closure(self.connection)
                 }
             } catch {

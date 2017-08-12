@@ -11,6 +11,70 @@ import SQift
 import XCTest
 
 class QueryTestCase: XCTestCase {
+
+    // MARK: - Helper Types
+
+    struct Agent: ExpressibleByRow, Equatable {
+        let id: Int64
+        let name: String
+        let date: Date
+        let missions: Int64
+        let salary: Double
+        let jobTitle: Data
+        let car: String?
+
+        init(row: Row) throws {
+            guard
+                let id: Int64 = row["id"],
+                let name: String = row["name"],
+                let date: Date = row["date"],
+                let missions: Int64 = row["missions"],
+                let salary: Double = row["salary"],
+                let jobTitle: Data = row["job_title"]
+            else { throw ExpressibleByRowError(type: Agent.self, row: row) }
+
+            self = Agent(
+                id: id,
+                name: name,
+                date: date,
+                missions: missions,
+                salary: salary,
+                jobTitle: jobTitle,
+                car: row["car"]
+            )
+        }
+
+        init(
+            id: Int64,
+            name: String,
+            date: Date,
+            missions: Int64,
+            salary: Double,
+            jobTitle: Data,
+            car: String?)
+        {
+            self.id = id
+            self.name = name
+            self.date = date
+            self.missions = missions
+            self.salary = salary
+            self.jobTitle = jobTitle
+            self.car = car
+        }
+
+        static func == (lhs: Agent, rhs: Agent) -> Bool {
+            return lhs.id == rhs.id &&
+                lhs.name == rhs.name &&
+                lhs.date == rhs.date &&
+                lhs.missions == rhs.missions &&
+                lhs.salary == rhs.salary &&
+                lhs.jobTitle == rhs.jobTitle &&
+                lhs.car == rhs.car
+        }
+    }
+
+    // MARK: - Properties
+
     private var connection: Connection!
 
     private let storageLocation: StorageLocation = {
@@ -18,10 +82,32 @@ class QueryTestCase: XCTestCase {
         return .onDisk(path)
     }()
 
+    private let archer = Agent(
+        id: 1,
+        name: "Sterling Archer",
+        date: bindingDateFormatter.date(from: "2015-10-02T08:20:00.000")!,
+        missions: 485,
+        salary: 2_500_000.56,
+        jobTitle: "The world's greatest secret agent".data(using: .utf8)!,
+        car: "Charger"
+    )
+
+    private let lana = Agent(
+        id: 2,
+        name: "Lana Kane",
+        date: bindingDateFormatter.date(from: "2015-11-06T08:00:00.000")!,
+        missions: 2_315,
+        salary: 9_600_200.11,
+        jobTitle: "Top Agent".data(using: .utf8)!,
+        car: nil
+    )
+
     // MARK: - Setup and Teardown
 
     override func setUp() {
         super.setUp()
+
+        FileManager.removeItem(atPath: storageLocation.path)
 
         do {
             connection = try Connection(storageLocation: storageLocation)
@@ -31,193 +117,257 @@ class QueryTestCase: XCTestCase {
         }
     }
 
-    override func tearDown() {
-        super.tearDown()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
+    // MARK: - Tests - Query APIs
 
-    // MARK: - Tests
-
-    func testThatConnectionCanQueryRowsMatchingExactText() {
+    func testThatConnectionCanQueryExtractable() {
         do {
             // Given, When
-            let exactCount: Int = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
-            let exactBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling Archer'")
-
-            let partialCount: Int64 = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling'")
-            let partialBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name='Sterling'")
+            let totalMissions: Int = try connection.query("SELECT sum(missions) FROM agents")
+            let name: String = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
+            let salary: Double = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
+            let id: Int = try connection.query("SELECT id FROM agents WHERE car = :car", parameters: [":car": "Charger"])
 
             // Then
-            XCTAssertEqual(exactCount, 1, "exact count should be 1")
-            XCTAssertTrue(exactBool, "exact bool should be true")
-
-            XCTAssertEqual(partialCount, 0, "partial count should be 0")
-            XCTAssertFalse(partialBool, "partial bool should be false")
+            XCTAssertEqual(totalMissions, 2_800)
+            XCTAssertEqual(name, "Sterling Archer")
+            XCTAssertEqual(salary, 2_500_000.56)
+            XCTAssertEqual(id, 1)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryRowsContainingText() {
+    func testThatConnectionCanQueryExtractableOptional() {
         do {
             // Given, When
-            let likeCount: Int8 = try connection.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
-            let likeBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE name LIKE '%Kane%'")
-
-            let instrCount: Int16 = try connection.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
-            let instrBool: Bool = try connection.query("SELECT count(*) FROM agents WHERE instr(name, 'Kane') > 0")
+            let totalMissions: Int? = try connection.query("SELECT sum(missions) FROM agents")
+            let name: String? = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
+            let salary: Double? = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
+            let id: Int? = try connection.query("SELECT id FROM agents WHERE car = :car", parameters: [":car": "Charger"])
+            let car: String? = try connection.query("SELECT car FROM agents WHERE name = ?", "Lana Kane")
 
             // Then
-            XCTAssertEqual(likeCount, 1, "like count should be 1")
-            XCTAssertTrue(likeBool, "like bool should be true")
-
-            XCTAssertEqual(instrCount, 1, "instr count should be 1")
-            XCTAssertTrue(instrBool, "instr bool should be true")
+            XCTAssertEqual(totalMissions, 2_800)
+            XCTAssertEqual(name, "Sterling Archer")
+            XCTAssertEqual(salary, 2_500_000.56)
+            XCTAssertEqual(id, 1)
+            XCTAssertEqual(car, nil)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryRowsWithinIntegerRange() {
+    func testThatConnectionCanQueryRow() {
         do {
             // Given, When
-            let belowSalaryCount: UInt8 = try connection.query("SELECT count(*) FROM agents WHERE salary < 3000000.12")
-            let aboveSalaryCount: UInt16 = try connection.query("SELECT count(*) FROM agents WHERE salary >= 1000000")
+            let row1: Row? = try connection.query("SELECT name FROM agents WHERE car IS NULL")
+            let row2: Row? = try connection.query("SELECT id, name, missions FROM agents WHERE car = ?", "Charger")
+            let row3: Row? = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
+            let row4: Row? = try connection.query("SELECT * FROM agents WHERE car = :car", parameters: [":car": "Charger"])
 
             // Then
-            XCTAssertEqual(belowSalaryCount, 1, "below salary count should be 1")
-            XCTAssertEqual(aboveSalaryCount, 2, "above salary count should be 2")
+            XCTAssertEqual(row1?.columnCount, 1)
+            XCTAssertEqual(row1?.columnNames ?? [], ["name"])
+            XCTAssertEqual(row1?.value(forColumnName: "name"), "Lana Kane")
+
+            XCTAssertEqual(row2?.columnCount, 3)
+            XCTAssertEqual(row2?.columnNames ?? [], ["id", "name", "missions"])
+            XCTAssertEqual(row2?.value(at: 0), 1)
+            XCTAssertEqual(row2?.value(at: 1), "Sterling Archer")
+            XCTAssertEqual(row2?.value(at: 2), 485)
+
+            XCTAssertEqual(row3?.columnCount, 1)
+            XCTAssertEqual(row3?.columnNames ?? [], ["salary"])
+            XCTAssertEqual(row3?.value(at: 0), 2_500_000.56)
+
+            XCTAssertEqual(row4?.columnCount, 7)
+            XCTAssertEqual(row4?.columnNames ?? [], ["id", "name", "date", "missions", "salary", "job_title", "car"])
+            XCTAssertEqual(row4?.value(at: 0), 1)
+            XCTAssertEqual(row4?.value(at: 1), "Sterling Archer")
+            XCTAssertEqual(row4?.value(at: 2), "2015-10-02T08:20:00.000")
+            XCTAssertEqual(row4?.value(at: 3), 485)
+            XCTAssertEqual(row4?.value(at: 4), 2_500_000.56)
+            XCTAssertEqual(row4?.value(at: 5), "The world's greatest secret agent".data(using: .utf8))
+            XCTAssertEqual(row4?.value(at: 6), "Charger")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryRowsWithinRealRange() {
+    func testThatConnectionCanQueryExpressibleByRow() {
         do {
             // Given, When
-            let belowMissionsCount: UInt = try connection.query("SELECT count(*) FROM agents WHERE missions <= 485")
-            let aboveMissionsCount: UInt64 = try connection.query("SELECT count(*) FROM agents WHERE salary >= 486")
+            let lana1: Agent? = try connection.query("SELECT * FROM agents WHERE car IS NULL")
+            let archer1: Agent? = try connection.query("SELECT * FROM agents WHERE car = ?", "Charger")
+            let archer2: Agent? = try connection.query("SELECT * FROM agents WHERE car = ?", parameters: ["Charger"])
+            let archer3: Agent? = try connection.query("SELECT * FROM agents WHERE car = :car", parameters: [":car": "Charger"])
 
             // Then
-            XCTAssertEqual(belowMissionsCount, 1, "below missions count should be 1")
-            XCTAssertEqual(aboveMissionsCount, 2, "above missions count should be 1")
+            XCTAssertEqual(lana1, lana)
+            XCTAssertEqual(archer1, archer)
+            XCTAssertEqual(archer2, archer)
+            XCTAssertEqual(archer3, archer)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryRowsWithinDateRange() {
+    func testThatConnectionCanQueryT() {
         do {
             // Given
-            let calendar = Calendar.current
-
-            let firstOfOctober: String = {
-                var comps = DateComponents()
-                comps.year = 2015
-                comps.month = 10
-                comps.day = 1
-
-                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
-            }()
-
-            let endOfOctober: String = {
-                var comps = DateComponents()
-                comps.year = 2015
-                comps.month = 10
-                comps.day = 31
-
-                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
-            }()
-
-            let endOfNovember: String = {
-                var comps = DateComponents()
-                comps.year = 2015
-                comps.month = 11
-                comps.day = 30
-
-                return bindingDateFormatter.string(from: calendar.date(from: comps)!)
-            }()
+            let sql1 = "SELECT * FROM agents WHERE car = ?"
+            let sql2 = "SELECT * FROM agents WHERE car = :car"
 
             // When
-            let hiredInOctoberCount: UInt = try connection.query(
-                "SELECT count(*) FROM agents WHERE date >= date(?) AND date <= date(?)",
-                firstOfOctober,
-                endOfOctober
-            )
-
-            let hiredInOctoberOrNovemberCount: UInt64 = try connection.query(
-                "SELECT count(*) FROM agents WHERE date >= date(?) AND date <= date(?)",
-                [firstOfOctober, endOfNovember]
-            )
+            let lana1: Agent? = try connection.query("SELECT * FROM agents WHERE car IS NULL") { try Agent(row: $0) }
+            let archer1: Agent? = try connection.query(sql1, "Charger") { try Agent(row: $0) }
+            let archer2: Agent? = try connection.query(sql1, parameters: ["Charger"]) { try Agent(row: $0) }
+            let archer3: Agent? = try connection.query(sql2, parameters: [":car": "Charger"]) { try Agent(row: $0) }
 
             // Then
-            XCTAssertEqual(hiredInOctoberCount, 1, "hired in october count should be 1")
-            XCTAssertEqual(hiredInOctoberOrNovemberCount, 2, "hired in october or november count should be 2")
+            XCTAssertEqual(lana1, lana)
+            XCTAssertEqual(archer1, archer)
+            XCTAssertEqual(archer2, archer)
+            XCTAssertEqual(archer3, archer)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryRowsMatchingBlobData() {
+    func testThatConnectionCanQueryExtractableArray() {
         do {
             // Given, When
-            let archersJobTitleData: Data = try connection.query("SELECT job_title FROM agents WHERE name='Sterling Archer'")
-            let lanasJobTitleData: Data = try connection.query("SELECT job_title FROM agents WHERE name='Lana Kane'")
-
-            let archersJobTitle = String(data: archersJobTitleData, encoding: .utf8)
-            let lanasJobTitle = String(data: lanasJobTitleData, encoding: .utf8)
+            let ids: [Int] = try connection.query("SELECT id FROM agents")
+            let names: [String] = try connection.query("SELECT name FROM agents WHERE car IS NULL OR car != ?", "Honda")
+            let salaries: [Double] = try connection.query("SELECT salary FROM agents WHERE salary > ?", parameters: [100_000])
+            let cars: [String] = try connection.query("SELECT car FROM agents WHERE car IS NULL OR car != :car", parameters: [":car": "Honda"])
 
             // Then
-            XCTAssertEqual(archersJobTitle, "The world's greatest secret agent", "archers job title should match")
-            XCTAssertEqual(lanasJobTitle, "Top Agent", "lanas job title should match")
+            XCTAssertEqual(ids, [1, 2])
+            XCTAssertEqual(names, ["Sterling Archer", "Lana Kane"])
+            XCTAssertEqual(salaries, [2_500_000.56, 9_600_200.11])
+            XCTAssertEqual(cars, ["Charger"])
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanSafelyQueryRowsWithNullValues() {
+    func testThatConnectionCanQueryExpressibleByRowArray() {
         do {
             // Given, When
-            let archersCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Sterling Archer'")?["car"]
-            let lanasCar: String? = try connection.fetch("SELECT * FROM agents WHERE name='Lana Kane'")?["car"]
+            let agents1: [Agent] = try connection.query("SELECT * FROM agents")
+            let agents2: [Agent] = try connection.query("SELECT * FROM agents WHERE missions > ?", 500)
+            let agents3: [Agent] = try connection.query("SELECT * FROM agents WHERE missions > ?", parameters: [1])
+            let agents4: [Agent] = try connection.query("SELECT * FROM agents WHERE missions < :missions", parameters: [":missions": 2000])
 
             // Then
-            XCTAssertEqual(archersCar, "Charger", "archers car should be 'Charger'")
-            XCTAssertEqual(lanasCar, nil, "lanas car should be nil")
+            XCTAssertEqual(agents1, [archer, lana])
+            XCTAssertEqual(agents2, [lana])
+            XCTAssertEqual(agents3, [archer, lana])
+            XCTAssertEqual(agents4, [archer])
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryPRAGMAValues() {
+    func testThatConnectionCanQueryTArray() {
         do {
-            // Given, When
-            let synchronous: Int = try connection.query("PRAGMA synchronous")
-            let journalMode: String = try connection.query("PRAGMA journal_mode")
+            // Given
+            let sql1 = "SELECT * FROM agents WHERE car = ?"
+            let sql2 = "SELECT * FROM agents WHERE car = :car"
+
+            // When
+            let agents1: [Agent] = try connection.query("SELECT * FROM agents") { try Agent(row: $0) }
+            let agents2: [Agent] = try connection.query(sql1, "Charger") { try Agent(row: $0) }
+            let agents3: [Agent] = try connection.query(sql1, parameters: ["Charger"]) { try Agent(row: $0) }
+            let agents4: [Agent] = try connection.query(sql2, parameters: [":car": "Charger"]) { try Agent(row: $0) }
 
             // Then
-            XCTAssertEqual(synchronous, 2, "synchronous PRAGMA should be 2")
-            XCTAssertEqual(journalMode, "delete", "journal_mode PRAGMA should be 'delete'")
+            XCTAssertEqual(agents1, [archer, lana])
+            XCTAssertEqual(agents2, [archer])
+            XCTAssertEqual(agents3, [archer])
+            XCTAssertEqual(agents4, [archer])
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionCanQueryValuesUsingAllParameterBindingVariants() {
+    func testThatConnectionCanQueryDictionary() {
         do {
-            // Given, When
-            let count1: Int = try connection.query("SELECT count(1) FROM agents WHERE name='Sterling Archer'")
-            let count2: Int = try connection.query("SELECT count(1) FROM agents WHERE name=?", "Sterling Archer")
-            let count3: Int = try connection.query("SELECT count(1) FROM agents WHERE name=?", ["Sterling Archer"])
-            let count4: Int = try connection.query("SELECT count(1) FROM agents WHERE name=:name", [":name": "Sterling Archer"])
+            // Given
+            let sql1 = "SELECT name, missions FROM agents WHERE missions > ?"
+            let sql2 = "SELECT name, missions FROM agents WHERE missions > :missions"
+
+            // When
+            let cars: [String: String?] = try connection.query("SELECT name, car FROM agents") { ($0[0], $0[1]) }
+            let missions1: [String: Int] = try connection.query(sql1, 10) { ($0[0], $0[1]) }
+            let missions2: [String: Int] = try connection.query(sql1, parameters: [10]) { ($0[0], $0[1]) }
+            let missions3: [String: Int] = try connection.query(sql2, parameters: [":missions": 10]) { ($0[0], $0[1]) }
 
             // Then
-            XCTAssertEqual(count1, 1)
-            XCTAssertEqual(count2, 1)
-            XCTAssertEqual(count3, 1)
-            XCTAssertEqual(count4, 1)
+            XCTAssertEqual(cars.count, 2)
+            XCTAssertEqual(cars["Sterling Archer"] as? String, "Charger")
+            XCTAssertEqual(cars["Lana Kane"] as? String, nil)
+
+            XCTAssertEqual(missions1.count, 2)
+            XCTAssertEqual(missions1["Sterling Archer"], 485)
+            XCTAssertEqual(missions1["Lana Kane"], 2_315)
+
+            XCTAssertEqual(missions2.count, 2)
+            XCTAssertEqual(missions2["Sterling Archer"], 485)
+            XCTAssertEqual(missions2["Lana Kane"], 2_315)
+
+            XCTAssertEqual(missions3.count, 2)
+            XCTAssertEqual(missions3["Sterling Archer"], 485)
+            XCTAssertEqual(missions3["Lana Kane"], 2_315)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
+    func testThatConnectionCanQueryDictionaryWithResultInjection() {
+        do {
+            // Given
+            let sql1 = "SELECT name, missions FROM agents WHERE missions > ?"
+            let sql2 = "SELECT name, missions FROM agents WHERE missions > :missions"
+
+            // When
+            let missions1: [Int: [String: Int]] = try connection.query("SELECT name, missions FROM agents") { results, row in
+                var result = results[1] ?? [:]
+                result[row[0]] = row[1]
+                return (1, result)
+            }
+
+            let missions2: [Int: [String: Int]] = try connection.query(sql1, 10) { results, row in
+                var result = results[1] ?? [:]
+                result[row[0]] = row[1]
+                return (1, result)
+            }
+
+            let missions3: [Int: [String: Int]] = try connection.query(sql1, parameters: [10]) { results, row in
+                var result = results[1] ?? [:]
+                result[row[0]] = row[1]
+                return (1, result)
+            }
+
+            let missions4: [Int: [String: Int]] = try connection.query(sql2, parameters: [":missions": 10]) { results, row in
+                var result = results[1] ?? [:]
+                result[row[0]] = row[1]
+                return (1, result)
+            }
+
+            // Then
+            for missions in [missions1, missions2, missions3, missions4] {
+                XCTAssertEqual(missions.count, 1)
+
+                if missions.count == 1 {
+                    XCTAssertEqual(missions[1]?.count, 2)
+                    XCTAssertEqual(missions[1]?["Sterling Archer"], 485)
+                    XCTAssertEqual(missions[1]?["Lana Kane"], 2_315)
+                }
+            }
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

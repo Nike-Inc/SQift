@@ -792,7 +792,7 @@ class FunctionTestCase: XCTestCase {
             let sql = "SELECT format_date(?, value) FROM sq_values"
 
             // When
-            let results: [Date?] = try connection.prepare(sql, "yyyy-MM-dd'T'HH:mm:ss.SSS").map { $0[0] }
+            let results: [Date?] = try connection.query(sql, "yyyy-MM-dd'T'HH:mm:ss.SSS")
 
             // Then
             XCTAssertEqual(dateFormattersInitializedCount, 1)
@@ -899,7 +899,7 @@ class FunctionTestCase: XCTestCase {
             let sql = "SELECT sq_sum(value) FROM sq_values GROUP BY grp"
 
             // When
-            let sumResults: [Int64?] = try connection.prepare(sql).map { $0[0] }
+            let sumResults: [Int64?] = try connection.query(sql)
 
             // Then
             XCTAssertEqual(sumResults.count, 4)
