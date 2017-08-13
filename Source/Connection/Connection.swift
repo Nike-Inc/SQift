@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLite3
 
 /// Represents a SQL statement to be compiled as a string.
 public typealias SQL = String

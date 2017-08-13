@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLite3
 
 extension Connection {
     /// A closure executed for a custom collation with a specified name.

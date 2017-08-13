@@ -34,13 +34,9 @@
 		4C34E42E1F58D7F6006FE2CC /* DispatchQueueExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E42C1F58D7F6006FE2CC /* DispatchQueueExtension.swift */; };
 		4C34E42F1F58D7F6006FE2CC /* DispatchQueueExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E42C1F58D7F6006FE2CC /* DispatchQueueExtension.swift */; };
 		4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6120901F58BAEB00C289C0 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C61207A1F58BAD500C289C0 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120911F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6120921F58BAEC00C289C0 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C61207A1F58BAD500C289C0 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120931F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6120941F58BAEC00C289C0 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C61207A1F58BAD500C289C0 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120951F58BAED00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6120961F58BAED00C289C0 /* sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C61207A1F58BAD500C289C0 /* sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120CD1F58BB5100C289C0 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C61207F1F58BAD500C289C0 /* Connection.swift */; };
 		4C6120CE1F58BB5100C289C0 /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6120801F58BAD500C289C0 /* ConnectionPool.swift */; };
 		4C6120CF1F58BB5100C289C0 /* ConnectionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6120811F58BAD500C289C0 /* ConnectionQueue.swift */; };
@@ -193,7 +189,6 @@
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		4C6120781F58BAD500C289C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C6120791F58BAD500C289C0 /* SQift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQift.h; sourceTree = "<group>"; };
-		4C61207A1F58BAD500C289C0 /* sqlite3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite3.h; sourceTree = "<group>"; };
 		4C61207C1F58BAD500C289C0 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		4C61207D1F58BAD500C289C0 /* Row.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Row.swift; sourceTree = "<group>"; };
 		4C61207F1F58BAD500C289C0 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
@@ -300,7 +295,6 @@
 				4C6120771F58BAD500C289C0 /* Info-tvOS.plist */,
 				4C6120781F58BAD500C289C0 /* Info.plist */,
 				4C6120791F58BAD500C289C0 /* SQift.h */,
-				4C61207A1F58BAD500C289C0 /* sqlite3.h */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -508,7 +502,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C6120921F58BAEC00C289C0 /* sqlite3.h in Headers */,
 				4C6120911F58BAEC00C289C0 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -517,7 +510,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C6120941F58BAEC00C289C0 /* sqlite3.h in Headers */,
 				4C6120931F58BAEC00C289C0 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -526,7 +518,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C6120961F58BAED00C289C0 /* sqlite3.h in Headers */,
 				4C6120951F58BAED00C289C0 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -535,7 +526,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C6120901F58BAEB00C289C0 /* sqlite3.h in Headers */,
 				4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

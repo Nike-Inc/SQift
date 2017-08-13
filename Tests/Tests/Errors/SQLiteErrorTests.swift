@@ -8,6 +8,7 @@
 
 import Foundation
 import SQift
+import SQLite3
 import XCTest
 
 class SQLiteErrorTestCase: XCTestCase {

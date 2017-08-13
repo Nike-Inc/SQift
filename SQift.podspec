@@ -12,11 +12,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = '2.0'
 
   s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :tag => s.version }
-
-  s.source_files = [
-    'Source/*.swift',
-    'Source/sqlite3.h',
-  ]
+  s.source_files = 'Source/*.swift'
 
   s.libraries = 'sqlite3'
 end

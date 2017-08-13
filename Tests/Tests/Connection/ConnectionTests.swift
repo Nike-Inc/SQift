@@ -8,6 +8,7 @@
 
 import Foundation
 @testable import SQift
+import SQLite3
 import XCTest
 
 class ConnectionTestCase: XCTestCase {

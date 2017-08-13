@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLite3
 
 // MARK: Scalar Functions
 

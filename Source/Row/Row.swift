@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SQLite3
 
 /// The `Row` struct represents a row returned by a database query. It uses numeric and text-based subscripts along with
 /// internal generic methods to extract values from the database.
