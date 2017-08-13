@@ -56,7 +56,7 @@ extension Connection {
     /// - Returns: The first column value of the first row of the query.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
-    public func query<T: Extractable>(_ sql: String, parameters: [Bindable?]) throws -> T {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [Bindable?]) throws -> T {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -79,7 +79,7 @@ extension Connection {
     /// - Returns: The first column value of the first row of the query.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
-    public func query<T: Extractable>(_ sql: String, parameters: [String: Bindable?]) throws -> T {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [String: Bindable?]) throws -> T {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -123,7 +123,7 @@ extension Connection {
     /// - Returns: The first column value of the first row of the query if found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
-    public func query<T: Extractable>(_ sql: String, parameters: [Bindable?]) throws -> T? {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [Bindable?]) throws -> T? {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -143,7 +143,7 @@ extension Connection {
     /// - Returns: The first column value of the first row of the query if found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error in the prepare, bind, step or data extraction process.
-    public func query<T: Extractable>(_ sql: String, parameters: [String: Bindable?]) throws -> T? {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [String: Bindable?]) throws -> T? {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -185,7 +185,7 @@ extension Connection {
     /// - Returns: The first `Row` of the query when a result is found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
-    public func query(_ sql: String, parameters: [Bindable?]) throws -> Row? {
+    public func query(_ sql: String, _ parameters: [Bindable?]) throws -> Row? {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -205,7 +205,7 @@ extension Connection {
     /// - Returns: The first `Row` of the query when a result is found, `nil` otherwise.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement for fetching the `Row`.
-    public func query(_ sql: String, parameters: [String: Bindable?]) throws -> Row? {
+    public func query(_ sql: String, _ parameters: [String: Bindable?]) throws -> Row? {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -217,12 +217,12 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<T: ExpressibleByRow>(_ sql: String, parameters: [Bindable?]) throws -> T? {
+    public func query<T: ExpressibleByRow>(_ sql: String, _ parameters: [Bindable?]) throws -> T? {
         return try prepare(sql).bind(parameters).query()
     }
 
     // TODO: test and docstring
-    public func query<T: ExpressibleByRow>(_ sql: String, parameters: [String: Bindable?]) throws -> T? {
+    public func query<T: ExpressibleByRow>(_ sql: String, _ parameters: [String: Bindable?]) throws -> T? {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -234,12 +234,12 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<T>(_ sql: String, parameters: [Bindable?], body: (Row) throws -> T) throws -> T? {
+    public func query<T>(_ sql: String, _ parameters: [Bindable?], body: (Row) throws -> T) throws -> T? {
         return try prepare(sql).bind(parameters).query(body)
     }
 
     // TODO: test and docstring
-    public func query<T>(_ sql: String, parameters: [String: Bindable?], body: (Row) throws -> T) throws -> T? {
+    public func query<T>(_ sql: String, _ parameters: [String: Bindable?], body: (Row) throws -> T) throws -> T? {
         return try prepare(sql).bind(parameters).query(body)
     }
 
@@ -251,12 +251,12 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<T: Extractable>(_ sql: String, parameters: [Bindable?]) throws -> [T] {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [Bindable?]) throws -> [T] {
         return try prepare(sql).bind(parameters).query()
     }
 
     // TODO: test and docstring
-    public func query<T: Extractable>(_ sql: String, parameters: [String: Bindable?]) throws -> [T] {
+    public func query<T: Extractable>(_ sql: String, _ parameters: [String: Bindable?]) throws -> [T] {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -268,12 +268,12 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<T: ExpressibleByRow>(_ sql: String, parameters: [Bindable?]) throws -> [T] {
+    public func query<T: ExpressibleByRow>(_ sql: String, _ parameters: [Bindable?]) throws -> [T] {
         return try prepare(sql).bind(parameters).query()
     }
 
     // TODO: test and docstring
-    public func query<T: ExpressibleByRow>(_ sql: String, parameters: [String: Bindable?]) throws -> [T] {
+    public func query<T: ExpressibleByRow>(_ sql: String, _ parameters: [String: Bindable?]) throws -> [T] {
         return try prepare(sql).bind(parameters).query()
     }
 
@@ -285,12 +285,12 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<T>(_ sql: String, parameters: [Bindable?], body: (Row) throws -> T) throws -> [T] {
+    public func query<T>(_ sql: String, _ parameters: [Bindable?], body: (Row) throws -> T) throws -> [T] {
         return try prepare(sql).bind(parameters).query(body)
     }
 
     // TODO: test and docstring
-    public func query<T>(_ sql: String, parameters: [String: Bindable?], body: (Row) throws -> T) throws -> [T] {
+    public func query<T>(_ sql: String, _ parameters: [String: Bindable?], body: (Row) throws -> T) throws -> [T] {
         return try prepare(sql).bind(parameters).query(body)
     }
 
@@ -309,7 +309,7 @@ extension Connection {
     // TODO: test and docstring
     public func query<Key: Hashable, Value>(
         _ sql: String,
-        parameters: [Bindable?],
+        _ parameters: [Bindable?],
         body: (Row) throws -> (Key, Value))
         throws -> [Key: Value]
     {
@@ -319,7 +319,7 @@ extension Connection {
     // TODO: test and docstring
     public func query<Key: Hashable, Value>(
         _ sql: String,
-        parameters: [String: Bindable?],
+        _ parameters: [String: Bindable?],
         body: (Row) throws -> (Key, Value))
         throws -> [Key: Value]
     {
@@ -341,7 +341,7 @@ extension Connection {
     // TODO: test and docstring
     public func query<Key, Value>(
         _ sql: String,
-        parameters: [Bindable?],
+        _ parameters: [Bindable?],
         body: ([Key: Value], Row) throws -> (Key, Value))
         throws -> [Key: Value]
     {
@@ -351,7 +351,7 @@ extension Connection {
     // TODO: test and docstring
     public func query<Key, Value>(
         _ sql: String,
-        parameters: [String: Bindable?],
+        _ parameters: [String: Bindable?],
         body: ([Key: Value], Row) throws -> (Key, Value))
         throws -> [Key: Value]
     {

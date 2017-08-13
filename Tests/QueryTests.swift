@@ -63,8 +63,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let totalMissions: Int = try connection.query("SELECT sum(missions) FROM agents")
             let name: String = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
-            let salary: Double = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
-            let id: Int = try connection.query("SELECT id FROM agents WHERE car = :car", parameters: [":car": "Charger"])
+            let salary: Double = try connection.query("SELECT salary FROM agents WHERE car = ?", ["Charger"])
+            let id: Int = try connection.query("SELECT id FROM agents WHERE car = :car", [":car": "Charger"])
 
             // Then
             XCTAssertEqual(totalMissions, 2_800)
@@ -81,8 +81,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let totalMissions: Int? = try connection.query("SELECT sum(missions) FROM agents")
             let name: String? = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
-            let salary: Double? = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
-            let id: Int? = try connection.query("SELECT id FROM agents WHERE car = :car", parameters: [":car": "Charger"])
+            let salary: Double? = try connection.query("SELECT salary FROM agents WHERE car = ?", ["Charger"])
+            let id: Int? = try connection.query("SELECT id FROM agents WHERE car = :car", [":car": "Charger"])
             let car: String? = try connection.query("SELECT car FROM agents WHERE name = ?", "Lana Kane")
 
             // Then
@@ -101,8 +101,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let row1: Row? = try connection.query("SELECT name FROM agents WHERE car IS NULL")
             let row2: Row? = try connection.query("SELECT id, name, missions FROM agents WHERE car = ?", "Charger")
-            let row3: Row? = try connection.query("SELECT salary FROM agents WHERE car = ?", parameters: ["Charger"])
-            let row4: Row? = try connection.query("SELECT * FROM agents WHERE car = :car", parameters: [":car": "Charger"])
+            let row3: Row? = try connection.query("SELECT salary FROM agents WHERE car = ?", ["Charger"])
+            let row4: Row? = try connection.query("SELECT * FROM agents WHERE car = :car", [":car": "Charger"])
 
             // Then
             XCTAssertEqual(row1?.columnCount, 1)
@@ -126,8 +126,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let lana1: Agent? = try connection.query("SELECT * FROM agents WHERE car IS NULL")
             let archer1: Agent? = try connection.query("SELECT * FROM agents WHERE car = ?", "Charger")
-            let archer2: Agent? = try connection.query("SELECT * FROM agents WHERE car = ?", parameters: ["Charger"])
-            let archer3: Agent? = try connection.query("SELECT * FROM agents WHERE car = :car", parameters: [":car": "Charger"])
+            let archer2: Agent? = try connection.query("SELECT * FROM agents WHERE car = ?", ["Charger"])
+            let archer3: Agent? = try connection.query("SELECT * FROM agents WHERE car = :car", [":car": "Charger"])
 
             // Then
             XCTAssertEqual(lana1, lana)
@@ -148,8 +148,8 @@ class QueryTestCase: XCTestCase {
             // When
             let lana1: Agent? = try connection.query("SELECT * FROM agents WHERE car IS NULL") { try Agent(row: $0) }
             let archer1: Agent? = try connection.query(sql1, "Charger") { try Agent(row: $0) }
-            let archer2: Agent? = try connection.query(sql1, parameters: ["Charger"]) { try Agent(row: $0) }
-            let archer3: Agent? = try connection.query(sql2, parameters: [":car": "Charger"]) { try Agent(row: $0) }
+            let archer2: Agent? = try connection.query(sql1, ["Charger"]) { try Agent(row: $0) }
+            let archer3: Agent? = try connection.query(sql2, [":car": "Charger"]) { try Agent(row: $0) }
 
             // Then
             XCTAssertEqual(lana1, lana)
@@ -166,8 +166,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let ids: [Int] = try connection.query("SELECT id FROM agents")
             let names: [String] = try connection.query("SELECT name FROM agents WHERE car IS NULL OR car != ?", "Honda")
-            let salaries: [Double] = try connection.query("SELECT salary FROM agents WHERE salary > ?", parameters: [100_000])
-            let cars: [String] = try connection.query("SELECT car FROM agents WHERE car IS NULL OR car != :car", parameters: [":car": "Honda"])
+            let salaries: [Double] = try connection.query("SELECT salary FROM agents WHERE salary > ?", [100_000])
+            let cars: [String] = try connection.query("SELECT car FROM agents WHERE car IS NULL OR car != :car", [":car": "Honda"])
 
             // Then
             XCTAssertEqual(ids, [1, 2])
@@ -184,8 +184,8 @@ class QueryTestCase: XCTestCase {
             // Given, When
             let agents1: [Agent] = try connection.query("SELECT * FROM agents")
             let agents2: [Agent] = try connection.query("SELECT * FROM agents WHERE missions > ?", 500)
-            let agents3: [Agent] = try connection.query("SELECT * FROM agents WHERE missions > ?", parameters: [1])
-            let agents4: [Agent] = try connection.query("SELECT * FROM agents WHERE missions < :missions", parameters: [":missions": 2000])
+            let agents3: [Agent] = try connection.query("SELECT * FROM agents WHERE missions > ?", [1])
+            let agents4: [Agent] = try connection.query("SELECT * FROM agents WHERE missions < :missions", [":missions": 2000])
 
             // Then
             XCTAssertEqual(agents1, [archer, lana])
@@ -206,8 +206,8 @@ class QueryTestCase: XCTestCase {
             // When
             let agents1: [Agent] = try connection.query("SELECT * FROM agents") { try Agent(row: $0) }
             let agents2: [Agent] = try connection.query(sql1, "Charger") { try Agent(row: $0) }
-            let agents3: [Agent] = try connection.query(sql1, parameters: ["Charger"]) { try Agent(row: $0) }
-            let agents4: [Agent] = try connection.query(sql2, parameters: [":car": "Charger"]) { try Agent(row: $0) }
+            let agents3: [Agent] = try connection.query(sql1, ["Charger"]) { try Agent(row: $0) }
+            let agents4: [Agent] = try connection.query(sql2, [":car": "Charger"]) { try Agent(row: $0) }
 
             // Then
             XCTAssertEqual(agents1, [archer, lana])
@@ -228,8 +228,8 @@ class QueryTestCase: XCTestCase {
             // When
             let cars: [String: String?] = try connection.query("SELECT name, car FROM agents") { ($0[0], $0[1]) }
             let missions1: [String: Int] = try connection.query(sql1, 10) { ($0[0], $0[1]) }
-            let missions2: [String: Int] = try connection.query(sql1, parameters: [10]) { ($0[0], $0[1]) }
-            let missions3: [String: Int] = try connection.query(sql2, parameters: [":missions": 10]) { ($0[0], $0[1]) }
+            let missions2: [String: Int] = try connection.query(sql1, [10]) { ($0[0], $0[1]) }
+            let missions3: [String: Int] = try connection.query(sql2, [":missions": 10]) { ($0[0], $0[1]) }
 
             // Then
             XCTAssertEqual(cars.count, 2)
@@ -271,13 +271,13 @@ class QueryTestCase: XCTestCase {
                 return (1, result)
             }
 
-            let missions3: [Int: [String: Int]] = try connection.query(sql1, parameters: [10]) { results, row in
+            let missions3: [Int: [String: Int]] = try connection.query(sql1, [10]) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)
             }
 
-            let missions4: [Int: [String: Int]] = try connection.query(sql2, parameters: [":missions": 10]) { results, row in
+            let missions4: [Int: [String: Int]] = try connection.query(sql2, [":missions": 10]) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)
