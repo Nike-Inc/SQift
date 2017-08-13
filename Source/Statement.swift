@@ -34,7 +34,7 @@ public class Statement {
     ///   - sql:        The SQL string to create the statement with.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement.
-    public init(connection: Connection, sql: String) throws {
+    public init(connection: Connection, sql: SQL) throws {
         self.connection = connection
 
         var tempHandle: OpaquePointer?

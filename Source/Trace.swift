@@ -32,7 +32,7 @@ extension Connection {
     ///                     connection.
     @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     public enum TraceEvent: CustomStringConvertible {
-        case statement(statement: String, sql: String)
+        case statement(statement: String, sql: SQL)
         case profile(statement: String, seconds: Double)
         case row(statement: String)
         case connectionClosed(connection: OpaquePointer)

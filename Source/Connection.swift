@@ -8,6 +8,9 @@
 
 import Foundation
 
+/// Represents a SQL statement to be compiled as a string.
+public typealias SQL = String
+
 /// The `Connection` class represents a single connection to a SQLite database. 
 ///
 /// For more details about using multiple database connections to improve concurrency, please refer to the 
@@ -101,7 +104,7 @@ public class Connection {
     /// - Parameter sql: The SQL string to execute.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when executing the SQL statement.
-    public func execute(_ sql: String) throws {
+    public func execute(_ sql: SQL) throws {
         try check(sqlite3_exec(handle, sql, nil, nil, nil))
     }
 
@@ -120,7 +123,7 @@ public class Connection {
     /// - Returns: The new `Statement` instance.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement or binding the parameters.
-    public func prepare(_ sql: String, _ parameters: Bindable?...) throws -> Statement {
+    public func prepare(_ sql: SQL, _ parameters: Bindable?...) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -128,7 +131,7 @@ public class Connection {
     }
 
     // TODO: add docstring
-    public func prepare(_ sql: String, parameters: [Bindable?]) throws -> Statement {
+    public func prepare(_ sql: SQL, parameters: [Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -148,7 +151,7 @@ public class Connection {
     /// - Returns: The new `Statement` instance.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement or binding the parameters.
-    public func prepare(_ sql: String, parameters: [String: Bindable?]) throws -> Statement {
+    public func prepare(_ sql: SQL, parameters: [String: Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -169,7 +172,7 @@ public class Connection {
     ///   - parameters: The parameters to bind to the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement.
-    public func run(_ sql: String, _ parameters: Bindable?...) throws {
+    public func run(_ sql: SQL, _ parameters: Bindable?...) throws {
         try prepare(sql).bind(parameters).run()
     }
 
@@ -185,7 +188,7 @@ public class Connection {
     ///   - parameters: The parameters to bind to the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement.
-    public func run(_ sql: String, parameters: [Bindable?]) throws {
+    public func run(_ sql: SQL, parameters: [Bindable?]) throws {
         try prepare(sql).bind(parameters).run()
     }
 
@@ -201,7 +204,7 @@ public class Connection {
     ///   - parameters: A dictionary of key-value pairs to bind to the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement.
-    public func run(_ sql: String, parameters: [String: Bindable?]) throws {
+    public func run(_ sql: SQL, parameters: [String: Bindable?]) throws {
         try prepare(sql).bind(parameters).run()
     }
 

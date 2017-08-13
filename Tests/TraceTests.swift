@@ -208,7 +208,7 @@ extension Statement {
 // MARK: -
 
 extension Connection {
-    fileprivate func stepAll(_ sql: String) throws {
+    fileprivate func stepAll(_ sql: SQL) throws {
         try prepare(sql).stepAll()
     }
 }
