@@ -304,10 +304,10 @@ public class Statement {
         while try step() {
             let row = Row(statement: self)
             let (key, value) = try body(results, row)
-            
+
             results[key] = value
         }
-        
+
         return results
     }
 

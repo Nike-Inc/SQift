@@ -133,7 +133,7 @@ extension Connection {
             }
 
             closure(event)
-            
+
             return 0
         }
     }
