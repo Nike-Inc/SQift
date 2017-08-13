@@ -15,8 +15,8 @@ public class ConnectionQueue {
     /// The database connection to be accessed solely through the connection queue.
     public let connection: Connection
 
-    fileprivate let id: String
-    fileprivate let queue: DispatchQueue
+    private let id: String
+    private let queue: DispatchQueue
 
     // MARK: - Initialization
 
@@ -115,8 +115,8 @@ extension ConnectionQueue: Hashable {
 
 // MARK: - Equatable
 
-extension ConnectionQueue: Equatable {}
-
-public func ==(lhs: ConnectionQueue, rhs: ConnectionQueue) -> Bool {
-    return lhs.id == rhs.id
+extension ConnectionQueue: Equatable {
+    public static func ==(lhs: ConnectionQueue, rhs: ConnectionQueue) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

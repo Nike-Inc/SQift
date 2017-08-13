@@ -82,7 +82,7 @@ public struct Row {
         }
     }
 
-    fileprivate let statement: Statement
+    private let statement: Statement
     private var handle: OpaquePointer { return statement.handle }
 
     // MARK: Initialization

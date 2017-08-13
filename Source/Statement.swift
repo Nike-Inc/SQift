@@ -21,7 +21,7 @@ public class Statement {
         return (0..<self.columnCount).map { String(cString: sqlite3_column_name(self.handle, Int32($0))) }
     }()
 
-    fileprivate let connection: Connection
+    private let connection: Connection
 
     // MARK: - Initialization
 
@@ -329,18 +329,20 @@ public class Statement {
         return nil
     }
 
-    // MARK: - Private - Execution and Binding
-
-    fileprivate func reset() throws {
-        try connection.check(sqlite3_reset(handle))
-        try connection.check(sqlite3_clear_bindings(handle))
-    }
+    // MARK: - Internal - Step
 
     func step() throws -> Bool {
         return try connection.check(sqlite3_step(handle)) == SQLITE_ROW
     }
 
-    fileprivate func bind(_ parameter: Bindable?, atIndex index: Int32) throws {
+    // MARK: - Private - Execution and Binding
+
+    private func reset() throws {
+        try connection.check(sqlite3_reset(handle))
+        try connection.check(sqlite3_clear_bindings(handle))
+    }
+
+    private func bind(_ parameter: Bindable?, atIndex index: Int32) throws {
         guard let parameter = parameter else {
             try connection.check(sqlite3_bind_null(handle, index))
             return
