@@ -97,12 +97,12 @@ open class Migrator {
         var totalMigrationsCompleted: UInt64 = 0
 
         for schemaVersion in (currentSchemaVersion + 1)...desiredSchemaVersion {
-            let SQL = migrationSQL(schemaVersion)
+            let sql = migrationSQL(schemaVersion)
 
             willMigrate?(schemaVersion)
 
             try connection.transaction {
-                try self.connection.execute(SQL)
+                try self.connection.execute(sql)
                 try self.connection.run(
                     "INSERT INTO \(Migrator.migrationTableName) VALUES(?, ?)",
                     schemaVersion,
@@ -167,11 +167,10 @@ open class Migrator {
     // MARK: - Internal - Migrations Table Helpers
 
     func createMigrationTable() throws {
-        let SQL = [
-            "CREATE TABLE IF NOT EXISTS \(Migrator.migrationTableName)",
-            "(version INTEGER UNIQUE NOT NULL, migration_timestamp TEXT NOT NULL)"
-        ]
-
-        try connection.execute(SQL.joined(separator: ""))
+        try connection.execute("""
+            CREATE TABLE IF NOT EXISTS \(Migrator.migrationTableName)
+            (version INTEGER UNIQUE NOT NULL, migration_timestamp TEXT NOT NULL)
+            """
+        )
     }
 }

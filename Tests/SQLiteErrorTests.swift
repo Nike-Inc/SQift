@@ -12,7 +12,7 @@ import XCTest
 
 class SQLiteErrorTestCase: XCTestCase {
     private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/error_tests.db")
+        let path = FileManager.cachesDirectory.appending("/sqlite_error_tests.db")
         return .onDisk(path)
     }()
 

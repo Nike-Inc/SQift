@@ -100,8 +100,11 @@ class ConnectionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
-            try connection.execute("PRAGMA foreign_keys = true")
-            try connection.execute("PRAGMA journal_mode = WAL")
+            try connection.execute("""
+                PRAGMA foreign_keys = true;
+                PRAGMA journal_mode = WAL
+                """
+            )
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -125,8 +128,11 @@ class ConnectionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
-            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try connection.execute("DROP TABLE cars")
+            try connection.execute("""
+                CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER);
+                DROP TABLE cars
+                """
+            )
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -138,10 +144,13 @@ class ConnectionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
-            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
-            try connection.execute("INSERT INTO cars VALUES(3, 'Skoda', 9000)")
+            try connection.execute("""
+                CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER);
+                INSERT INTO cars VALUES(1, 'Audi', 52642);
+                INSERT INTO cars VALUES(2, 'Mercedes', 57127);
+                INSERT INTO cars VALUES(3, 'Skoda', 9000)
+                """
+            )
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -163,7 +172,10 @@ class ConnectionTestCase: XCTestCase {
 
             try connection.transaction {
                 let jobTitle = "Superman".data(using: .utf8)!
-                let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)")
+                let insert = try connection.prepare("""
+                    INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)
+                    """
+                )
 
                 for index in 1...20_000 {
                     try insert.bind("Sterling Archer-\(index)", "2015-10-02T08:20:00.000", 485, 240_000.10, jobTitle, "Charger").run()
@@ -185,9 +197,12 @@ class ConnectionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When, Then
-            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try connection.execute("UPDATE cars SET price=89400 WHERE id=1")
+            try connection.execute("""
+                CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER);
+                INSERT INTO cars VALUES(1, 'Audi', 52642);
+                UPDATE cars SET price = 89400 WHERE id = 1
+                """
+            )
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -199,9 +214,12 @@ class ConnectionTestCase: XCTestCase {
             let connection = try Connection(storageLocation: storageLocation)
 
             // When
-            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
-            try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
-            try connection.execute("DELETE FROM cars")
+            try connection.execute("""
+                CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER);
+                INSERT INTO cars VALUES(1, 'Audi', 52642);
+                DELETE FROM cars
+                """
+            )
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -212,14 +230,14 @@ class ConnectionTestCase: XCTestCase {
     func testThatConnectionSupportsFTS4Module() {
         do {
             // Given
-            let statements = [
-                "CREATE VIRTUAL TABLE email USING fts4(sender, title, body)",
-                "INSERT INTO email VALUES('Christian Noon', 'iOS Architectures', 'There are so many possibilities')",
-                "INSERT INTO email VALUES('Dave Camp', 'SQift Features', 'Should we support so many SQLite APIs?')"
-            ].joined(separator: "; ")
-
             let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute(statements)
+
+            try connection.execute("""
+                CREATE VIRTUAL TABLE email USING fts4(sender, title, body);
+                INSERT INTO email VALUES('Christian Noon', 'iOS Architectures', 'There are so many possibilities');
+                INSERT INTO email VALUES('Dave Camp', 'SQift Features', 'Should we support so many SQLite APIs?')
+                """
+            )
 
             // When
             let emailRowCount: Int = try connection.query("SELECT count(1) FROM email")

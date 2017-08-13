@@ -999,20 +999,19 @@ class FunctionTestCase: XCTestCase {
     // MARK: - Private - Table Data Helpers
 
     private func loadTablesAndDataForAggregateFunctions(using connection: Connection) throws {
-        let sqlStatements: [String] = [
-            "CREATE TABLE sq_values(grp INTEGER NOT NULL, value INTEGER NOT NULL)",
-            "INSERT INTO sq_values VALUES (0, 0)",
-            "INSERT INTO sq_values VALUES (0, 1)",
-            "INSERT INTO sq_values VALUES (0, 2)",
-            "INSERT INTO sq_values VALUES (1, 3)",
-            "INSERT INTO sq_values VALUES (1, 4)",
-            "INSERT INTO sq_values VALUES (2, 5)",
-            "INSERT INTO sq_values VALUES (2, 6)",
-            "INSERT INTO sq_values VALUES (2, 7)",
-            "INSERT INTO sq_values VALUES (3, 8)",
-            "INSERT INTO sq_values VALUES (3, 9)"
-        ]
-
-        try sqlStatements.forEach { try connection.execute($0) }
+        try connection.execute("""
+            CREATE TABLE sq_values(grp INTEGER NOT NULL, value INTEGER NOT NULL);
+            INSERT INTO sq_values VALUES (0, 0);
+            INSERT INTO sq_values VALUES (0, 1);
+            INSERT INTO sq_values VALUES (0, 2);
+            INSERT INTO sq_values VALUES (1, 3);
+            INSERT INTO sq_values VALUES (1, 4);
+            INSERT INTO sq_values VALUES (2, 5);
+            INSERT INTO sq_values VALUES (2, 6);
+            INSERT INTO sq_values VALUES (2, 7);
+            INSERT INTO sq_values VALUES (3, 8);
+            INSERT INTO sq_values VALUES (3, 9)
+            """
+        )
     }
 }

@@ -255,29 +255,30 @@ class QueryTestCase: XCTestCase {
     func testThatConnectionCanQueryDictionaryWithResultInjection() {
         do {
             // Given
-            let sql1 = "SELECT name, missions FROM agents WHERE missions > ?"
-            let sql2 = "SELECT name, missions FROM agents WHERE missions > :missions"
+            let sql1 = "SELECT name, missions FROM agents"
+            let sql2 = "SELECT name, missions FROM agents WHERE missions > ?"
+            let sql3 = "SELECT name, missions FROM agents WHERE missions > :missions"
 
             // When
-            let missions1: [Int: [String: Int]] = try connection.query("SELECT name, missions FROM agents") { results, row in
+            let missions1: [Int: [String: Int]] = try connection.query(sql1) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)
             }
 
-            let missions2: [Int: [String: Int]] = try connection.query(sql1, 10) { results, row in
+            let missions2: [Int: [String: Int]] = try connection.query(sql2, 10) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)
             }
 
-            let missions3: [Int: [String: Int]] = try connection.query(sql1, [10]) { results, row in
+            let missions3: [Int: [String: Int]] = try connection.query(sql2, [10]) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)
             }
 
-            let missions4: [Int: [String: Int]] = try connection.query(sql2, [":missions": 10]) { results, row in
+            let missions4: [Int: [String: Int]] = try connection.query(sql3, [":missions": 10]) { results, row in
                 var result = results[1] ?? [:]
                 result[row[0]] = row[1]
                 return (1, result)

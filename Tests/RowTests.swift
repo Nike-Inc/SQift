@@ -15,7 +15,7 @@ class RowTestCase: XCTestCase {
     // MARK: - Properties
 
     private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/connection_tests.db")
+        let path = FileManager.cachesDirectory.appending("/row_tests.db")
         return .onDisk(path)
     }()
 

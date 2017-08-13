@@ -124,7 +124,7 @@ class MigratorTestCase: XCTestCase {
                 do {
                     try migrator.runMigrationsIfNecessary(
                         migrationSQLForSchemaVersion: { version in
-                            return "CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+                            return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
                         },
                         willMigrateToSchemaVersion: { version in
                             willMigrate.append(version)
@@ -135,7 +135,7 @@ class MigratorTestCase: XCTestCase {
                     )
 
                     agentsTableExists = try connection.query(
-                        "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                        "SELECT count(*) FROM sqlite_master WHERE type = ? AND name = ?",
                         "table",
                         "agents"
                     )
@@ -179,14 +179,12 @@ class MigratorTestCase: XCTestCase {
                         migrationSQLForSchemaVersion: { version in
                             switch version {
                             case 1:
-                                return "CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+                                return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
                             default:
-                                let SQL = [
-                                    "INSERT INTO agents(name) VALUES('Sterling Archer')",
-                                    "INSERT INTO agents(name) VALUES('Lana Kane')",
-                                ]
-
-                                return SQL.joined(separator: ";")
+                                return """
+                                    INSERT INTO agents(name) VALUES('Sterling Archer');
+                                    INSERT INTO agents(name) VALUES('Lana Kane')
+                                    """
                             }
                         },
                         willMigrateToSchemaVersion: { version in
@@ -239,7 +237,7 @@ class MigratorTestCase: XCTestCase {
 
             try migrator?.runMigrationsIfNecessary(
                 migrationSQLForSchemaVersion: { version in
-                    return "CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+                    return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
                 }
             )
 
@@ -262,14 +260,15 @@ class MigratorTestCase: XCTestCase {
                         migrationSQLForSchemaVersion: { version in
                             switch version {
                             case 2:
-                                let SQL = [
-                                    "INSERT INTO agents(name) VALUES('Sterling Archer')",
-                                    "INSERT INTO agents(name) VALUES('Lana Kane')",
-                                ]
+                                return """
+                                    INSERT INTO agents(name) VALUES('Sterling Archer');
+                                    INSERT INTO agents(name) VALUES('Lana Kane')
+                                    """
 
-                                return SQL.joined(separator: ";")
                             default:
-                                return "CREATE TABLE missions(id INTEGER PRIMARY KEY AUTOINCREMENT, payment REAL NOT NULL)"
+                                return """
+                                    CREATE TABLE missions(id INTEGER PRIMARY KEY AUTOINCREMENT, payment REAL NOT NULL)
+                                    """
                             }
                         },
                         willMigrateToSchemaVersion: { version in
@@ -337,11 +336,14 @@ class MigratorTestCase: XCTestCase {
                             switch version {
                             case 1:
                                 try connection.execute(
-                                    "CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)"
+                                    "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
                                 )
                             default:
-                                try connection.execute("INSERT INTO agents(name) VALUES('Sterling Archer')")
-                                try connection.execute("INSERT INTO agents(name) VALUES('Lana Kane')")
+                                try connection.execute("""
+                                    INSERT INTO agents(name) VALUES('Sterling Archer');
+                                    INSERT INTO agents(name) VALUES('Lana Kane')
+                                    """
+                                )
                             }
                         },
                         willMigrateToSchemaVersion: { version in
