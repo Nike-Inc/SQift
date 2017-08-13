@@ -11,6 +11,9 @@ import Foundation
 import XCTest
 
 class ConnectionTestCase: XCTestCase {
+
+    // MARK: - Properties
+
     private let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/connection_tests.db")
         return .onDisk(path)
@@ -23,7 +26,7 @@ class ConnectionTestCase: XCTestCase {
         FileManager.removeItem(atPath: storageLocation.path)
     }
 
-    // MARK: - Open and Close Tests
+    // MARK: - Tests - Open and Close Connection
 
     func testThatConnectionCanOpenDatabaseConnection() {
         // Given, When, Then
@@ -92,7 +95,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    // MARK: - Execution Tests
+    // MARK: - Tests - Execution
 
     func testThatConnectionCanExecutePragmaStatements() {
         do {
@@ -225,7 +228,50 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    // MARK: - FTS4 Tests
+    // MARK: - Tests - Interrupt
+
+    func testThatConnectionCanInterruptLongRunningOperation() {
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+            try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
+
+            try connection.transaction {
+                let statement = try connection.prepare("INSERT INTO cars(name, price) VALUES(?, ?)")
+                try (1...10_000).forEach { try statement.bind("BMW", $0).run() }
+            }
+
+            let expectation = self.expectation(description: "transaction should be cancelled")
+            var prices: [Int]?
+            var queryError: Error?
+
+            // When
+            DispatchQueue.utility.async {
+                do {
+                    prices = try connection.query("SELECT price FROM cars")
+                } catch {
+                    queryError = error
+                    expectation.fulfill()
+                }
+            }
+
+            DispatchQueue.utility.asyncAfter(deadline: .now() + 0.005) { connection.interrupt() }
+            waitForExpectations(timeout: 5, handler: nil)
+
+            // Then
+            XCTAssertNotNil(queryError)
+            XCTAssertNil(prices)
+
+            if let error = queryError as? SQLiteError {
+                XCTAssertEqual(error.code, SQLITE_INTERRUPT)
+                XCTAssertEqual(error.message, "interrupted")
+            }
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
+    // MARK: - Tests - FTS4
 
     func testThatConnectionSupportsFTS4Module() {
         do {
@@ -253,7 +299,7 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
-    // MARK: - Attach Database Tests
+    // MARK: - Tests - Attach Database
 
     func testThatConnectionCanAttachAndDetachDatabase() {
         let personDBPath = FileManager.cachesDirectory.appending("/attach_detach_db_tests.db")

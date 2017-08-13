@@ -108,6 +108,19 @@ public class Connection {
         try check(sqlite3_exec(handle, sql, nil, nil, nil))
     }
 
+    /// Causes any active database operation to abort and return at its earliest opportunity.
+    ///
+    /// It is safe to call this routine from a different thread than is currently running the database operation. If
+    /// a SQL operation is nearly fiished at the time it is interrupted, then it might not have an opportunity to
+    /// be interrupted and might continue to completion.
+    ///
+    /// A SQL operation that is interrupted will return a SQLiteError with a [SQLITE_INTERRUPT] error code. If the
+    /// interrupted SQL operation is an INSERT, UPDATE, or DELETE that is inside an explicit transaction, the entire
+    /// transaction will be rolled back automatically.
+    public func interrupt() {
+        sqlite3_interrupt(handle)
+    }
+
     // MARK: - Prepare Statement
 
     /// Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
