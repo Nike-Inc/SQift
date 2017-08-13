@@ -81,7 +81,7 @@ class RowTestCase: XCTestCase {
                 XCTFail("row should not be nil")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -165,7 +165,7 @@ class RowTestCase: XCTestCase {
                 XCTFail("row should not be nil")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -225,7 +225,7 @@ class RowTestCase: XCTestCase {
                 XCTFail("row should not be nil")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -309,7 +309,7 @@ class RowTestCase: XCTestCase {
                 XCTFail("row should not be nil")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -336,7 +336,7 @@ class RowTestCase: XCTestCase {
                 XCTFail("values should not be nil and should have a count of 7")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

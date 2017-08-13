@@ -45,7 +45,7 @@ class MigratorTestCase: XCTestCase {
             // Then
             XCTAssertTrue(exists, "exists should be true")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -68,7 +68,7 @@ class MigratorTestCase: XCTestCase {
             // Then
             XCTAssertTrue(exists, "exists should be true")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -85,7 +85,7 @@ class MigratorTestCase: XCTestCase {
             // Then
             XCTAssertFalse(tableExists, "table exists should be false")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -102,7 +102,7 @@ class MigratorTestCase: XCTestCase {
             // Then
             XCTAssertTrue(tableExists, "table exists should be true")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -154,7 +154,7 @@ class MigratorTestCase: XCTestCase {
             XCTAssertNil(migrationError, "migration error should be nil")
             XCTAssertTrue(agentsTableExists, "agents table exists should be true")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -227,7 +227,7 @@ class MigratorTestCase: XCTestCase {
             XCTAssertTrue(agentsTableExists, "agents table exists should be true")
             XCTAssertEqual(agentCount, 2, "agent count should be 2")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -311,7 +311,7 @@ class MigratorTestCase: XCTestCase {
             XCTAssertEqual(agentCount, 2, "agent count should be 2")
             XCTAssertTrue(missionsTableExists, "missions table exists should be true")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -382,7 +382,7 @@ class MigratorTestCase: XCTestCase {
             XCTAssertTrue(agentsTableExists, "agents table exists should be true")
             XCTAssertEqual(agentCount, 2, "agent count should be 2")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -426,7 +426,7 @@ class MigratorTestCase: XCTestCase {
             XCTAssertEqual(didMigrate.count, 0, "did migrate count should be 0")
             XCTAssertNotNil(migrationError, "migration error should be nil")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

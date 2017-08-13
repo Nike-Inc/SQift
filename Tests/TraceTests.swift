@@ -54,7 +54,7 @@ class TraceTestCase: XCTestCase {
                 XCTFail("statements count should be 4")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -150,7 +150,7 @@ class TraceTestCase: XCTestCase {
                     XCTFail("traceEvents count should be 11")
                 }
             } catch {
-                XCTFail("Test Encountered Unexpected Error: \(error)")
+                XCTFail("Test encountered unexpected error: \(error)")
             }
         }
     }
@@ -177,7 +177,7 @@ class TraceTestCase: XCTestCase {
                 // Then
                 XCTAssertEqual(traceEvents.count, 8)
             } catch {
-                XCTFail("Test Encountered Unexpected Error: \(error)")
+                XCTFail("Test encountered unexpected error: \(error)")
             }
         }
     }

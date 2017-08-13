@@ -67,7 +67,7 @@ class ConnectionPoolTestCase: XCTestCase {
             XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection")
             XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -97,7 +97,7 @@ class ConnectionPoolTestCase: XCTestCase {
             XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection")
             XCTAssertEqual(synchronous, 1, "synchronous should be 1")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -120,7 +120,7 @@ class ConnectionPoolTestCase: XCTestCase {
             XCTAssertTrue(pool.availableConnections.contains(connection), "available connections should contain connection after enqueue")
             XCTAssertFalse(pool.busyConnections.contains(connection), "busy connections should not contain connection after enqueue")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -139,7 +139,7 @@ class ConnectionPoolTestCase: XCTestCase {
             // Then
             XCTAssertEqual(count, 0, "count should be equal to 0")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -201,7 +201,7 @@ class ConnectionPoolTestCase: XCTestCase {
                 XCTAssertEqual(count, 2, "count should be equal to 2 at index: \(index)")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -251,7 +251,7 @@ class ConnectionPoolTestCase: XCTestCase {
                 XCTAssertEqual(count, 2, "count should be equal to 2 at index: \(index)")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

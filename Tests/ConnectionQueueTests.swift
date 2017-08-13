@@ -45,7 +45,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -64,7 +64,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -88,7 +88,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -107,7 +107,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -131,7 +131,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(rowCount, 2, "row count should be 2")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -150,7 +150,7 @@ class ConnectionQueueTestCase: XCTestCase {
             // Then
             XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

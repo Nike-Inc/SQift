@@ -52,7 +52,7 @@ class TransactionTestCase: XCTestCase {
                 XCTFail("rows count should be 2")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -77,7 +77,7 @@ class TransactionTestCase: XCTestCase {
             // Then
             XCTAssertEqual(count, 0, "count should be zero")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -114,7 +114,7 @@ class TransactionTestCase: XCTestCase {
                 XCTFail("rows count should be 2")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -139,7 +139,7 @@ class TransactionTestCase: XCTestCase {
             // Then
             XCTAssertEqual(count, 0, "count should be zero")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -174,7 +174,7 @@ class TransactionTestCase: XCTestCase {
                 XCTFail("rows count should be 2")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

@@ -33,7 +33,7 @@ class DatabaseTestCase: XCTestCase {
             let _ = try Database(storageLocation: .temporary)
             let _ = try Database(storageLocation: storageLocation, flags: SQLITE_OPEN_READONLY)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -61,7 +61,7 @@ class DatabaseTestCase: XCTestCase {
             XCTAssertEqual(foreignKeys, 1, "foreign keys should be 1")
             XCTAssertEqual(synchronous, 1, "synchronous should be 1")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -94,7 +94,7 @@ class DatabaseTestCase: XCTestCase {
             // Then
             XCTAssertFalse(areValuesEqual)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -114,7 +114,7 @@ class DatabaseTestCase: XCTestCase {
             // Then
             XCTAssertTrue(tableExists)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

@@ -32,7 +32,7 @@ class ConnectionTestCase: XCTestCase {
             let _ = try Connection(storageLocation: .inMemory)
             let _ = try Connection(storageLocation: .temporary)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -45,7 +45,7 @@ class ConnectionTestCase: XCTestCase {
             XCTAssertFalse(connection.readOnly)
             XCTAssertTrue(connection.threadSafe)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -67,7 +67,7 @@ class ConnectionTestCase: XCTestCase {
             XCTAssertTrue(writableForeignKeys)
             XCTAssertFalse(readOnlyForeignKeys)
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -88,7 +88,7 @@ class ConnectionTestCase: XCTestCase {
             try temporaryConnection?.execute("PRAGMA foreign_keys = true")
             temporaryConnection = nil
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -103,7 +103,7 @@ class ConnectionTestCase: XCTestCase {
             try connection.execute("PRAGMA foreign_keys = true")
             try connection.execute("PRAGMA journal_mode = WAL")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -115,7 +115,7 @@ class ConnectionTestCase: XCTestCase {
             // When, Then
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -128,7 +128,7 @@ class ConnectionTestCase: XCTestCase {
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
             try connection.execute("DROP TABLE cars")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -143,7 +143,7 @@ class ConnectionTestCase: XCTestCase {
             try connection.execute("INSERT INTO cars VALUES(2, 'Mercedes', 57127)")
             try connection.execute("INSERT INTO cars VALUES(3, 'Skoda', 9000)")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -175,7 +175,7 @@ class ConnectionTestCase: XCTestCase {
             // Then
             XCTAssertLessThan(timeInterval, 1.000, "database should be able to insert 25_000 rows in under 1 second")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -189,7 +189,7 @@ class ConnectionTestCase: XCTestCase {
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("UPDATE cars SET price=89400 WHERE id=1")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -203,7 +203,7 @@ class ConnectionTestCase: XCTestCase {
             try connection.execute("INSERT INTO cars VALUES(1, 'Audi', 52642)")
             try connection.execute("DELETE FROM cars")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -231,7 +231,7 @@ class ConnectionTestCase: XCTestCase {
             XCTAssertEqual(senders1, ["Christian Noon", "Dave Camp"])
             XCTAssertEqual(senders2, ["Christian Noon"])
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -271,7 +271,7 @@ class ConnectionTestCase: XCTestCase {
                 XCTFail("rows count should be 2")
             }
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }

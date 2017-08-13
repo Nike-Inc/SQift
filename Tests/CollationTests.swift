@@ -48,7 +48,7 @@ class CollationTestCase: XCTestCase {
             // Then
             XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -76,7 +76,7 @@ class CollationTestCase: XCTestCase {
             // Then
             XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
@@ -102,7 +102,7 @@ class CollationTestCase: XCTestCase {
             XCTAssertTrue(equal1, "equal 1 should be true when using `.DiacriticInsensitiveSearch` compare options")
             XCTAssertFalse(equal2, "equal 2 should be false when using default compare options")
         } catch {
-            XCTFail("Test Encountered Unexpected Error: \(error)")
+            XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 }
