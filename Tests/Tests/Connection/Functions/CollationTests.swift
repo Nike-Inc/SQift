@@ -10,21 +10,7 @@ import Foundation
 import SQift
 import XCTest
 
-class CollationTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/collation_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Collation Tests
-
+class CollationTestCase: BaseTestCase {
     func testThatConnectionCanCreateAndExecuteCustomNumericCollationFunction() {
         do {
             // Given

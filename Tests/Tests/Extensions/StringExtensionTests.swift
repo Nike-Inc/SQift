@@ -10,7 +10,7 @@ import Foundation
 import SQift
 import XCTest
 
-class StringExtensionTestCase: XCTestCase {
+class StringExtensionTestCase: BaseTestCase {
     func testThatStringExtensionAddsSQLEscapesAsExpected() {
         // Given
         let strings = [

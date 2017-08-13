@@ -10,25 +10,10 @@ import Foundation
 import SQift
 import XCTest
 
-class TransactionTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/transaction_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Tests - Transactions
-
+class TransactionTestCase: BaseConnectionTestCase {
     func testThatConnectionCanExecuteTransaction() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -59,7 +44,6 @@ class TransactionTestCase: XCTestCase {
     func testThatConnectionCanRollbackTransactionExecutionWhenTransactionThrows() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -86,7 +70,6 @@ class TransactionTestCase: XCTestCase {
     func testThatConnectionCanExecuteSavepoint() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -121,7 +104,6 @@ class TransactionTestCase: XCTestCase {
     func testThatConnectionCanRollbackToSavepointWhenSavepointExecutionThrows() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When
@@ -146,7 +128,6 @@ class TransactionTestCase: XCTestCase {
     func testThatConnectionCanExecuteSavepointsWithCrazyCharactersInName() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
             try connection.execute("CREATE TABLE cars(id INTEGER PRIMARY KEY, name TEXT, price INTEGER)")
 
             // When

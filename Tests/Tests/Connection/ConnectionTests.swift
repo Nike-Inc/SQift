@@ -11,21 +11,7 @@ import Foundation
 import SQLite3
 import XCTest
 
-class ConnectionTestCase: XCTestCase {
-
-    // MARK: - Properties
-
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/connection_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
+class ConnectionTestCase: BaseTestCase {
 
     // MARK: - Tests - Open and Close Connection
 

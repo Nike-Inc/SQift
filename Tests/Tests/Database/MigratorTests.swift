@@ -10,24 +10,7 @@ import Foundation
 @testable import SQift
 import XCTest
 
-class MigratorTestCase: XCTestCase {
-    private let utilityQueue = DispatchQueue.global(qos: .utility)
-    private let timeout = 10.0
-
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/migrator_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func tearDown() {
-        super.tearDown()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Tests
-
+class MigratorTestCase: BaseTestCase {
     func testThatMigratorCanCreateMigrationsTable() {
         do {
             // Given
@@ -120,7 +103,7 @@ class MigratorTestCase: XCTestCase {
             var agentsTableExists = false
 
             // When
-            utilityQueue.async {
+            DispatchQueue.utility.async {
                 do {
                     try migrator.runMigrationsIfNecessary(
                         migrationSQLForSchemaVersion: { version in
@@ -173,7 +156,7 @@ class MigratorTestCase: XCTestCase {
             var agentCount = 0
 
             // When
-            utilityQueue.async {
+            DispatchQueue.utility.async {
                 do {
                     try migrator.runMigrationsIfNecessary(
                         migrationSQLForSchemaVersion: { version in
@@ -254,7 +237,7 @@ class MigratorTestCase: XCTestCase {
             var missionsTableExists = false
 
             // When
-            utilityQueue.async {
+            DispatchQueue.utility.async {
                 do {
                     try migrator?.runMigrationsIfNecessary(
                         migrationSQLForSchemaVersion: { version in
@@ -329,7 +312,7 @@ class MigratorTestCase: XCTestCase {
             var agentCount = 0
 
             // When
-            utilityQueue.async {
+            DispatchQueue.utility.async {
                 do {
                     try migrator.runMigrationsIfNecessary(
                         migrateDatabaseToSchemaVersion: { version, connection in
@@ -401,7 +384,7 @@ class MigratorTestCase: XCTestCase {
             var migrationError: Error? = nil
 
             // When
-            utilityQueue.async {
+            DispatchQueue.utility.async {
                 do {
                     try migrator.runMigrationsIfNecessary(
                         migrationSQLForSchemaVersion: { version in

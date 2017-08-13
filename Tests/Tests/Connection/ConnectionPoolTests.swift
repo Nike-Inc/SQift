@@ -11,11 +11,7 @@ import Foundation
 import SQLite3
 import XCTest
 
-class ConnectionPoolTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/connection_pool_tests.db")
-        return .onDisk(path)
-    }()
+class ConnectionPoolTestCase: BaseTestCase {
 
     // MARK: - Setup and Teardown
 
@@ -29,11 +25,6 @@ class ConnectionPoolTestCase: XCTestCase {
         } catch {
             // No-op
         }
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        FileManager.removeItem(atPath: storageLocation.path)
     }
 
     // MARK: - Tests

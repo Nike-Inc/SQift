@@ -11,39 +11,7 @@ import Foundation
 import SQLite3
 import XCTest
 
-class StatementTestCase: XCTestCase {
-
-    // MARK: - Properties
-
-    private var connection: Connection!
-
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/statement_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-
-        FileManager.removeItem(atPath: storageLocation.path)
-
-        do {
-            connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-        } catch {
-            // No-op
-        }
-    }
-
-    override func tearDown() {
-        connection = nil
-        super.tearDown()
-    }
-
-    // MARK: - Tests - Open and Close Connection
-
+class StatementTestCase: BaseConnectionTestCase {
     func testThatStatementCanReturnWhetherItIsBusy() {
         do {
             // Given

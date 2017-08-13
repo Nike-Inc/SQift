@@ -11,21 +11,7 @@ import SQift
 import SQLite3
 import XCTest
 
-class DatabaseTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/database_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func tearDown() {
-        super.tearDown()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Tests
-
+class DatabaseTestCase: BaseTestCase {
     func testThatDatabaseCanBeInitializedWithAllStorageLocations() {
         // Given, When, Then
         do {

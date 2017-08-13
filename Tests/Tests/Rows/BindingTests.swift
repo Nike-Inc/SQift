@@ -10,13 +10,13 @@ import Foundation
 import SQift
 import XCTest
 
-class BindingTestCase: XCTestCase {
+class BindingTestCase: BaseTestCase {
 
     // MARK: - Properties
 
     private var is64Bit: Bool { return MemoryLayout<Int>.size == MemoryLayout<Int64>.size }
 
-    // MARK: - Null Bindable Tests
+    // MARK: - Tests - Null Bindable
 
     func testNSNullBinding() {
         // Given, When
@@ -26,7 +26,7 @@ class BindingTestCase: XCTestCase {
         XCTAssertTrue(bindingValue == .null)
     }
 
-    // MARK: - Integer Binding Tests
+    // MARK: - Tests - Integer Binding
 
     func testBoolBinding() {
         // Given, When
@@ -280,7 +280,7 @@ class BindingTestCase: XCTestCase {
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
-    // MARK: - Real Binding Tests
+    // MARK: - Tests - Real Binding
 
     func testFloatBinding() {
         // Given, When
@@ -314,7 +314,7 @@ class BindingTestCase: XCTestCase {
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
-    // MARK: - Text Binding Tests
+    // MARK: - Tests - Text Binding
 
     func testStringBinding() {
         // Given, When
@@ -363,7 +363,7 @@ class BindingTestCase: XCTestCase {
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
-    // MARK: - Blob Binding Tests
+    // MARK: - Tests - Blob Binding
 
     func testDataBinding() {
         // Given, When

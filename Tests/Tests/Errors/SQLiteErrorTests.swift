@@ -11,12 +11,7 @@ import SQift
 import SQLite3
 import XCTest
 
-class SQLiteErrorTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/sqlite_error_tests.db")
-        return .onDisk(path)
-    }()
-
+class SQLiteErrorTestCase: BaseTestCase {
     func testThatInitializingConnectionWithInvalidFilePathThrowsError() {
         do {
             // Given, When
@@ -91,12 +86,14 @@ class SQLiteErrorTestCase: XCTestCase {
 
             // When
             let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(?, ?, ?, ?, ?)")
-            try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485, 10_000, "job_title_value")
+            try insert.bind("Sterling Archer", "2015-10-02T08:20:00.000", 485, 10_000, nil)
+            try insert.run()
 
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR)
+            XCTAssertEqual(error.code, SQLITE_CONSTRAINT)
+            XCTAssertEqual(error.message, "NOT NULL constraint failed: agents.job_title")
         } catch {
             XCTFail("Failed with an unknown error type: \(error)")
         }
@@ -115,7 +112,8 @@ class SQLiteErrorTestCase: XCTestCase {
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR)
+            XCTAssertEqual(error.code, SQLITE_MISUSE)
+            XCTAssertEqual(error.message, "Bind could not find index for key: \':f\'")
         } catch {
             XCTFail("Failed with an unknown error type: \(error)")
         }
@@ -129,12 +127,14 @@ class SQLiteErrorTestCase: XCTestCase {
 
             // When
             let insert = try connection.prepare("INSERT INTO agents(name, date, missions, salary, job_title) VALUES(:n, :d, :m, :s, :j)")
-            try insert.bind([":n": "NAME", ":d": "DATE", ":m": 1, ":s": 2, ":j": 6])
+            try insert.bind([":n": "NAME", ":d": "DATE", ":m": 1, ":s": 2, ":j": nil])
+            try insert.run()
 
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR)
+            XCTAssertEqual(error.code, SQLITE_CONSTRAINT)
+            XCTAssertEqual(error.message, "NOT NULL constraint failed: agents.job_title")
         } catch {
             XCTFail("Failed with an unknown error type: \(error)")
         }

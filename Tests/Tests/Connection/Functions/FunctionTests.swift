@@ -11,7 +11,7 @@ import SQift
 import SQLite3
 import XCTest
 
-class FunctionTestCase: XCTestCase {
+class FunctionTestCase: BaseTestCase {
 
     // MARK: - Helper Types
 
@@ -22,11 +22,6 @@ class FunctionTestCase: XCTestCase {
 
     // MARK: - Properties
 
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/function_tests.db")
-        return .onDisk(path)
-    }()
-
     private let text = "dummy_value"
     private let textWithUnicode = "français, 日本語, العربية, 😃🤘🏻😎"
 
@@ -35,13 +30,6 @@ class FunctionTestCase: XCTestCase {
 
     private let data = "dummy_data".data(using: .utf8)!
     private let zeroData = Data(count: 10)
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
 
     // MARK: - Tests - Function Values
 

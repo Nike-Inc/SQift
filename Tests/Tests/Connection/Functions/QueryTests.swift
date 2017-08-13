@@ -10,16 +10,9 @@ import Foundation
 import SQift
 import XCTest
 
-class QueryTestCase: XCTestCase {
+class QueryTestCase: BaseConnectionTestCase {
 
     // MARK: - Properties
-
-    private var connection: Connection!
-
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/query_tests.db")
-        return .onDisk(path)
-    }()
 
     private let archer = Agent(
         id: 1,
@@ -40,21 +33,6 @@ class QueryTestCase: XCTestCase {
         jobTitle: "Top Agent".data(using: .utf8)!,
         car: nil
     )
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-
-        FileManager.removeItem(atPath: storageLocation.path)
-
-        do {
-            connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-        } catch {
-            // No-op
-        }
-    }
 
     // MARK: - Tests - Query APIs
 

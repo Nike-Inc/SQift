@@ -10,30 +10,13 @@ import Foundation
 import SQift
 import XCTest
 
-class RowTestCase: XCTestCase {
-
-    // MARK: - Properties
-
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/row_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
+class RowTestCase: BaseConnectionTestCase {
 
     // MARK: - Tests - Columns
 
     func testThatRowCanAccessColumnInformation() {
         do {
             // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
             var columnCount = 0
             var columns: [Row.Column] = []
 
@@ -99,11 +82,7 @@ class RowTestCase: XCTestCase {
 
     func testThatAllNonOptionalBindingTypesCanBeAccessedByColumnIndexSubscript() {
         do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
-            // When
+            // Given, When
             if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool = row[0]
 
@@ -159,11 +138,7 @@ class RowTestCase: XCTestCase {
 
     func testThatAllOptionalBindingTypesCanBeAccessedByColumnIndexSubscript() {
         do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
-            // When
+            // Given, When
             if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool? = row[0]
 
@@ -243,11 +218,7 @@ class RowTestCase: XCTestCase {
 
     func testThatAllNonOptionalBindingTypesCanBeAccessedByColumnNameSubscript() {
         do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
-            // When
+            // Given, When
             if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool = row["id"]
 
@@ -303,11 +274,7 @@ class RowTestCase: XCTestCase {
 
     func testThatAllOptionalBindingTypesCanBeAccessedByColumnNameSubscript() {
         do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
-            // When
+            // Given, When
             if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
                 let id_Bool: Bool? = row["id"]
 
@@ -389,11 +356,7 @@ class RowTestCase: XCTestCase {
 
     func testThatAllDatabaseTypesCanBeAccessedThroughValuesProperty() {
         do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try TestTables.createAndPopulateAgentsTable(using: connection)
-
-            // When
+            // Given, When
             if
                 let values = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'")?.values,
                 values.count == 7

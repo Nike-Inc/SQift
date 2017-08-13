@@ -11,21 +11,7 @@ import SQift
 import SQLite3
 import XCTest
 
-class ConnectionQueueTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/connection_queue_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func tearDown() {
-        super.tearDown()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Tests
-
+class ConnectionQueueTestCase: BaseTestCase {
     func testThatConnectionQueueCanExecuteStatements() {
         do {
             // Given

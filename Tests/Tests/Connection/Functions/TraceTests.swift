@@ -10,21 +10,7 @@ import Foundation
 @testable import SQift
 import XCTest
 
-class TraceTestCase: XCTestCase {
-    private let storageLocation: StorageLocation = {
-        let path = FileManager.cachesDirectory.appending("/trace_tests.db")
-        return .onDisk(path)
-    }()
-
-    // MARK: - Setup and Teardown
-
-    override func setUp() {
-        super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
-    }
-
-    // MARK: - Trace Tests
-
+class TraceTestCase: BaseTestCase {
     func testThatConnectionCanTraceStatementExecution() {
         do {
             // Given
@@ -162,8 +148,10 @@ class TraceTestCase: XCTestCase {
                 var connection: Connection? = try Connection(storageLocation: storageLocation)
                 var traceEvents: [Connection.TraceEvent] = []
 
+                let mask = Connection.TraceEvent.statementMask | Connection.TraceEvent.profileMask
+
                 // When
-                connection?.traceEvent(mask: Connection.TraceEvent.statementMask | Connection.TraceEvent.profileMask) { event in
+                connection?.traceEvent(mask: mask) { event in
                     traceEvents.append(event)
                 }
 
