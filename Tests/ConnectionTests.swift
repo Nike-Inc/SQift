@@ -207,6 +207,34 @@ class ConnectionTestCase: XCTestCase {
         }
     }
 
+    // MARK: - FTS4 Tests
+
+    func testThatConnectionSupportsFTS4Module() {
+        do {
+            // Given
+            let statements = [
+                "CREATE VIRTUAL TABLE email USING fts4(sender, title, body)",
+                "INSERT INTO email VALUES('Christian Noon', 'iOS Architectures', 'There are so many possibilities')",
+                "INSERT INTO email VALUES('Dave Camp', 'SQift Features', 'Should we support so many SQLite APIs?')"
+            ].joined(separator: "; ")
+
+            let connection = try Connection(storageLocation: storageLocation)
+            try connection.execute(statements)
+
+            // When
+            let emailRowCount: Int = try connection.query("SELECT count(1) FROM email")
+            let senders1: [String] = try connection.query("SELECT sender FROM email WHERE email MATCH 'many'")
+            let senders2: [String] = try connection.query("SELECT sender FROM email WHERE body MATCH 'so NOT support'")
+
+            // Then
+            XCTAssertEqual(emailRowCount, 2)
+            XCTAssertEqual(senders1, ["Christian Noon", "Dave Camp"])
+            XCTAssertEqual(senders2, ["Christian Noon"])
+        } catch {
+            XCTFail("Test Encountered Unexpected Error: \(error)")
+        }
+    }
+
     // MARK: - Attach Database Tests
 
     func testThatConnectionCanAttachAndDetachDatabase() {
