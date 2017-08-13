@@ -12,7 +12,7 @@ import Foundation
 /// internal generic methods to extract values from the database.
 public struct Row {
 
-    // MARK: - Helper Types
+    // MARK: Helper Types
 
     // TODO: docstring and tests
     public struct Column: CustomStringConvertible {
@@ -91,179 +91,33 @@ public struct Row {
         self.statement = statement
     }
 
-    //=========================== Column Index Subscripts ============================
+    /// Returns an `Extractable` instance at the given column index.
+    ///
+    /// - Parameter columnIndex: The index of the column of the value to extract.
+    ///
+    /// - Returns: The non-optional value of the column at the specified index.
+    public subscript<T: Extractable>(columnIndex: Int) -> T { return value(at: columnIndex)! }
 
-    /// Returns a `Bool` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Bool { return value(at: columnIndex)! }
-    /// Returns an optional `Bool` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Bool? { return value(at: columnIndex) }
+    /// Returns an optional `Extractable` instance at the given column index.
+    ///
+    /// - Parameter columnIndex: The index of the column of the value to extract.
+    ///
+    /// - Returns: The value of the column at the specified index if it exists, `nil` otherwise.
+    public subscript<T: Extractable>(columnIndex: Int) -> T? { return value(at: columnIndex) }
 
-    /// Returns an `Int8` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int8 { return value(at: columnIndex)! }
-    /// Returns an optional `Int8` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int8? { return value(at: columnIndex) }
+    /// Returns an `Extractable` instance for the column index matching the specified name.
+    ///
+    /// - Parameter columnName: The name of the column of the value to extract.
+    ///
+    /// - Returns: The non-optional value of the column with the specified column name.
+    public subscript<T: Extractable>(columnName: String) -> T { return value(forColumnName: columnName)! }
 
-    /// Returns an `Int16` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int16 { return value(at: columnIndex)! }
-    /// Returns an optional `Int16` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int16? { return value(at: columnIndex) }
-
-    /// Returns an `Int32` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int32 { return value(at: columnIndex)! }
-    /// Returns an optional `Int32` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int32? { return value(at: columnIndex) }
-
-    /// Returns an `Int64` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int64 { return value(at: columnIndex)! }
-    /// Returns an optional `Int64` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int64? { return value(at: columnIndex) }
-
-    /// Returns an `Int` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int { return value(at: columnIndex)! }
-    /// Returns an optional `Int` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Int? { return value(at: columnIndex) }
-
-    /// Returns a `UInt8` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt8 { return value(at: columnIndex)! }
-    /// Returns an optional `UInt8` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt8? { return value(at: columnIndex) }
-
-    /// Returns a `UInt16` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt16 { return value(at: columnIndex)! }
-    /// Returns an optional `UInt16` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt16? { return value(at: columnIndex) }
-
-    /// Returns a `UInt32` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt32 { return value(at: columnIndex)! }
-    /// Returns an optional `UInt32` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt32? { return value(at: columnIndex) }
-
-    /// Returns a `UInt64` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt64 { return value(at: columnIndex)! }
-    /// Returns an optional `UInt64` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt64? { return value(at: columnIndex) }
-
-    /// Returns a `UInt` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt { return value(at: columnIndex)! }
-    /// Returns an optional `UInt` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> UInt? { return value(at: columnIndex) }
-
-    /// Returns a `Float` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Float { return value(at: columnIndex)! }
-    /// Returns an optional `Float` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Float? { return value(at: columnIndex) }
-
-    /// Returns a `Double` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Double { return value(at: columnIndex)! }
-    /// Returns an optional `Double` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Double? { return value(at: columnIndex) }
-
-    /// Returns a `String` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> String { return value(at: columnIndex)! }
-    /// Returns an optional `String` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> String? { return value(at: columnIndex) }
-
-    /// Returns a `URL` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> URL { return value(at: columnIndex)! }
-    /// Returns an optional `URL` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> URL? { return value(at: columnIndex) }
-
-    /// Returns an `Date` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Date { return value(at: columnIndex)! }
-    /// Returns an optional `Date` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Date? { return value(at: columnIndex) }
-
-    /// Returns an `Data` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Data { return value(at: columnIndex)! }
-    /// Returns an optional `Data` instance extracted from the database at the given column index.
-    public subscript(columnIndex: Int) -> Data? { return value(at: columnIndex) }
-
-    //=========================== Column Name Subscripts ============================
-
-    /// Returns a `Bool` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Bool { return value(forColumnName: columnName)! }
-    /// Returns an optional `Bool` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Bool? { return value(forColumnName: columnName) }
-
-    /// Returns an `Int8` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int8 { return value(forColumnName: columnName)! }
-    /// Returns an optional `Int8` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int8? { return value(forColumnName: columnName) }
-
-    /// Returns an `Int16` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int16 { return value(forColumnName: columnName)! }
-    /// Returns an optional `Int16` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int16? { return value(forColumnName: columnName) }
-
-    /// Returns an `Int32` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int32 { return value(forColumnName: columnName)! }
-    /// Returns an optional `Int32` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int32? { return value(forColumnName: columnName) }
-
-    /// Returns an `Int64` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int64 { return value(forColumnName: columnName)! }
-    /// Returns an optional `Int64` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int64? { return value(forColumnName: columnName) }
-
-    /// Returns an `Int` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int { return value(forColumnName: columnName)! }
-    /// Returns an optional `Int` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Int? { return value(forColumnName: columnName) }
-
-    /// Returns a `UInt8` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt8 { return value(forColumnName: columnName)! }
-    /// Returns an optional `UInt8` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt8? { return value(forColumnName: columnName) }
-
-    /// Returns a `UInt16` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt16 { return value(forColumnName: columnName)! }
-    /// Returns an optional `UInt16` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt16? { return value(forColumnName: columnName) }
-
-    /// Returns a `UInt32` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt32 { return value(forColumnName: columnName)! }
-    /// Returns an optional `UInt32` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt32? { return value(forColumnName: columnName) }
-
-    /// Returns a `UInt64` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt64 { return value(forColumnName: columnName)! }
-    /// Returns an optional `UInt64` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt64? { return value(forColumnName: columnName) }
-
-    /// Returns a `UInt` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt { return value(forColumnName: columnName)! }
-    /// Returns an optional `UInt` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> UInt? { return value(forColumnName: columnName) }
-
-    /// Returns a `Float` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Float { return value(forColumnName: columnName)! }
-    /// Returns an optional `Float` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Float? { return value(forColumnName: columnName) }
-
-    /// Returns a `Double` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Double { return value(forColumnName: columnName)! }
-    /// Returns an optional `Double` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Double? { return value(forColumnName: columnName) }
-
-    /// Returns a `String` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> String { return value(forColumnName: columnName)! }
-    /// Returns an optional `String` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> String? { return value(forColumnName: columnName) }
-
-    /// Returns a `URL` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> URL { return value(forColumnName: columnName)! }
-    /// Returns an optional `URL` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> URL? { return value(forColumnName: columnName) }
-
-    /// Returns an `Date` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Date { return value(forColumnName: columnName)! }
-    /// Returns an optional `Date` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Date? { return value(forColumnName: columnName) }
-
-    /// Returns an `Data` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Data { return value(forColumnName: columnName)! }
-    /// Returns an optional `Data` instance extracted from the database for the column index matching the given name.
-    public subscript(columnName: String) -> Data? { return value(forColumnName: columnName) }
+    /// Returns an optional `Extractable` instance for the column index matching the specified name.
+    ///
+    /// - Parameter columnName: The name of the column of the value to extract.
+    ///
+    /// - Returns: The optional value of the column with the specified column name if it exists, `nil` otherwise.
+    public subscript<T: Extractable>(columnName: String) -> T? { return value(forColumnName: columnName) }
 
     // MARK: Values
 
