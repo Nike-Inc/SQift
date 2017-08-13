@@ -11,6 +11,9 @@ import SQift
 import XCTest
 
 class RowTestCase: XCTestCase {
+
+    // MARK: - Properties
+
     private let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/connection_tests.db")
         return .onDisk(path)
@@ -23,7 +26,76 @@ class RowTestCase: XCTestCase {
         FileManager.removeItem(atPath: storageLocation.path)
     }
 
-    // MARK: - Tests
+    // MARK: - Tests - Columns
+
+    func testThatRowCanAccessColumnInformation() {
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+            try TestTables.createAndPopulateAgentsTable(using: connection)
+
+            var columnCount = 0
+            var columns: [Row.Column] = []
+
+            // When
+            if let row = try connection.query("SELECT * FROM agents WHERE name='Lana Kane'") {
+                columnCount = row.columnCount
+                columns = row.columns
+            }
+
+            // Then
+            XCTAssertEqual(columnCount, 7)
+            XCTAssertEqual(columns.count, 7)
+
+            if columns.count == 7 {
+                let column0 = columns[0]
+                XCTAssertEqual(column0.index, 0)
+                XCTAssertEqual(column0.name, "id")
+                XCTAssertEqual(column0.type, .integer)
+                XCTAssertEqual(column0.value as? Int64, 2)
+
+                let column1 = columns[1]
+                XCTAssertEqual(column1.index, 1)
+                XCTAssertEqual(column1.name, "name")
+                XCTAssertEqual(column1.type, .text)
+                XCTAssertEqual(column1.value as? String, "Lana Kane")
+
+                let column2 = columns[2]
+                XCTAssertEqual(column2.index, 2)
+                XCTAssertEqual(column2.name, "date")
+                XCTAssertEqual(column2.type, .text)
+                XCTAssertEqual(column2.value as? String, "2015-11-06T08:00:00.000")
+
+                let column3 = columns[3]
+                XCTAssertEqual(column3.index, 3)
+                XCTAssertEqual(column3.name, "missions")
+                XCTAssertEqual(column3.type, .integer)
+                XCTAssertEqual(column3.value as? Int64, 2_315)
+
+                let column4 = columns[4]
+                XCTAssertEqual(column4.index, 4)
+                XCTAssertEqual(column4.name, "salary")
+                XCTAssertEqual(column4.type, .float)
+                XCTAssertEqual(column4.value as? Double, 9_600_200.11)
+
+                let column5 = columns[5]
+                XCTAssertEqual(column5.index, 5)
+                XCTAssertEqual(column5.name, "job_title")
+                XCTAssertEqual(column5.type, .blob)
+                XCTAssertEqual(column5.value as? Data, "Top Agent".data(using: .utf8)!)
+
+                let column6 = columns[6]
+                XCTAssertEqual(column6.index, 6)
+                XCTAssertEqual(column6.name, "car")
+                XCTAssertEqual(column6.type, .null)
+                XCTAssertEqual(column6.value as? String, nil)
+            }
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
+    // MARK: - Tests - Bindings
 
     func testThatAllNonOptionalBindingTypesCanBeAccessedByColumnIndexSubscript() {
         do {
@@ -313,6 +385,8 @@ class RowTestCase: XCTestCase {
         }
     }
 
+    // MARK: - Tests - Values
+
     func testThatAllDatabaseTypesCanBeAccessedThroughValuesProperty() {
         do {
             // Given
@@ -335,6 +409,45 @@ class RowTestCase: XCTestCase {
             } else {
                 XCTFail("values should not be nil and should have a count of 7")
             }
+        } catch {
+            XCTFail("Test encountered unexpected error: \(error)")
+        }
+    }
+
+    // MARK: - Tests - ExpressibleByRowError
+
+    func testThatExpressibleByRowErrorCanBeConstructedFromRow() {
+        do {
+            // Given
+            let connection = try Connection(storageLocation: storageLocation)
+            try TestTables.createAndPopulateAgentsTable(using: connection)
+
+            var error: ExpressibleByRowError?
+
+            // When
+            if let row = try connection.query("SELECT name, missions FROM agents WHERE name='Lana Kane'") {
+                error = ExpressibleByRowError(type: Agent.self, row: row)
+            }
+
+            // Then
+            XCTAssertTrue(error?.type is Agent.Type)
+            XCTAssertEqual(error?.columns.count, 2)
+
+            let expectedDescription = "ExpressibleByRowError: Failed to initialize Agent from Row with columns: " +
+                "[{ index: 0 name: \"name\", type: \"text\", value: Lana Kane }, " +
+                "{ index: 1 name: \"missions\", type: \"integer\", value: 2315 }]"
+
+            let expectedErrorDescription = "Failed to initialize Agent from Row with columns: " +
+                "[{ index: 0 name: \"name\", type: \"text\", value: Lana Kane }, " +
+                "{ index: 1 name: \"missions\", type: \"integer\", value: 2315 }]"
+
+            let expectedFailureReason = "Agent could not be initialized from Row with columns: " +
+                "[{ index: 0 name: \"name\", type: \"text\", value: Lana Kane }, " +
+                "{ index: 1 name: \"missions\", type: \"integer\", value: 2315 }]"
+
+            XCTAssertEqual(error?.description, expectedDescription)
+            XCTAssertEqual(error?.errorDescription, expectedErrorDescription)
+            XCTAssertEqual(error?.failureReason, expectedFailureReason)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

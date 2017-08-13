@@ -35,3 +35,64 @@ enum TestTables {
         }
     }
 }
+
+// MARK: -
+
+struct Agent: ExpressibleByRow, Equatable {
+    let id: Int64
+    let name: String
+    let date: Date
+    let missions: Int64
+    let salary: Double
+    let jobTitle: Data
+    let car: String?
+
+    init(row: Row) throws {
+        guard
+            let id: Int64 = row["id"],
+            let name: String = row["name"],
+            let date: Date = row["date"],
+            let missions: Int64 = row["missions"],
+            let salary: Double = row["salary"],
+            let jobTitle: Data = row["job_title"]
+        else { throw ExpressibleByRowError(type: Agent.self, row: row) }
+
+        self = Agent(
+            id: id,
+            name: name,
+            date: date,
+            missions: missions,
+            salary: salary,
+            jobTitle: jobTitle,
+            car: row["car"]
+        )
+    }
+
+    init(
+        id: Int64,
+        name: String,
+        date: Date,
+        missions: Int64,
+        salary: Double,
+        jobTitle: Data,
+        car: String?)
+    {
+        self.id = id
+        self.name = name
+        self.date = date
+        self.missions = missions
+        self.salary = salary
+        self.jobTitle = jobTitle
+        self.car = car
+    }
+
+    static func == (lhs: Agent, rhs: Agent) -> Bool {
+        return lhs.id == rhs.id &&
+            lhs.name == rhs.name &&
+            lhs.date == rhs.date &&
+            lhs.missions == rhs.missions &&
+            lhs.salary == rhs.salary &&
+            lhs.jobTitle == rhs.jobTitle &&
+            lhs.car == rhs.car
+    }
+}

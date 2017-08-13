@@ -14,43 +14,54 @@ public struct Row {
 
     // MARK: - Helper Types
 
-    // TODO: test and docstring
-    public enum ColumnType: RawRepresentable {
-        case integer
-        case float
-        case text
-        case blob
-        case null
+    // TODO: docstring and tests
+    public struct Column: CustomStringConvertible {
+        // TODO: docstring
+        public enum ColumnType: RawRepresentable {
+            case integer
+            case float
+            case text
+            case blob
+            case null
 
-        public var rawValue: Int32 {
-            switch self {
-            case .integer: return SQLITE_INTEGER
-            case .float:   return SQLITE_FLOAT
-            case .text:    return SQLITE_TEXT
-            case .blob:    return SQLITE_BLOB
-            case .null:    return SQLITE_NULL
+            public var rawValue: Int32 {
+                switch self {
+                case .integer: return SQLITE_INTEGER
+                case .float:   return SQLITE_FLOAT
+                case .text:    return SQLITE_TEXT
+                case .blob:    return SQLITE_BLOB
+                case .null:    return SQLITE_NULL
+                }
+            }
+
+            var name: String {
+                switch self {
+                case .integer: return "integer"
+                case .float:   return "float"
+                case .text:    return "text"
+                case .blob:    return "blob"
+                case .null:    return "null"
+                }
+            }
+
+            public init(rawValue: Int32) {
+                switch rawValue {
+                case ColumnType.integer.rawValue: self = .integer
+                case ColumnType.float.rawValue:   self = .float
+                case ColumnType.text.rawValue:    self = .text
+                case ColumnType.blob.rawValue:    self = .blob
+                default:                          self = .null
+                }
             }
         }
 
-        public var name: String {
-            switch self {
-            case .integer: return "integer"
-            case .float:   return "float"
-            case .text:    return "text"
-            case .blob:    return "blob"
-            case .null:    return "null"
-            }
-        }
+        public let index: Int
+        public let name: String
+        public let type: ColumnType
+        public let value: Any?
 
-        public init?(rawValue: Int32) {
-            switch rawValue {
-            case ColumnType.integer.rawValue: self = .integer
-            case ColumnType.float.rawValue:   self = .float
-            case ColumnType.text.rawValue:    self = .text
-            case ColumnType.blob.rawValue:    self = .blob
-            case ColumnType.null.rawValue:    self = .null
-            default:                          return nil
-            }
+        public var description: String {
+            return "{ index: \(index) name: \"\(name)\", type: \"\(type)\", value: \(value ?? "nil") }"
         }
     }
 
@@ -60,7 +71,16 @@ public struct Row {
     public var columnCount: Int { return statement.columnCount }
 
     // TODO: test and docstring
-    public var columnNames: [String] { return statement.columnNames }
+    public var columns: [Column] {
+        return (0..<columnCount).map { index in
+            Column(
+                index: index,
+                name: statement.columnName(at: index),
+                type: Column.ColumnType(rawValue: statement.columnType(at: index)),
+                value: value(at: index)
+            )
+        }
+    }
 
     fileprivate let statement: Statement
     private var handle: OpaquePointer { return statement.handle }
@@ -69,23 +89,6 @@ public struct Row {
 
     init(statement: Statement) {
         self.statement = statement
-    }
-
-    // MARK: Columns
-
-    // TODO: test and docstring
-    public func columnType(at index: Int) -> ColumnType? {
-        return ColumnType(rawValue: statement.columnType(at: index))
-    }
-
-    // TODO: test and docstring
-    public func columnName(at index: Int) -> String {
-        return statement.columnName(at: index)
-    }
-
-    // TODO: test and docstring
-    public func columnIndex(forName name: String) -> Int? {
-        return statement.columnIndex(forName: name)
     }
 
     //=========================== Column Index Subscripts ============================
@@ -314,7 +317,7 @@ public struct Row {
     /// - Parameter columnIndex: The column index to extract the value from.
     ///
     /// - Returns: The value at the specified column index.
-    public func value<T: Binding>(at columnIndex: Int) -> T? {
+    public func value<T: Extractable>(at columnIndex: Int) -> T? {
         let value = self.value(at: columnIndex)
         guard let bindingValue = value as? T.BindingType else { return nil }
 
@@ -326,7 +329,7 @@ public struct Row {
     /// - Parameter columnName: The column name to extract the value from.
     ///
     /// - Returns: The value at the column index matching the specified name.
-    public func value<T: Binding>(forColumnName columnName: String) -> T? {
+    public func value<T: Extractable>(forColumnName columnName: String) -> T? {
         guard let columnIndex = statement.columnIndex(forName: columnName) else { return nil }
         let value = self.value(at: columnIndex)
 
@@ -391,46 +394,20 @@ public protocol ExpressibleByRow {
 
 // TODO: test and docstring
 public struct ExpressibleByRowError: Error {
-    struct Column: CustomStringConvertible {
-        let name: String
-        let type: String
-        let value: Any?
-
-        var description: String {
-            return "{ name: \"\(name)\", type: \"\(type)\", value: \(value ?? "nil") }"
-        }
-    }
-
-    let type: ExpressibleByRow.Type
-    let columns: [Column]
+    public let type: ExpressibleByRow.Type
+    public let columns: [Row.Column]
 
     public init(type: ExpressibleByRow.Type, row: Row) {
         self.type = type
-
-        self.columns = row.values.enumerated().map { index, value in
-            return Column(
-                name: row.columnName(at: index),
-                type: row.columnType(at: index)?.name ?? "unknown",
-                value: value
-            )
-        }
+        self.columns = row.columns
     }
 }
 
 extension ExpressibleByRowError: CustomStringConvertible {
-    public var description: String {
-        return "ExpressibleByRowError: \(errorDescription)"
-    }
+    public var description: String { return "ExpressibleByRowError: \(errorDescription ?? "nil")" }
 }
 
 extension ExpressibleByRowError: LocalizedError {
-    public var errorDescription: String {
-        let columnDescriptions = columns.enumerated().map { "Column \($0.offset): \($0.element)" }
-        return "Failed to initialize \(type) from Row with columns: \(columnDescriptions)"
-    }
-
-    public var failureReason: String {
-        let columnDescriptions = columns.enumerated().map { "Column \($0.offset): \($0.element)" }
-        return "\(type) could not be initialized from Row with columns: \(columnDescriptions)"
-    }
+    public var errorDescription: String? { return "Failed to initialize \(type) from Row with columns: \(columns)" }
+    public var failureReason: String? { return "\(type) could not be initialized from Row with columns: \(columns)" }
 }

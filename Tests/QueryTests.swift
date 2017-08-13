@@ -12,67 +12,6 @@ import XCTest
 
 class QueryTestCase: XCTestCase {
 
-    // MARK: - Helper Types
-
-    struct Agent: ExpressibleByRow, Equatable {
-        let id: Int64
-        let name: String
-        let date: Date
-        let missions: Int64
-        let salary: Double
-        let jobTitle: Data
-        let car: String?
-
-        init(row: Row) throws {
-            guard
-                let id: Int64 = row["id"],
-                let name: String = row["name"],
-                let date: Date = row["date"],
-                let missions: Int64 = row["missions"],
-                let salary: Double = row["salary"],
-                let jobTitle: Data = row["job_title"]
-            else { throw ExpressibleByRowError(type: Agent.self, row: row) }
-
-            self = Agent(
-                id: id,
-                name: name,
-                date: date,
-                missions: missions,
-                salary: salary,
-                jobTitle: jobTitle,
-                car: row["car"]
-            )
-        }
-
-        init(
-            id: Int64,
-            name: String,
-            date: Date,
-            missions: Int64,
-            salary: Double,
-            jobTitle: Data,
-            car: String?)
-        {
-            self.id = id
-            self.name = name
-            self.date = date
-            self.missions = missions
-            self.salary = salary
-            self.jobTitle = jobTitle
-            self.car = car
-        }
-
-        static func == (lhs: Agent, rhs: Agent) -> Bool {
-            return lhs.id == rhs.id &&
-                lhs.name == rhs.name &&
-                lhs.date == rhs.date &&
-                lhs.missions == rhs.missions &&
-                lhs.salary == rhs.salary &&
-                lhs.jobTitle == rhs.jobTitle &&
-                lhs.car == rhs.car
-        }
-    }
-
     // MARK: - Properties
 
     private var connection: Connection!
@@ -167,28 +106,16 @@ class QueryTestCase: XCTestCase {
 
             // Then
             XCTAssertEqual(row1?.columnCount, 1)
-            XCTAssertEqual(row1?.columnNames ?? [], ["name"])
-            XCTAssertEqual(row1?.value(forColumnName: "name"), "Lana Kane")
+            XCTAssertEqual(row1?.columns.count, 1)
 
             XCTAssertEqual(row2?.columnCount, 3)
-            XCTAssertEqual(row2?.columnNames ?? [], ["id", "name", "missions"])
-            XCTAssertEqual(row2?.value(at: 0), 1)
-            XCTAssertEqual(row2?.value(at: 1), "Sterling Archer")
-            XCTAssertEqual(row2?.value(at: 2), 485)
+            XCTAssertEqual(row2?.columns.count, 3)
 
             XCTAssertEqual(row3?.columnCount, 1)
-            XCTAssertEqual(row3?.columnNames ?? [], ["salary"])
-            XCTAssertEqual(row3?.value(at: 0), 2_500_000.56)
+            XCTAssertEqual(row3?.columns.count, 1)
 
             XCTAssertEqual(row4?.columnCount, 7)
-            XCTAssertEqual(row4?.columnNames ?? [], ["id", "name", "date", "missions", "salary", "job_title", "car"])
-            XCTAssertEqual(row4?.value(at: 0), 1)
-            XCTAssertEqual(row4?.value(at: 1), "Sterling Archer")
-            XCTAssertEqual(row4?.value(at: 2), "2015-10-02T08:20:00.000")
-            XCTAssertEqual(row4?.value(at: 3), 485)
-            XCTAssertEqual(row4?.value(at: 4), 2_500_000.56)
-            XCTAssertEqual(row4?.value(at: 5), "The world's greatest secret agent".data(using: .utf8))
-            XCTAssertEqual(row4?.value(at: 6), "Charger")
+            XCTAssertEqual(row4?.columns.count, 7)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
