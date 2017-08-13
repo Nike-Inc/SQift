@@ -14,6 +14,29 @@ public class Statement {
 
     // MARK: - Properties
 
+    /// Returns true if the statement has been stepped at least once, but has neither run to completion nor been reset.
+    public var isBusy: Bool { return sqlite3_stmt_busy(handle) != 0 }
+
+    /// Returns true if the statement makes no direct changes to the content of the database file.
+    ///
+    /// Note that there are some cases where this API can return true even though the database is actually modified.
+    /// These cases include virtual tables and transactions. For more information, refer to the
+    /// SQLite [documentation](https://www.sqlite.org/c3ref/stmt_readonly.html).
+    public var isReadOnly: Bool { return sqlite3_stmt_readonly(handle) != 0 }
+
+    /// Returns the SQL text used to create the statement.
+    public var sql: SQL { return SQL(cString: sqlite3_sql(handle)) }
+
+    /// Returns the SQL text used to create the statement with the bound parameters expanded.
+    ///
+    /// Note that this API can return `nil` if there is insufficient memory to hold the result, or if the result would
+    /// exceed the maximum string length determined by the [SQLITE_LIMIT_LENGTH].
+    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
+    public var expandedSQL: SQL? {
+        guard let expandedSQL = sqlite3_expanded_sql(handle) else { return nil }
+        return SQL(cString: expandedSQL)
+    }
+
     var handle: OpaquePointer!
 
     lazy var columnCount: Int = Int(sqlite3_column_count(self.handle))
