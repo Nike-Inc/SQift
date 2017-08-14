@@ -43,6 +43,13 @@
 		4C34E43A1F58D933006FE2CC /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4391F58D928006FE2CC /* BaseTestCase.swift */; };
 		4C34E43B1F58D933006FE2CC /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4391F58D928006FE2CC /* BaseTestCase.swift */; };
 		4C34E43C1F58D934006FE2CC /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4391F58D928006FE2CC /* BaseTestCase.swift */; };
+		4C34E43E1F58D97C006FE2CC /* Checkpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */; };
+		4C34E43F1F58D97C006FE2CC /* Checkpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */; };
+		4C34E4401F58D97C006FE2CC /* Checkpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */; };
+		4C34E4411F58D97C006FE2CC /* Checkpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */; };
+		4C34E4431F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
+		4C34E4441F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
+		4C34E4451F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
 		4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120911F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120931F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -193,6 +200,8 @@
 		4C34E4301F58D8B4006FE2CC /* Statement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
 		4C34E4351F58D8EA006FE2CC /* StatementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementTests.swift; sourceTree = "<group>"; };
 		4C34E4391F58D928006FE2CC /* BaseTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestCase.swift; sourceTree = "<group>"; };
+		4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkpoint.swift; sourceTree = "<group>"; };
+		4C34E4421F58D990006FE2CC /* CheckpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointTests.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6120751F58BAD500C289C0 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
@@ -331,6 +340,7 @@
 		4C6120821F58BAD500C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */,
 				4C6120831F58BAD500C289C0 /* Collation.swift */,
 				4C6120841F58BAD500C289C0 /* Function.swift */,
 				4C6120851F58BAD500C289C0 /* Query.swift */,
@@ -404,6 +414,7 @@
 		4C61212D1F58BBCE00C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E4421F58D990006FE2CC /* CheckpointTests.swift */,
 				4C61212E1F58BBCE00C289C0 /* CollationTests.swift */,
 				4C61212F1F58BBCE00C289C0 /* FunctionTests.swift */,
 				4C6121301F58BBCE00C289C0 /* QueryTests.swift */,
@@ -830,6 +841,7 @@
 				4C6120E01F58BB5200C289C0 /* Collation.swift in Sources */,
 				4C6120EA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120E41F58BB5200C289C0 /* Trace.swift in Sources */,
+				4C34E4401F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4321F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120E21F58BB5200C289C0 /* Query.swift in Sources */,
 				4C6120EC1F58BB5200C289C0 /* Row.swift in Sources */,
@@ -852,6 +864,7 @@
 				4C6121571F58BBE400C289C0 /* TraceTests.swift in Sources */,
 				4C6121531F58BBE400C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121581F58BBE400C289C0 /* TransactionTests.swift in Sources */,
+				4C34E4441F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121521F58BBE400C289C0 /* ConnectionQueueTests.swift in Sources */,
 				4C61215A1F58BBE400C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4361F58D8EA006FE2CC /* StatementTests.swift in Sources */,
@@ -881,6 +894,7 @@
 				4C6120F01F58BB5200C289C0 /* Collation.swift in Sources */,
 				4C6120FA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120F41F58BB5200C289C0 /* Trace.swift in Sources */,
+				4C34E4411F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4341F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120F21F58BB5200C289C0 /* Query.swift in Sources */,
 				4C6120FC1F58BB5200C289C0 /* Row.swift in Sources */,
@@ -903,6 +917,7 @@
 				4C6121671F58BBE400C289C0 /* TraceTests.swift in Sources */,
 				4C6121631F58BBE400C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121681F58BBE400C289C0 /* TransactionTests.swift in Sources */,
+				4C34E4431F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121621F58BBE400C289C0 /* ConnectionQueueTests.swift in Sources */,
 				4C61216A1F58BBE400C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4371F58D8EA006FE2CC /* StatementTests.swift in Sources */,
@@ -932,6 +947,7 @@
 				4C6121001F58BB5300C289C0 /* Collation.swift in Sources */,
 				4C61210A1F58BB5300C289C0 /* StringExtension.swift in Sources */,
 				4C6121041F58BB5300C289C0 /* Trace.swift in Sources */,
+				4C34E43E1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4331F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6121021F58BB5300C289C0 /* Query.swift in Sources */,
 				4C61210C1F58BB5300C289C0 /* Row.swift in Sources */,
@@ -956,6 +972,7 @@
 				4C6120D01F58BB5100C289C0 /* Collation.swift in Sources */,
 				4C6120DA1F58BB5100C289C0 /* StringExtension.swift in Sources */,
 				4C6120D41F58BB5100C289C0 /* Trace.swift in Sources */,
+				4C34E43F1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4311F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120D21F58BB5100C289C0 /* Query.swift in Sources */,
 				4C6120DC1F58BB5100C289C0 /* Row.swift in Sources */,
@@ -978,6 +995,7 @@
 				4C6121471F58BBE300C289C0 /* TraceTests.swift in Sources */,
 				4C6121431F58BBE300C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121481F58BBE300C289C0 /* TransactionTests.swift in Sources */,
+				4C34E4451F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121421F58BBE300C289C0 /* ConnectionQueueTests.swift in Sources */,
 				4C61214A1F58BBE300C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4381F58D8EA006FE2CC /* StatementTests.swift in Sources */,

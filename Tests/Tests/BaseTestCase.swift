@@ -26,7 +26,12 @@ class BaseTestCase: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        FileManager.removeItem(atPath: storageLocation.path)
+
+        let dbPath = storageLocation.path
+        let shmPath = dbPath + "-shm"
+        let walPath = dbPath + "-wal"
+
+        [dbPath, shmPath, walPath].forEach { FileManager.removeItem(atPath: $0) }
     }
 }
 
