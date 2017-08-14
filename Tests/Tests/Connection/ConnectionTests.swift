@@ -242,7 +242,7 @@ class ConnectionTestCase: BaseTestCase {
                 }
             }
 
-            DispatchQueue.utility.asyncAfter(deadline: .now() + 0.005) { connection.interrupt() }
+            DispatchQueue.utility.asyncAfter(seconds: 0.005) { connection.interrupt() }
             waitForExpectations(timeout: 5, handler: nil)
 
             // Then

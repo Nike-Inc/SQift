@@ -229,7 +229,7 @@ class ConnectionPoolTestCase: BaseTestCase {
 
             let drainExpectation = expectation(description: "drain timer should drain available connections")
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(seconds: 0.2) {
                 drainExpectation.fulfill()
             }
 

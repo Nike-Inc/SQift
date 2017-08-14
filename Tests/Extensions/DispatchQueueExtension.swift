@@ -14,3 +14,11 @@ extension DispatchQueue {
     static let utility = DispatchQueue.global(qos: .utility)
     static let background = DispatchQueue.global(qos: .background)
 }
+
+// MARK: -
+
+extension DispatchQueue {
+    func asyncAfter(seconds: TimeInterval, execute closure: @escaping () -> Void) {
+        asyncAfter(deadline: .now() + seconds, execute: closure)
+    }
+}
