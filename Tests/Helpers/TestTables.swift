@@ -35,6 +35,19 @@ enum TestTables {
             try insert.bind("Lana Kane", "2015-11-06T08:00:00.000", 2_315, 9_600_200.11, lanasJobTitleData, nil).run()
         }
     }
+
+    static func insertDummyAgents(count: Int, connection: Connection) throws {
+        let dateString = bindingDateFormatter.string(from: Date())
+
+        try connection.transaction {
+            let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
+            let statement = try connection.prepare(sql)
+
+            for index in 0..<count {
+                try statement.bind("name", dateString, index, 2.01, "job".data(using: .utf8), nil).run()
+            }
+        }
+    }
 }
 
 // MARK: -

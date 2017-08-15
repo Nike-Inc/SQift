@@ -50,6 +50,13 @@
 		4C34E4431F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
 		4C34E4441F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
 		4C34E4451F58D990006FE2CC /* CheckpointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4421F58D990006FE2CC /* CheckpointTests.swift */; };
+		4C34E4471F58D9D8006FE2CC /* BusyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4461F58D9D8006FE2CC /* BusyTests.swift */; };
+		4C34E4481F58D9D8006FE2CC /* BusyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4461F58D9D8006FE2CC /* BusyTests.swift */; };
+		4C34E4491F58D9D8006FE2CC /* BusyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4461F58D9D8006FE2CC /* BusyTests.swift */; };
+		4C34E44B1F58D9E3006FE2CC /* Busy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E44A1F58D9E3006FE2CC /* Busy.swift */; };
+		4C34E44C1F58D9E3006FE2CC /* Busy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E44A1F58D9E3006FE2CC /* Busy.swift */; };
+		4C34E44D1F58D9E3006FE2CC /* Busy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E44A1F58D9E3006FE2CC /* Busy.swift */; };
+		4C34E44E1F58D9E3006FE2CC /* Busy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E44A1F58D9E3006FE2CC /* Busy.swift */; };
 		4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120911F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120931F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -202,6 +209,8 @@
 		4C34E4391F58D928006FE2CC /* BaseTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestCase.swift; sourceTree = "<group>"; };
 		4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkpoint.swift; sourceTree = "<group>"; };
 		4C34E4421F58D990006FE2CC /* CheckpointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckpointTests.swift; sourceTree = "<group>"; };
+		4C34E4461F58D9D8006FE2CC /* BusyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusyTests.swift; sourceTree = "<group>"; };
+		4C34E44A1F58D9E3006FE2CC /* Busy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Busy.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6120751F58BAD500C289C0 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
@@ -340,6 +349,7 @@
 		4C6120821F58BAD500C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E44A1F58D9E3006FE2CC /* Busy.swift */,
 				4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */,
 				4C6120831F58BAD500C289C0 /* Collation.swift */,
 				4C6120841F58BAD500C289C0 /* Function.swift */,
@@ -414,6 +424,7 @@
 		4C61212D1F58BBCE00C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E4461F58D9D8006FE2CC /* BusyTests.swift */,
 				4C34E4421F58D990006FE2CC /* CheckpointTests.swift */,
 				4C61212E1F58BBCE00C289C0 /* CollationTests.swift */,
 				4C61212F1F58BBCE00C289C0 /* FunctionTests.swift */,
@@ -847,6 +858,7 @@
 				4C6120EC1F58BB5200C289C0 /* Row.swift in Sources */,
 				4C6120E11F58BB5200C289C0 /* Function.swift in Sources */,
 				4C6120E61F58BB5200C289C0 /* Database.swift in Sources */,
+				4C34E44B1F58D9E3006FE2CC /* Busy.swift in Sources */,
 				4C6120E51F58BB5200C289C0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -859,6 +871,7 @@
 				4C34E42B1F58D781006FE2CC /* ExpressibleByRowErrorTests.swift in Sources */,
 				4C6121501F58BBE400C289C0 /* TestTables.swift in Sources */,
 				4C61215C1F58BBE400C289C0 /* StringExtensionTests.swift in Sources */,
+				4C34E4471F58D9D8006FE2CC /* BusyTests.swift in Sources */,
 				4C61215B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61215E1F58BBE400C289C0 /* RowTests.swift in Sources */,
 				4C6121571F58BBE400C289C0 /* TraceTests.swift in Sources */,
@@ -900,6 +913,7 @@
 				4C6120FC1F58BB5200C289C0 /* Row.swift in Sources */,
 				4C6120F11F58BB5200C289C0 /* Function.swift in Sources */,
 				4C6120F61F58BB5200C289C0 /* Database.swift in Sources */,
+				4C34E44D1F58D9E3006FE2CC /* Busy.swift in Sources */,
 				4C6120F51F58BB5200C289C0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -912,6 +926,7 @@
 				4C34E4291F58D781006FE2CC /* ExpressibleByRowErrorTests.swift in Sources */,
 				4C6121601F58BBE400C289C0 /* TestTables.swift in Sources */,
 				4C61216C1F58BBE400C289C0 /* StringExtensionTests.swift in Sources */,
+				4C34E4481F58D9D8006FE2CC /* BusyTests.swift in Sources */,
 				4C61216B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61216E1F58BBE400C289C0 /* RowTests.swift in Sources */,
 				4C6121671F58BBE400C289C0 /* TraceTests.swift in Sources */,
@@ -953,6 +968,7 @@
 				4C61210C1F58BB5300C289C0 /* Row.swift in Sources */,
 				4C6121011F58BB5300C289C0 /* Function.swift in Sources */,
 				4C6121061F58BB5300C289C0 /* Database.swift in Sources */,
+				4C34E44C1F58D9E3006FE2CC /* Busy.swift in Sources */,
 				4C6121051F58BB5300C289C0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -978,6 +994,7 @@
 				4C6120DC1F58BB5100C289C0 /* Row.swift in Sources */,
 				4C6120D11F58BB5100C289C0 /* Function.swift in Sources */,
 				4C6120D61F58BB5100C289C0 /* Database.swift in Sources */,
+				4C34E44E1F58D9E3006FE2CC /* Busy.swift in Sources */,
 				4C6120D51F58BB5100C289C0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -990,6 +1007,7 @@
 				4C34E42A1F58D781006FE2CC /* ExpressibleByRowErrorTests.swift in Sources */,
 				4C6121401F58BBE300C289C0 /* TestTables.swift in Sources */,
 				4C61214C1F58BBE300C289C0 /* StringExtensionTests.swift in Sources */,
+				4C34E4491F58D9D8006FE2CC /* BusyTests.swift in Sources */,
 				4C61214B1F58BBE300C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61214E1F58BBE300C289C0 /* RowTests.swift in Sources */,
 				4C6121471F58BBE300C289C0 /* TraceTests.swift in Sources */,

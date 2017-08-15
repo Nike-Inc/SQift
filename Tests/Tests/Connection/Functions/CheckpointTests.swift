@@ -30,21 +30,14 @@ class CheckpointTestCase: BaseConnectionTestCase {
     func testThatConnectionCanCheckpointDatabaseUsingPassiveCheckpointMode() {
         do {
             // Given
-            try connection.transaction {
-                let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
-                let statement = try connection.prepare(sql)
-
-                for index in 1...1_000 {
-                    try statement.bind("name", "date", index, 2.01, "job".data(using: .utf8), nil).run()
-                }
-            }
+            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
 
             // When
             let result = try connection.checkpoint(mode: .passive)
 
             // Then
-            XCTAssertEqual(result.logFrames, 11)
-            XCTAssertEqual(result.checkpointedFrames, 11)
+            XCTAssertEqual(result.logFrames, 15)
+            XCTAssertEqual(result.checkpointedFrames, 15)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -53,21 +46,14 @@ class CheckpointTestCase: BaseConnectionTestCase {
     func testThatConnectionCanCheckpointDatabaseUsingFullCheckpointMode() {
         do {
             // Given
-            try connection.transaction {
-                let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
-                let statement = try connection.prepare(sql)
-
-                for index in 1...1_000 {
-                    try statement.bind("name", "date", index, 2.01, "job".data(using: .utf8), nil).run()
-                }
-            }
+            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
 
             // When
             let result = try connection.checkpoint(mode: .full)
 
             // Then
-            XCTAssertEqual(result.logFrames, 11)
-            XCTAssertEqual(result.checkpointedFrames, 11)
+            XCTAssertEqual(result.logFrames, 15)
+            XCTAssertEqual(result.checkpointedFrames, 15)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -76,21 +62,14 @@ class CheckpointTestCase: BaseConnectionTestCase {
     func testThatConnectionCanCheckpointDatabaseUsingRestartCheckpointMode() {
         do {
             // Given
-            try connection.transaction {
-                let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
-                let statement = try connection.prepare(sql)
-
-                for index in 1...1_000 {
-                    try statement.bind("name", "date", index, 2.01, "job".data(using: .utf8), nil).run()
-                }
-            }
+            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
 
             // When
             let result = try connection.checkpoint(mode: .restart)
 
             // Then
-            XCTAssertEqual(result.logFrames, 11)
-            XCTAssertEqual(result.checkpointedFrames, 11)
+            XCTAssertEqual(result.logFrames, 15)
+            XCTAssertEqual(result.checkpointedFrames, 15)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -99,14 +78,7 @@ class CheckpointTestCase: BaseConnectionTestCase {
     func testThatConnectionCanCheckpointDatabaseUsingTruncateCheckpointMode() {
         do {
             // Given
-            try connection.transaction {
-                let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
-                let statement = try connection.prepare(sql)
-
-                for index in 1...1_000 {
-                    try statement.bind("name", "date", index, 2.01, "job".data(using: .utf8), nil).run()
-                }
-            }
+            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
 
             // When
             let result = try connection.checkpoint(mode: .truncate)
@@ -122,16 +94,7 @@ class CheckpointTestCase: BaseConnectionTestCase {
     func testThatConnectionThrowsBusyErrorWhenCheckpointingBusyDatabase() {
         do {
             // Given
-            let dateString = bindingDateFormatter.string(from: Date())
-
-            try connection.transaction {
-                let sql = "INSERT INTO agents(name, date, missions, salary, job_title, car) VALUES(?, ?, ?, ?, ?, ?)"
-                let statement = try connection.prepare(sql)
-
-                for index in 1...1_000 {
-                    try statement.bind("name", dateString, index, 2.01, "job".data(using: .utf8), nil).run()
-                }
-            }
+            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
 
             let readConnection = try Connection(storageLocation: storageLocation, readOnly: true)
 

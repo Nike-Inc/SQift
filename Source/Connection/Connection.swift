@@ -46,6 +46,7 @@ public class Connection {
 
     var handle: OpaquePointer!
 
+    var busyHandlerBox: Any?
     var traceBox: Any?
     var traceEventBox: Any?
 
