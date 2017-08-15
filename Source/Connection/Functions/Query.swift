@@ -15,7 +15,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
     ///     let synchronous: Int = try db.query("PRAGMA synchronous")
@@ -39,7 +39,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
     ///     let synchronous: Int = try db.query("PRAGMA synchronous")
@@ -63,7 +63,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt = try db.query("SELECT avg(price) FROM cars WHERE price > :price", [":price": 40_000])
     ///
@@ -88,7 +88,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
     ///     let synchronous: Int? = try db.query("PRAGMA synchronous")
@@ -109,7 +109,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > ?", 40_000)
     ///     let synchronous: Int? = try db.query("PRAGMA synchronous")
@@ -130,7 +130,7 @@ extension Connection {
     /// Runs the SQL query against the database and returns the first column value of the first row.
     ///
     /// The `query` method is designed for extracting single values from SELECT and PRAGMA statements. For example,
-    /// using a SELECT min, max, avg functions or querying the `synchronous` value of the database.
+    /// using SELECT min, max, or avg functions or querying the `synchronous` value of the database.
     ///
     ///     let min: UInt? = try db.query("SELECT avg(price) FROM cars WHERE price > :price", [":price": 40_000])
     ///
