@@ -149,7 +149,7 @@ public class Connection {
     }
 
     // TODO: add docstring
-    public func prepare(_ sql: SQL, parameters: [Bindable?]) throws -> Statement {
+    public func prepare(_ sql: SQL, _ parameters: [Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -169,7 +169,7 @@ public class Connection {
     /// - Returns: The new `Statement` instance.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement or binding the parameters.
-    public func prepare(_ sql: SQL, parameters: [String: Bindable?]) throws -> Statement {
+    public func prepare(_ sql: SQL, _ parameters: [String: Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
