@@ -46,6 +46,9 @@ public class Connection {
 
     var handle: OpaquePointer!
 
+    var traceBox: Any?
+    var traceEventBox: Any?
+
     // MARK: - Initialization
 
     /// Creates the database `Connection` with the specified storage location and initialization flags.

@@ -69,7 +69,6 @@ extension Connection {
     }
 
     private class TraceBox {
-        static var shared: TraceBox?
         let closure: (String) -> Void
 
         init(_ closure: @escaping (String) -> Void) {
@@ -84,7 +83,6 @@ extension Connection {
 
     @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     private class TraceEventBox {
-        static var shared: TraceEventBox?
         let closure: (TraceEvent) -> Void
 
         init(_ closure: @escaping (TraceEvent) -> Void) {
@@ -149,12 +147,12 @@ extension Connection {
     public func trace(_ closure: ((String) -> Void)?) {
         guard let closure = closure else {
             sqlite3_trace(handle, nil, nil)
-            TraceBox.shared = nil
+            traceBox = nil
             return
         }
 
         let box = TraceBox(closure)
-        TraceBox.shared = box
+        traceBox = box
 
         sqlite3_trace(
             handle,
@@ -178,12 +176,12 @@ extension Connection {
     public func traceEvent(mask: UInt32? = nil, closure: ((TraceEvent) -> Void)?) {
         guard let closure = closure else {
             sqlite3_trace_v2(handle, 0, nil, nil)
-            TraceEventBox.shared = nil
+            traceEventBox = nil
             return
         }
 
         let box = TraceEventBox(closure)
-        TraceEventBox.shared = box
+        traceEventBox = box
 
         let mask = mask ?? UInt32(SQLITE_TRACE_STMT | SQLITE_TRACE_PROFILE | SQLITE_TRACE_ROW | SQLITE_TRACE_CLOSE)
 
