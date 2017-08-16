@@ -50,6 +50,10 @@ public class Connection {
     var traceBox: Any?
     var traceEventBox: Any?
 
+    var updateHookBox: Any?
+    var commitHookBox: Any?
+    var rollbackHookBox: Any?
+
     // MARK: - Initialization
 
     /// Creates the database `Connection` with the specified storage location and initialization flags.
