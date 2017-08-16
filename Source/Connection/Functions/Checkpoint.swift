@@ -69,8 +69,8 @@ extension Connection {
     /// Runs a checkpoint operation on the database with the specified mode.
     ///
     /// - Parameters:
-    ///   - name: The name of the attached database to checkpoint. `nil` by default which will attempt to run the
-    ///           checkpoint operation on all WAL databases attached to the connection.
+    ///   - name: The name of the attached database to checkpoint. `main` by default. Passing `nil` will attempt to
+    ///           run the checkpoint operation on all WAL databases attached to the connection.
     ///   - mode: The mode to use when running the checkpoint operation.
     ///
     /// - Returns: The result of the checkpoint operation.
@@ -79,7 +79,7 @@ extension Connection {
     ///           encountered error will be `SQLITE_BUSY` if a long read operation is being run on a different
     ///           connection. Implementing the busy handler and timeout can help address this issue.
     public func checkpoint(
-        attachedDatabaseName name: String? = nil,
+        attachedDatabaseName name: String? = "main",
         mode: CheckpointMode = .truncate)
         throws -> CheckpointResult
     {
