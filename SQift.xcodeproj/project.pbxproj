@@ -71,6 +71,13 @@
 		4C34E45E1F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
 		4C34E45F1F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
 		4C34E4601F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
+		4C34E4621F58DABC006FE2CC /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4611F58DABC006FE2CC /* Authorizer.swift */; };
+		4C34E4631F58DABC006FE2CC /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4611F58DABC006FE2CC /* Authorizer.swift */; };
+		4C34E4641F58DABC006FE2CC /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4611F58DABC006FE2CC /* Authorizer.swift */; };
+		4C34E4651F58DABC006FE2CC /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4611F58DABC006FE2CC /* Authorizer.swift */; };
+		4C34E4671F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */; };
+		4C34E4681F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */; };
+		4C34E4691F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */; };
 		4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120911F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120931F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -229,6 +236,8 @@
 		4C34E4541F58DA30006FE2CC /* HookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookTests.swift; sourceTree = "<group>"; };
 		4C34E4581F58DA6F006FE2CC /* BackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTests.swift; sourceTree = "<group>"; };
 		4C34E45C1F58DA79006FE2CC /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
+		4C34E4611F58DABC006FE2CC /* Authorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
+		4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizerTests.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6120751F58BAD500C289C0 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
@@ -367,6 +376,7 @@
 		4C6120821F58BAD500C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E4611F58DABC006FE2CC /* Authorizer.swift */,
 				4C34E45C1F58DA79006FE2CC /* Backup.swift */,
 				4C34E44A1F58D9E3006FE2CC /* Busy.swift */,
 				4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */,
@@ -444,6 +454,7 @@
 		4C61212D1F58BBCE00C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */,
 				4C34E4581F58DA6F006FE2CC /* BackupTests.swift */,
 				4C34E4461F58D9D8006FE2CC /* BusyTests.swift */,
 				4C34E4421F58D990006FE2CC /* CheckpointTests.swift */,
@@ -873,6 +884,7 @@
 				4C6120E71F58BB5200C289C0 /* Migrator.swift in Sources */,
 				4C6120DE1F58BB5200C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120E01F58BB5200C289C0 /* Collation.swift in Sources */,
+				4C34E4651F58DABC006FE2CC /* Authorizer.swift in Sources */,
 				4C6120EA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120E41F58BB5200C289C0 /* Trace.swift in Sources */,
 				4C34E4401F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -899,6 +911,7 @@
 				4C34E4591F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61215B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61215E1F58BBE400C289C0 /* RowTests.swift in Sources */,
+				4C34E4681F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */,
 				4C6121571F58BBE400C289C0 /* TraceTests.swift in Sources */,
 				4C6121531F58BBE400C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121581F58BBE400C289C0 /* TransactionTests.swift in Sources */,
@@ -932,6 +945,7 @@
 				4C6120F71F58BB5200C289C0 /* Migrator.swift in Sources */,
 				4C6120EE1F58BB5200C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120F01F58BB5200C289C0 /* Collation.swift in Sources */,
+				4C34E4621F58DABC006FE2CC /* Authorizer.swift in Sources */,
 				4C6120FA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120F41F58BB5200C289C0 /* Trace.swift in Sources */,
 				4C34E4411F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -958,6 +972,7 @@
 				4C34E45B1F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61216B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61216E1F58BBE400C289C0 /* RowTests.swift in Sources */,
+				4C34E4691F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */,
 				4C6121671F58BBE400C289C0 /* TraceTests.swift in Sources */,
 				4C6121631F58BBE400C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121681F58BBE400C289C0 /* TransactionTests.swift in Sources */,
@@ -991,6 +1006,7 @@
 				4C6121071F58BB5300C289C0 /* Migrator.swift in Sources */,
 				4C6120FE1F58BB5300C289C0 /* ConnectionPool.swift in Sources */,
 				4C6121001F58BB5300C289C0 /* Collation.swift in Sources */,
+				4C34E4641F58DABC006FE2CC /* Authorizer.swift in Sources */,
 				4C61210A1F58BB5300C289C0 /* StringExtension.swift in Sources */,
 				4C6121041F58BB5300C289C0 /* Trace.swift in Sources */,
 				4C34E43E1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -1019,6 +1035,7 @@
 				4C6120D71F58BB5100C289C0 /* Migrator.swift in Sources */,
 				4C6120CE1F58BB5100C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120D01F58BB5100C289C0 /* Collation.swift in Sources */,
+				4C34E4631F58DABC006FE2CC /* Authorizer.swift in Sources */,
 				4C6120DA1F58BB5100C289C0 /* StringExtension.swift in Sources */,
 				4C6120D41F58BB5100C289C0 /* Trace.swift in Sources */,
 				4C34E43F1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -1045,6 +1062,7 @@
 				4C34E45A1F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61214B1F58BBE300C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61214E1F58BBE300C289C0 /* RowTests.swift in Sources */,
+				4C34E4671F58DAC7006FE2CC /* AuthorizerTests.swift in Sources */,
 				4C6121471F58BBE300C289C0 /* TraceTests.swift in Sources */,
 				4C6121431F58BBE300C289C0 /* ConnectionTests.swift in Sources */,
 				4C6121481F58BBE300C289C0 /* TransactionTests.swift in Sources */,
