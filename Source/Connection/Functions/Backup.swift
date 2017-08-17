@@ -12,13 +12,13 @@ import SQLite3
 extension Connection {
     /// Represents the result of a backup operation.
     ///
-    /// - success:      The backup operation succeeded.
-    /// - failure:      The backup operation failed with the provided error.
-    /// - cancellation: The backup operation was cancelled.
+    /// - success:   The backup operation succeeded.
+    /// - failure:   The backup operation failed with the provided error.
+    /// - cancelled: The backup operation was cancelled.
     public enum BackupResult {
         case success
         case failure(Error)
-        case cancellation
+        case cancelled
 
         /// Returns `true` if the backup result is a success, `false` otherwise.
         public var isSuccess: Bool {
@@ -33,8 +33,8 @@ extension Connection {
         }
 
         /// Returns `true` if the backup result was cancelled, `false` otherwise.
-        public var isCancellation: Bool {
-            guard case .cancellation = self else { return false }
+        public var isCancelled: Bool {
+            guard case .cancelled = self else { return false }
             return true
         }
     }
@@ -87,7 +87,7 @@ extension Connection {
 
                 while stepping {
                     guard !progress.isCancelled else {
-                        completionQueue.async { completion(.cancellation) }
+                        completionQueue.async { completion(.cancelled) }
                         return
                     }
 

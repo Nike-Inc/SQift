@@ -231,7 +231,7 @@ class BackupTestCase: BaseTestCase {
             let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
 
             // Then
-            XCTAssertEqual(backupResult?.isCancellation, true)
+            XCTAssertEqual(backupResult?.isCancelled, true)
 
             XCTAssertEqual(progress.isFinished, false)
             XCTAssertEqual(progress.isPaused, false)
