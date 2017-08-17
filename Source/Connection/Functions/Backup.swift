@@ -83,9 +83,9 @@ extension Connection {
 
         backupQueue.async {
             do {
-                var stepping = true
+                var result: Int32 = 0
 
-                while stepping {
+                repeat {
                     guard !progress.isCancelled else {
                         completionQueue.async { completion(.cancelled) }
                         return
@@ -95,16 +95,14 @@ extension Connection {
                         while progress.isPaused { usleep(1000) /** sleep 1 ms */ }
                     }
 
-                    let result = try self.check(sqlite3_backup_step(backup, pageSize))
+                    result = try self.check(sqlite3_backup_step(backup, pageSize))
 
                     let totalPageCount = Int64(sqlite3_backup_pagecount(backup))
                     let completedPageCount = totalPageCount - Int64(sqlite3_backup_remaining(backup))
 
                     progress.totalUnitCount = totalPageCount
                     progress.completedUnitCount = completedPageCount
-
-                    if result == SQLITE_DONE { stepping = false }
-                }
+                } while result != SQLITE_DONE
 
                 try self.check(sqlite3_backup_finish(backup))
 
