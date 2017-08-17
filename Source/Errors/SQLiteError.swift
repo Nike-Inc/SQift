@@ -33,6 +33,11 @@ public struct SQLiteError: Error {
         self.code = code
         self.message = String(cString: sqlite3_errmsg(connection.handle))
     }
+
+    init(connection: Connection) {
+        self.code = sqlite3_errcode(connection.handle)
+        self.message = String(cString: sqlite3_errmsg(connection.handle))
+    }
 }
 
 // MARK: - CustomStringConvertible

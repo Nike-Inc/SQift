@@ -64,6 +64,13 @@
 		4C34E4551F58DA30006FE2CC /* HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4541F58DA30006FE2CC /* HookTests.swift */; };
 		4C34E4561F58DA30006FE2CC /* HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4541F58DA30006FE2CC /* HookTests.swift */; };
 		4C34E4571F58DA30006FE2CC /* HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4541F58DA30006FE2CC /* HookTests.swift */; };
+		4C34E4591F58DA6F006FE2CC /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4581F58DA6F006FE2CC /* BackupTests.swift */; };
+		4C34E45A1F58DA6F006FE2CC /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4581F58DA6F006FE2CC /* BackupTests.swift */; };
+		4C34E45B1F58DA6F006FE2CC /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E4581F58DA6F006FE2CC /* BackupTests.swift */; };
+		4C34E45D1F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
+		4C34E45E1F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
+		4C34E45F1F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
+		4C34E4601F58DA79006FE2CC /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C34E45C1F58DA79006FE2CC /* Backup.swift */; };
 		4C61208F1F58BAEB00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120911F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4C6120931F58BAEC00C289C0 /* SQift.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C6120791F58BAD500C289C0 /* SQift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -220,6 +227,8 @@
 		4C34E44A1F58D9E3006FE2CC /* Busy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Busy.swift; sourceTree = "<group>"; };
 		4C34E44F1F58DA23006FE2CC /* Hook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hook.swift; sourceTree = "<group>"; };
 		4C34E4541F58DA30006FE2CC /* HookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HookTests.swift; sourceTree = "<group>"; };
+		4C34E4581F58DA6F006FE2CC /* BackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTests.swift; sourceTree = "<group>"; };
+		4C34E45C1F58DA79006FE2CC /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C6120751F58BAD500C289C0 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
@@ -358,6 +367,7 @@
 		4C6120821F58BAD500C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E45C1F58DA79006FE2CC /* Backup.swift */,
 				4C34E44A1F58D9E3006FE2CC /* Busy.swift */,
 				4C34E43D1F58D97C006FE2CC /* Checkpoint.swift */,
 				4C6120831F58BAD500C289C0 /* Collation.swift */,
@@ -434,6 +444,7 @@
 		4C61212D1F58BBCE00C289C0 /* Functions */ = {
 			isa = PBXGroup;
 			children = (
+				4C34E4581F58DA6F006FE2CC /* BackupTests.swift */,
 				4C34E4461F58D9D8006FE2CC /* BusyTests.swift */,
 				4C34E4421F58D990006FE2CC /* CheckpointTests.swift */,
 				4C61212E1F58BBCE00C289C0 /* CollationTests.swift */,
@@ -867,6 +878,7 @@
 				4C34E4401F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4321F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120E21F58BB5200C289C0 /* Query.swift in Sources */,
+				4C34E45F1F58DA79006FE2CC /* Backup.swift in Sources */,
 				4C6120EC1F58BB5200C289C0 /* Row.swift in Sources */,
 				4C6120E11F58BB5200C289C0 /* Function.swift in Sources */,
 				4C6120E61F58BB5200C289C0 /* Database.swift in Sources */,
@@ -884,6 +896,7 @@
 				4C6121501F58BBE400C289C0 /* TestTables.swift in Sources */,
 				4C61215C1F58BBE400C289C0 /* StringExtensionTests.swift in Sources */,
 				4C34E4471F58D9D8006FE2CC /* BusyTests.swift in Sources */,
+				4C34E4591F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61215B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61215E1F58BBE400C289C0 /* RowTests.swift in Sources */,
 				4C6121571F58BBE400C289C0 /* TraceTests.swift in Sources */,
@@ -924,6 +937,7 @@
 				4C34E4411F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4341F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120F21F58BB5200C289C0 /* Query.swift in Sources */,
+				4C34E4601F58DA79006FE2CC /* Backup.swift in Sources */,
 				4C6120FC1F58BB5200C289C0 /* Row.swift in Sources */,
 				4C6120F11F58BB5200C289C0 /* Function.swift in Sources */,
 				4C6120F61F58BB5200C289C0 /* Database.swift in Sources */,
@@ -941,6 +955,7 @@
 				4C6121601F58BBE400C289C0 /* TestTables.swift in Sources */,
 				4C61216C1F58BBE400C289C0 /* StringExtensionTests.swift in Sources */,
 				4C34E4481F58D9D8006FE2CC /* BusyTests.swift in Sources */,
+				4C34E45B1F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61216B1F58BBE400C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61216E1F58BBE400C289C0 /* RowTests.swift in Sources */,
 				4C6121671F58BBE400C289C0 /* TraceTests.swift in Sources */,
@@ -981,6 +996,7 @@
 				4C34E43E1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4331F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6121021F58BB5300C289C0 /* Query.swift in Sources */,
+				4C34E45E1F58DA79006FE2CC /* Backup.swift in Sources */,
 				4C61210C1F58BB5300C289C0 /* Row.swift in Sources */,
 				4C6121011F58BB5300C289C0 /* Function.swift in Sources */,
 				4C6121061F58BB5300C289C0 /* Database.swift in Sources */,
@@ -1008,6 +1024,7 @@
 				4C34E43F1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
 				4C34E4311F58D8B4006FE2CC /* Statement.swift in Sources */,
 				4C6120D21F58BB5100C289C0 /* Query.swift in Sources */,
+				4C34E45D1F58DA79006FE2CC /* Backup.swift in Sources */,
 				4C6120DC1F58BB5100C289C0 /* Row.swift in Sources */,
 				4C6120D11F58BB5100C289C0 /* Function.swift in Sources */,
 				4C6120D61F58BB5100C289C0 /* Database.swift in Sources */,
@@ -1025,6 +1042,7 @@
 				4C6121401F58BBE300C289C0 /* TestTables.swift in Sources */,
 				4C61214C1F58BBE300C289C0 /* StringExtensionTests.swift in Sources */,
 				4C34E4491F58D9D8006FE2CC /* BusyTests.swift in Sources */,
+				4C34E45A1F58DA6F006FE2CC /* BackupTests.swift in Sources */,
 				4C61214B1F58BBE300C289C0 /* SQLiteErrorTests.swift in Sources */,
 				4C61214E1F58BBE300C289C0 /* RowTests.swift in Sources */,
 				4C6121471F58BBE300C289C0 /* TraceTests.swift in Sources */,
