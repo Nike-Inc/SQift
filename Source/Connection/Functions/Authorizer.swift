@@ -174,7 +174,7 @@ extension Connection {
                 let box = Unmanaged<AuthorizerBox>.fromOpaque(boxPointer).takeUnretainedValue()
                 return box.authorize(action: action, p1: p1, p2: p2, p3: p3, p4: p4)
             },
-           Unmanaged<AuthorizerBox>.passUnretained(box).toOpaque()
+            Unmanaged<AuthorizerBox>.passUnretained(box).toOpaque()
         )
 
         try check(result)
