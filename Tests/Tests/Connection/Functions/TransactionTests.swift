@@ -56,10 +56,10 @@ class TransactionTestCase: BaseConnectionTestCase {
                 // No-op: this is expected due to invalid SQL in second prepare statement
             }
 
-            let count: Int = try connection.query("SELECT count(*) FROM cars")
+            let count: Int? = try connection.query("SELECT count(*) FROM cars")
 
             // Then
-            XCTAssertEqual(count, 0, "count should be zero")
+            XCTAssertEqual(count, 0)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -116,10 +116,10 @@ class TransactionTestCase: BaseConnectionTestCase {
                 // No-op: this is expected due to invalid SQL in second prepare statement
             }
 
-            let count: Int = try connection.query("SELECT count(*) FROM cars")
+            let count: Int? = try connection.query("SELECT count(*) FROM cars")
 
             // Then
-            XCTAssertEqual(count, 0, "count should be zero")
+            XCTAssertEqual(count, 0)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

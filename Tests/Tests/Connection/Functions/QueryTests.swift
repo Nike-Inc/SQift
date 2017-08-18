@@ -39,24 +39,6 @@ class QueryTestCase: BaseConnectionTestCase {
     func testThatConnectionCanQueryExtractable() {
         do {
             // Given, When
-            let totalMissions: Int = try connection.query("SELECT sum(missions) FROM agents")
-            let name: String = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
-            let salary: Double = try connection.query("SELECT salary FROM agents WHERE car = ?", ["Charger"])
-            let id: Int = try connection.query("SELECT id FROM agents WHERE car = :car", [":car": "Charger"])
-
-            // Then
-            XCTAssertEqual(totalMissions, 2_800)
-            XCTAssertEqual(name, "Sterling Archer")
-            XCTAssertEqual(salary, 2_500_000.56)
-            XCTAssertEqual(id, 1)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
-    }
-
-    func testThatConnectionCanQueryExtractableOptional() {
-        do {
-            // Given, When
             let totalMissions: Int? = try connection.query("SELECT sum(missions) FROM agents")
             let name: String? = try connection.query("SELECT name FROM agents WHERE car = ?", "Charger")
             let salary: Double? = try connection.query("SELECT salary FROM agents WHERE car = ?", ["Charger"])

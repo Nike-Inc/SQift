@@ -65,8 +65,8 @@ class BackupTestCase: BaseTestCase {
 
             waitForExpectations(timeout: timeout, handler: nil)
 
-            let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int = try destinationConnection.query("SELECT count(1) FROM agents")
+            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
             // Then
             XCTAssertEqual(backupResult?.isSuccess, true)
@@ -116,8 +116,8 @@ class BackupTestCase: BaseTestCase {
 
             waitForExpectations(timeout: timeout, handler: nil)
 
-            let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int = try destinationConnection.query("SELECT count(1) FROM agents")
+            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
             // Then
             XCTAssertEqual(backupResult?.isSuccess, true)
@@ -175,8 +175,8 @@ class BackupTestCase: BaseTestCase {
 
             waitForExpectations(timeout: timeout, handler: nil)
 
-            let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int = try destinationConnection.query("SELECT count(1) FROM agents")
+            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
             // Then
             XCTAssertEqual(backupResult?.isSuccess, true)
@@ -228,7 +228,7 @@ class BackupTestCase: BaseTestCase {
 
             waitForExpectations(timeout: timeout, handler: nil)
 
-            let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
+            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
 
             // Then
             XCTAssertEqual(backupResult?.isCancelled, true)
@@ -280,8 +280,8 @@ class BackupTestCase: BaseTestCase {
 
             waitForExpectations(timeout: timeout, handler: nil)
 
-            let sourceAgentCount: Int = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int = try destinationConnection.query("SELECT count(1) FROM agents")
+            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
             // Then
             XCTAssertEqual(backupResult?.isSuccess, true)

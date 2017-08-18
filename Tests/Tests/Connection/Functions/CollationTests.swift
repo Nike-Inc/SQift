@@ -32,7 +32,7 @@ class CollationTestCase: BaseTestCase {
             let extracted: [String] = try connection.query("SELECT * FROM test ORDER BY text")
 
             // Then
-            XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
+            XCTAssertEqual(extracted, expected)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -60,7 +60,7 @@ class CollationTestCase: BaseTestCase {
             let extracted: [String] = try connection.query("SELECT * FROM test ORDER BY text")
 
             // Then
-            XCTAssertEqual(extracted, expected, "extracted strings array should match expected strings array")
+            XCTAssertEqual(extracted, expected)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -76,17 +76,17 @@ class CollationTestCase: BaseTestCase {
                 return lhs.compare(rhs, options: .diacriticInsensitive, locale: .autoupdatingCurrent)
             }
 
-            let equal1: Bool = try connection.query("SELECT ? = ? COLLATE 'NODIACRITIC'", "e", "è")
+            let equal1: Bool? = try connection.query("SELECT ? = ? COLLATE 'NODIACRITIC'", "e", "è")
 
             connection.createCollation(named: "NODIACRITIC") { lhs, rhs in
                 return lhs.compare(rhs, options: [], locale: .autoupdatingCurrent)
             }
 
-            let equal2: Bool = try connection.query("SELECT ? = ? COLLATE 'NODIACRITIC'", "e", "è")
+            let equal2: Bool? = try connection.query("SELECT ? = ? COLLATE 'NODIACRITIC'", "e", "è")
 
             // Then
-            XCTAssertTrue(equal1, "equal 1 should be true when using `.DiacriticInsensitiveSearch` compare options")
-            XCTAssertFalse(equal2, "equal 2 should be false when using default compare options")
+            XCTAssertEqual(equal1, true)
+            XCTAssertEqual(equal2, false)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

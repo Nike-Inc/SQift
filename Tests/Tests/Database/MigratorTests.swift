@@ -19,14 +19,14 @@ class MigratorTestCase: BaseTestCase {
 
             // When
             try migrator.createMigrationTable()
-            let exists: Bool = try connection.query(
+            let exists: Bool? = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
                 "schema_migrations"
             )
 
             // Then
-            XCTAssertTrue(exists, "exists should be true")
+            XCTAssertEqual(exists, true)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -42,14 +42,14 @@ class MigratorTestCase: BaseTestCase {
             try migrator.createMigrationTable()
             try migrator.createMigrationTable()
 
-            let exists: Bool = try connection.query(
+            let exists: Bool? = try connection.query(
                 "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
                 "table",
                 "schema_migrations"
             )
 
             // Then
-            XCTAssertTrue(exists, "exists should be true")
+            XCTAssertEqual(exists, true)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -66,7 +66,7 @@ class MigratorTestCase: BaseTestCase {
             let tableExists = migrator.migrationTableExists
 
             // Then
-            XCTAssertFalse(tableExists, "table exists should be false")
+            XCTAssertFalse(tableExists)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -83,7 +83,7 @@ class MigratorTestCase: BaseTestCase {
             let tableExists = migrator.migrationTableExists
 
             // Then
-            XCTAssertTrue(tableExists, "table exists should be true")
+            XCTAssertTrue(tableExists)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -100,7 +100,7 @@ class MigratorTestCase: BaseTestCase {
             var willMigrate: [UInt64] = []
             var didMigrate: [UInt64] = []
             var migrationError: Error?
-            var agentsTableExists = false
+            var agentsTableExists: Bool?
 
             // When
             DispatchQueue.utility.async {
@@ -132,10 +132,10 @@ class MigratorTestCase: BaseTestCase {
             waitForExpectations(timeout: timeout, handler: nil)
 
             // Then
-            XCTAssertEqual(willMigrate.count, 1, "will migrate count should be 1")
-            XCTAssertEqual(didMigrate.count, 1, "did migrate count should be 1")
-            XCTAssertNil(migrationError, "migration error should be nil")
-            XCTAssertTrue(agentsTableExists, "agents table exists should be true")
+            XCTAssertEqual(willMigrate.count, 1)
+            XCTAssertEqual(didMigrate.count, 1)
+            XCTAssertNil(migrationError)
+            XCTAssertEqual(agentsTableExists, true)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -152,8 +152,8 @@ class MigratorTestCase: BaseTestCase {
             var willMigrate: [UInt64] = []
             var didMigrate: [UInt64] = []
             var migrationError: Error? = nil
-            var agentsTableExists = false
-            var agentCount = 0
+            var agentsTableExists: Bool?
+            var agentCount: Int?
 
             // When
             DispatchQueue.utility.async {
@@ -195,18 +195,18 @@ class MigratorTestCase: BaseTestCase {
 
             // Then
             if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 1, "will migrate 0 should be 1")
-                XCTAssertEqual(willMigrate[1], 2, "will migrate 1 should be 2")
+                XCTAssertEqual(willMigrate[0], 1)
+                XCTAssertEqual(willMigrate[1], 2)
 
-                XCTAssertEqual(didMigrate[0], 1, "did migrate 0 should be 1")
-                XCTAssertEqual(didMigrate[1], 2, "did migrate 1 should be 2")
+                XCTAssertEqual(didMigrate[0], 1)
+                XCTAssertEqual(didMigrate[1], 2)
             } else {
                 XCTFail("will and did migrate counts should be 2")
             }
 
-            XCTAssertNil(migrationError, "migration error should be nil")
-            XCTAssertTrue(agentsTableExists, "agents table exists should be true")
-            XCTAssertEqual(agentCount, 2, "agent count should be 2")
+            XCTAssertNil(migrationError)
+            XCTAssertEqual(agentsTableExists, true)
+            XCTAssertEqual(agentCount, 2)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -233,8 +233,8 @@ class MigratorTestCase: BaseTestCase {
             var didMigrate: [UInt64] = []
             var migrationError: Error? = nil
 
-            var agentCount = 0
-            var missionsTableExists = false
+            var agentCount: Int?
+            var missionsTableExists: Bool?
 
             // When
             DispatchQueue.utility.async {
@@ -280,18 +280,18 @@ class MigratorTestCase: BaseTestCase {
 
             // Then
             if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 2, "will migrate 0 should be 2")
-                XCTAssertEqual(willMigrate[1], 3, "will migrate 1 should be 3")
+                XCTAssertEqual(willMigrate[0], 2)
+                XCTAssertEqual(willMigrate[1], 3)
 
-                XCTAssertEqual(didMigrate[0], 2, "did migrate 0 should be 2")
-                XCTAssertEqual(didMigrate[1], 3, "did migrate 1 should be 3")
+                XCTAssertEqual(didMigrate[0], 2)
+                XCTAssertEqual(didMigrate[1], 3)
             } else {
                 XCTFail("will and did migrate counts should be 2")
             }
 
-            XCTAssertNil(migrationError, "migration error should be nil")
-            XCTAssertEqual(agentCount, 2, "agent count should be 2")
-            XCTAssertTrue(missionsTableExists, "missions table exists should be true")
+            XCTAssertNil(migrationError)
+            XCTAssertEqual(agentCount, 2)
+            XCTAssertEqual(missionsTableExists, true)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -308,8 +308,8 @@ class MigratorTestCase: BaseTestCase {
             var willMigrate: [UInt64] = []
             var didMigrate: [UInt64] = []
             var migrationError: Error? = nil
-            var agentsTableExists = false
-            var agentCount = 0
+            var agentsTableExists: Bool?
+            var agentCount: Int?
 
             // When
             DispatchQueue.utility.async {
@@ -354,18 +354,18 @@ class MigratorTestCase: BaseTestCase {
 
             // Then
             if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 1, "will migrate 0 should be 1")
-                XCTAssertEqual(willMigrate[1], 2, "will migrate 1 should be 2")
+                XCTAssertEqual(willMigrate[0], 1)
+                XCTAssertEqual(willMigrate[1], 2)
 
-                XCTAssertEqual(didMigrate[0], 1, "did migrate 0 should be 1")
-                XCTAssertEqual(didMigrate[1], 2, "did migrate 1 should be 2")
+                XCTAssertEqual(didMigrate[0], 1)
+                XCTAssertEqual(didMigrate[1], 2)
             } else {
                 XCTFail("will and did migrate counts should be 2")
             }
 
-            XCTAssertNil(migrationError, "migration error should be nil")
-            XCTAssertTrue(agentsTableExists, "agents table exists should be true")
-            XCTAssertEqual(agentCount, 2, "agent count should be 2")
+            XCTAssertNil(migrationError)
+            XCTAssertEqual(agentsTableExists, true)
+            XCTAssertEqual(agentCount, 2)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -407,9 +407,9 @@ class MigratorTestCase: BaseTestCase {
             waitForExpectations(timeout: timeout, handler: nil)
 
             // Then
-            XCTAssertEqual(willMigrate.count, 1, "will migrate count should be 1")
-            XCTAssertEqual(didMigrate.count, 0, "did migrate count should be 0")
-            XCTAssertNotNil(migrationError, "migration error should be nil")
+            XCTAssertEqual(willMigrate.count, 1)
+            XCTAssertEqual(didMigrate.count, 0)
+            XCTAssertNotNil(migrationError)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

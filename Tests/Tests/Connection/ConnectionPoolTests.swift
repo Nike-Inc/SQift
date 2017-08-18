@@ -75,7 +75,7 @@ class ConnectionPoolTestCase: BaseTestCase {
 
             pool.availableConnections.removeAll()
 
-            var synchronous = 0
+            var synchronous: Int?
 
             // When
             let connection = try pool.dequeueConnectionForUse()
@@ -85,9 +85,9 @@ class ConnectionPoolTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertFalse(pool.availableConnections.contains(connection), "available connections should not contain connection")
-            XCTAssertTrue(pool.busyConnections.contains(connection), "busy connections should contain connection")
-            XCTAssertEqual(synchronous, 1, "synchronous should be 1")
+            XCTAssertFalse(pool.availableConnections.contains(connection))
+            XCTAssertTrue(pool.busyConnections.contains(connection))
+            XCTAssertEqual(synchronous, 1)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -121,7 +121,7 @@ class ConnectionPoolTestCase: BaseTestCase {
             // Given
             let pool = ConnectionPool(storageLocation: storageLocation)
 
-            var count = -1
+            var count: Int?
 
             // When
             try pool.execute { connection in
@@ -129,7 +129,7 @@ class ConnectionPoolTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertEqual(count, 0, "count should be equal to 0")
+            XCTAssertEqual(count, 0)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -173,7 +173,7 @@ class ConnectionPoolTestCase: BaseTestCase {
                 utilityQueue.async {
                     do {
                         try pool.execute { connection in
-                            let count: Int = try connection.query("SELECT count(*) FROM agents")
+                            guard let count: Int = try connection.query("SELECT count(*) FROM agents") else { return }
                             queue.sync { counts.append(count) }
                         }
                     } catch {
@@ -187,10 +187,10 @@ class ConnectionPoolTestCase: BaseTestCase {
             waitForExpectations(timeout: 10.0, handler: nil)
 
             // Then
-            XCTAssertEqual(counts.count, range.count, "counts array should have equal number of items as range")
+            XCTAssertEqual(counts.count, range.count)
 
-            for (index, count) in counts.enumerated() {
-                XCTAssertEqual(count, 2, "count should be equal to 2 at index: \(index)")
+            for count in counts {
+                XCTAssertEqual(count, 2)
             }
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
@@ -216,7 +216,7 @@ class ConnectionPoolTestCase: BaseTestCase {
                 utilityQueue.async {
                     do {
                         try pool.execute { connection in
-                            let count: Int = try connection.query("SELECT count(*) FROM agents")
+                            guard let count: Int = try connection.query("SELECT count(*) FROM agents") else { return }
                             queue.sync { counts.append(count) }
                         }
                     } catch {
@@ -228,10 +228,7 @@ class ConnectionPoolTestCase: BaseTestCase {
             }
 
             let drainExpectation = expectation(description: "drain timer should drain available connections")
-
-            DispatchQueue.main.asyncAfter(seconds: 0.2) {
-                drainExpectation.fulfill()
-            }
+            DispatchQueue.main.asyncAfter(seconds: 0.2) { drainExpectation.fulfill() }
 
             waitForExpectations(timeout: 10.0, handler: nil)
 

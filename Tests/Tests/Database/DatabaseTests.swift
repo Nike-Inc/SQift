@@ -35,8 +35,8 @@ class DatabaseTestCase: BaseTestCase {
                 }
             )
 
-            var foreignKeys = 0
-            var synchronous = 0
+            var foreignKeys: Int?
+            var synchronous: Int? = 0
 
             // When
             try database.writerConnectionQueue.execute { connection in
@@ -45,8 +45,8 @@ class DatabaseTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertEqual(foreignKeys, 1, "foreign keys should be 1")
-            XCTAssertEqual(synchronous, 1, "synchronous should be 1")
+            XCTAssertEqual(foreignKeys, 1)
+            XCTAssertEqual(synchronous, 1)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -60,7 +60,7 @@ class DatabaseTestCase: BaseTestCase {
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_CANTOPEN, "error code should be `SQLITE_CANTOPEN`")
+            XCTAssertEqual(error.code, SQLITE_CANTOPEN)
         } catch {
             XCTFail("Failed with an unknown error type: \(error)")
         }
@@ -72,14 +72,14 @@ class DatabaseTestCase: BaseTestCase {
             let database = try Database(storageLocation: storageLocation)
 
             // When
-            var areValuesEqual = true
+            var areValuesEqual: Bool?
 
             try database.executeRead { connection in
                 areValuesEqual = try connection.query("SELECT ? = ?", 1, 2)
             }
 
             // Then
-            XCTAssertFalse(areValuesEqual)
+            XCTAssertEqual(areValuesEqual, false)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -91,7 +91,7 @@ class DatabaseTestCase: BaseTestCase {
             let database = try Database(storageLocation: storageLocation)
 
             // When
-            var tableExists = false
+            var tableExists: Bool?
 
             try database.executeWrite { connection in
                 try connection.run("CREATE TABLE agent(name TEXT PRIMARY KEY)")
@@ -99,7 +99,7 @@ class DatabaseTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertTrue(tableExists)
+            XCTAssertEqual(tableExists, true)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

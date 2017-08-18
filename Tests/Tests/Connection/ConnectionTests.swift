@@ -49,13 +49,13 @@ class ConnectionTestCase: BaseTestCase {
 
             // When
             let readOnlyConnection = try Connection(storageLocation: storageLocation, readOnly: true, multiThreaded: false)
-            let readOnlyForeignKeys: Bool = try readOnlyConnection.query("PRAGMA foreign_keys")
+            let readOnlyForeignKeys: Bool? = try readOnlyConnection.query("PRAGMA foreign_keys")
 
             // Then
-            XCTAssertTrue(readOnlyConnection.readOnly)
-            XCTAssertTrue(readOnlyConnection.threadSafe)
-            XCTAssertTrue(writableForeignKeys)
-            XCTAssertFalse(readOnlyForeignKeys)
+            XCTAssertEqual(readOnlyConnection.readOnly, true)
+            XCTAssertEqual(readOnlyConnection.threadSafe, true)
+            XCTAssertEqual(writableForeignKeys, true)
+            XCTAssertEqual(readOnlyForeignKeys, false)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -279,7 +279,7 @@ class ConnectionTestCase: BaseTestCase {
             )
 
             // When
-            let emailRowCount: Int = try connection.query("SELECT count(1) FROM email")
+            let emailRowCount: Int? = try connection.query("SELECT count(1) FROM email")
             let senders1: [String] = try connection.query("SELECT sender FROM email WHERE email MATCH 'many'")
             let senders2: [String] = try connection.query("SELECT sender FROM email WHERE body MATCH 'so NOT support'")
 

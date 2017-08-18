@@ -17,7 +17,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             // Given
             let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64 = 0
+            var rowCount: Int64?
 
             // When, Then
             try queue.execute { connection in
@@ -30,7 +30,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertEqual(rowCount, 2, "row count should be 2")
+            XCTAssertEqual(rowCount, 2)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -60,7 +60,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             // Given
             let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64 = 0
+            var rowCount: Int64?
 
             // When, Then
             try queue.executeInTransaction { connection in
@@ -73,7 +73,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertEqual(rowCount, 2, "row count should be 2")
+            XCTAssertEqual(rowCount, 2)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
@@ -103,7 +103,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             // Given
             let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64 = 0
+            var rowCount: Int64?
 
             // When, Then
             try queue.executeInSavepoint(named: "savepoint name with spaces") { connection in
@@ -116,7 +116,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             }
 
             // Then
-            XCTAssertEqual(rowCount, 2, "row count should be 2")
+            XCTAssertEqual(rowCount, 2)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }

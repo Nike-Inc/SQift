@@ -37,7 +37,7 @@ open class Migrator {
     public var migrationRequired: Bool { return currentSchemaVersion < desiredSchemaVersion }
 
     var migrationTableExists: Bool {
-        var exists = false
+        var exists: Bool?
 
         do {
             exists = try connection.query(
@@ -49,7 +49,7 @@ open class Migrator {
             // No-op
         }
 
-        return exists
+        return exists ?? false
     }
 
     let connection: Connection
