@@ -339,3 +339,103 @@ extension Data: Binding {
         return value as? Data
     }
 }
+
+// MARK: - Codable Binding
+
+/// The `CodableBinding` protocol represents a `Binding` that is also `Codable`.
+public protocol CodableBinding: Codable, Binding {}
+
+extension CodableBinding {
+    /// The binding type of a parameter to bind to a statement.
+    public typealias BindingType = Data
+
+    /// The binding value representation of the type to be bound to a `Statement`.
+    public var bindingValue: BindingValue {
+        var data: Data
+
+        do {
+            let encoder = PropertyListEncoder()
+            encoder.outputFormat = .binary
+
+            data = try encoder.encode(self)
+        } catch {
+            data = Data()
+        }
+
+        return .blob(data)
+    }
+
+    /// Converts the binding value `Any` object representation to an equivalent `Self` representation.
+    public static func fromBindingValue(_ value: Any) -> Self? {
+        guard let value = value as? Data else { return nil }
+
+        var format: PropertyListSerialization.PropertyListFormat = .binary
+        let decodedValue = try? PropertyListDecoder().decode(Self.self, from: value, format: &format)
+
+        return decodedValue
+    }
+}
+
+// MARK: - Collection Bindings
+
+/// A `CodableBinding` container for an `Array`.
+public struct ArrayBinding<T: Codable>: CodableBinding, ExpressibleByArrayLiteral {
+    /// The elements of the binding.
+    public let elements: [T]
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(elements: [T]) {
+        self.elements = elements
+    }
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(arrayLiteral elements: T...) {
+        self.elements = elements
+    }
+}
+
+/// A `CodableBinding` container for a `Set`.
+public struct SetBinding<T: Hashable & Codable>: CodableBinding, ExpressibleByArrayLiteral {
+    /// The elements of the binding.
+    public let elements: Set<T>
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(elements: Set<T>) {
+        self.elements = elements
+    }
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(arrayLiteral elements: T...) {
+        self.elements = Set(elements)
+    }
+}
+
+/// A `CodableBinding` container for a `Dictionary`.
+public struct DictionaryBinding<Key: Hashable & Codable, Value: Codable>: CodableBinding, ExpressibleByDictionaryLiteral {
+    /// The elements of the binding.
+    public let elements: [Key: Value]
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(elements: [Key: Value]) {
+        self.elements = elements
+    }
+
+    /// Creates an instance from the specified elements.
+    ///
+    /// - Parameter elements: The elements of the binding.
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        var convertedElements: [Key: Value] = [:]
+        elements.forEach { convertedElements[$0.0] = $0.1 }
+        self.elements = convertedElements
+    }
+}
