@@ -290,7 +290,7 @@ class BackupTestCase: BaseTestCase {
             XCTAssertEqual(progress.isPaused, false)
             XCTAssertEqual(progress.isCancelled, false)
 
-            XCTAssertEqual(progressValues.first, 0.0)
+            XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
             XCTAssertEqual(progressValues.last, 1.0)
 
             XCTAssertEqual(sourceAgentCount, agentCount)
