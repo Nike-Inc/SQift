@@ -88,6 +88,7 @@ extension Connection {
                 repeat {
                     guard !progress.isCancelled else {
                         completionQueue.async { completion(.cancelled) }
+                        sqlite3_backup_finish(backup) // cleanup and ignore result
                         return
                     }
 
@@ -104,11 +105,11 @@ extension Connection {
                     progress.completedUnitCount = completedPageCount
                 } while result != SQLITE_DONE
 
-                try self.check(sqlite3_backup_finish(backup))
+                try self.check(sqlite3_backup_finish(backup)) // cleanup but track result
 
                 completionQueue.async { completion(.success) }
             } catch {
-                sqlite3_backup_finish(backup) // cleanup
+                sqlite3_backup_finish(backup) // cleanup and ignore result
                 completionQueue.async { completion(.failure(error)) }
             }
         }
