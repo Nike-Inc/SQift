@@ -292,9 +292,14 @@ class BindingTestCase: XCTestCase {
 
         // Then
         XCTAssertTrue(bindingValue == .real(Double(Float(0.123))))
-
         XCTAssertEqual(fromBindingValueWithinBounds, Float(0.123))
+
+    #if swift(>=3.2)
+        XCTAssertEqual(fromBindingValueRoundedOff, Float(0.123_457), accuracy: Float(0.000_000_3))
+    #else
         XCTAssertEqualWithAccuracy(fromBindingValueRoundedOff, Float(0.123_457), accuracy: Float(0.000_000_3))
+    #endif
+
         XCTAssertEqual(fromInvalidBindingValue, nil)
     }
 
