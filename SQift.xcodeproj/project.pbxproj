@@ -520,28 +520,33 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = Nike;
 				TargetAttributes = {
 					4C29B2E31BFB25C00086A2EF = {
 						CreatedOnToolsVersion = 7.1;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					4C29B2EC1BFB25C00086A2EF = {
 						CreatedOnToolsVersion = 7.1;
+						LastSwiftMigration = 0900;
 					};
 					4C29B3151BFB28330086A2EF = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeamName = "Nike, Inc.";
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					4C29B31E1BFB28330086A2EF = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeamName = "Nike, Inc.";
+						LastSwiftMigration = 0900;
 					};
 					4C3C4CF91BFB2B6F0080A0C6 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeamName = "Nike, Inc.";
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					4C7F1E9B1CD3507C00098A83 = {
@@ -550,11 +555,13 @@
 					4CA8C21D1BF6A49400822606 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeamName = "Nike, Inc.";
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Manual;
 					};
 					4CA8C2271BF6A49400822606 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeamName = "Nike, Inc.";
+						LastSwiftMigration = 0900;
 					};
 				};
 			};
@@ -1041,14 +1048,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1096,14 +1109,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
