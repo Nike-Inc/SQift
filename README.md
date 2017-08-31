@@ -44,7 +44,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.1+ is required to build SQift.
+> CocoaPods 1.3+ is required to build SQift.
 
 To integrate SQift into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
@@ -187,7 +187,7 @@ try connection.run("INSERT INTO cars VALUES(?, ?, ?)", 1, "Audi", 52_642)
 try connection.run("INSERT INTO cars VALUES(:id, :name, :price)", parameters: [":id": 1, ":name": "Audi", ":price": 52_642])
 ```
 
-> It is very important to properly esacpe all parameter values provided in a SQL statement. When in doubt, always use the provided bind functionality.
+> It is very important to properly escape all parameter values provided in a SQL statement. When in doubt, always use the provided bind functionality.
 
 ### Fetching Data
 

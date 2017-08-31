@@ -4,6 +4,20 @@ The changelog for SQift includes information about the each release including an
 
 ---
 
+## 2.1.1
+
+### Release Notes
+
+#### Added
+
+- A `.swift-version` file to the project for CocoaPods set to `3.2`.
+
+#### Updated
+
+- The Xcode project to support Xcode 9 and Swift 3.2.
+- The source and test code to compile against Swift 3.1 and 3.2.
+- The sqlite3 header to the iOS 11 version.
+
 ## 2.1.0
 
 ### Release Notes

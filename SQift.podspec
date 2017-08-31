@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'SQift'
-  s.version = '2.1.0'
+  s.version = '2.1.1'
   s.license = { :type => 'COMMERCIAL', :text => 'Created and licensed by Nike. Copyright 2015-2017 Nike, Inc. All rights reserved.' }
   s.summary = 'A lightweight Swift wrapper for SQLite.'
   s.homepage = 'https://bitbucket.nike.com/projects/NS/repos/sqift/browse'
