@@ -1,5 +1,5 @@
 //
-//  FileManager+SQift.swift
+//  FileManagerExtension.swift
 //  SQift
 //
 //  Created by Christian Noon on 11/8/15.
