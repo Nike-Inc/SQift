@@ -329,7 +329,7 @@ extension Connection {
     // MARK: - Query Dictionary with Result Injection
 
     // TODO: test and docstring
-    public func query<Key: Hashable, Value>(
+    public func query<Key, Value>(
         _ sql: String,
         _ parameters: Bindable?...,
         body: ([Key: Value], Row) throws -> (Key, Value))
@@ -339,7 +339,7 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<Key: Hashable, Value>(
+    public func query<Key, Value>(
         _ sql: String,
         parameters: [Bindable?],
         body: ([Key: Value], Row) throws -> (Key, Value))
@@ -349,7 +349,7 @@ extension Connection {
     }
 
     // TODO: test and docstring
-    public func query<Key: Hashable, Value>(
+    public func query<Key, Value>(
         _ sql: String,
         parameters: [String: Bindable?],
         body: ([Key: Value], Row) throws -> (Key, Value))

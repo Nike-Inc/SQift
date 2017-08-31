@@ -38,7 +38,7 @@ extension Connection {
     ///   - closure:         The logic to execute inside the transaction.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error running the transaction.
-    public func transaction(transactionType: TransactionType = .deferred, closure: (Void) throws -> Void) throws {
+    public func transaction(transactionType: TransactionType = .deferred, closure: () throws -> Void) throws {
         try execute("BEGIN \(transactionType.rawValue) TRANSACTION")
 
         do {
@@ -61,7 +61,7 @@ extension Connection {
     ///   - closure: The logic to execute inside the savepoint.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error running the savepoint.
-    public func savepoint(named name: String, closure: (Void) throws -> Void) throws {
+    public func savepoint(named name: String, closure: () throws -> Void) throws {
         let name = name.sqift.addingSQLEscapes()
 
         try execute("SAVEPOINT \(name)")

@@ -298,7 +298,7 @@ public class Statement {
     }
 
     // TODO: docstring and tests
-    public func query<Key: Hashable, Value>(_ body: ([Key: Value], Row) throws -> (Key, Value)) throws -> [Key: Value] {
+    public func query<Key, Value>(_ body: ([Key: Value], Row) throws -> (Key, Value)) throws -> [Key: Value] {
         var results: [Key: Value] = [:]
 
         while try step() {
