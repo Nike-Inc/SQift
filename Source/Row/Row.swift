@@ -15,17 +15,19 @@ public struct Row {
 
     // MARK: Helper Types
 
-    // TODO: docstring and tests
+    /// The `Column` struct represents a column in a row returned by a database query.
     public struct Column: CustomStringConvertible {
-        // TODO: docstring
-        public enum ColumnType: RawRepresentable {
+        /// Represents the supported datatypes that can be stored in a column in SQLite.
+        ///
+        /// For more information, please refer to the [documentation](https://sqlite.org/c3ref/column_blob.html).
+        public enum DataType {
             case integer
             case float
             case text
             case blob
             case null
 
-            public var rawValue: Int32 {
+            var rawValue: Int32 {
                 switch self {
                 case .integer: return SQLITE_INTEGER
                 case .float:   return SQLITE_FLOAT
@@ -45,39 +47,49 @@ public struct Row {
                 }
             }
 
-            public init(rawValue: Int32) {
+            init(rawValue: Int32) {
                 switch rawValue {
-                case ColumnType.integer.rawValue: self = .integer
-                case ColumnType.float.rawValue:   self = .float
-                case ColumnType.text.rawValue:    self = .text
-                case ColumnType.blob.rawValue:    self = .blob
+                case DataType.integer.rawValue: self = .integer
+                case DataType.float.rawValue:   self = .float
+                case DataType.text.rawValue:    self = .text
+                case DataType.blob.rawValue:    self = .blob
                 default:                          self = .null
                 }
             }
         }
 
+        /// The index of the column in the row.
         public let index: Int
+
+        /// The name of the column.
         public let name: String
-        public let type: ColumnType
+
+        /// The datatype of the column.
+        public let dataType: DataType
+
+        /// The value of the column.
         public let value: Any?
 
+        /// A textual description of the column.
         public var description: String {
-            return "{ index: \(index) name: \"\(name)\", type: \"\(type)\", value: \(value ?? "nil") }"
+            return "{ index: \(index) name: \"\(name)\", type: \"\(dataType)\", value: \(value ?? "nil") }"
         }
     }
 
     // MARK: Properties
 
-    // TODO: test and docstring
+    /// The total number of columns in the row.
+    ///
+    /// For more information, please refer to the [documentation](https://sqlite.org/c3ref/column_count.html).
     public var columnCount: Int { return statement.columnCount }
 
-    // TODO: test and docstring
+    /// The columns in the row.
     public var columns: [Column] {
         return (0..<columnCount).map { index in
             Column(
                 index: index,
                 name: statement.columnName(at: index),
-                type: Column.ColumnType(rawValue: statement.columnType(at: index)),
+                dataType: Column.DataType(rawValue: statement.columnType(at: index)),
                 value: value(at: index)
             )
         }

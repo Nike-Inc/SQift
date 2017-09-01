@@ -136,7 +136,7 @@ public class Connection {
 
     /// Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
     ///
-    ///     let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)")
+    ///     let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)", "Ford Focus", 25_999)
     ///
     /// For more details, please refer to documentation in the `Statement` class.
     ///
@@ -146,7 +146,7 @@ public class Connection {
     ///
     /// - Returns: The new `Statement` instance.
     ///
-    /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement or binding the parameters.
+    /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: Bindable?...) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
@@ -154,7 +154,19 @@ public class Connection {
         return statement
     }
 
-    // TODO: add docstring
+    /// Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
+    ///
+    ///     let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)", "Ford Focus", 25_999)
+    ///
+    /// For more details, please refer to documentation in the `Statement` class.
+    ///
+    /// - Parameters:
+    ///   - sql:        The SQL string to compile.
+    ///   - parameters: The parameters to bind to the statement.
+    ///
+    /// - Returns: The new `Statement` instance.
+    ///
+    /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: [Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
@@ -164,7 +176,8 @@ public class Connection {
 
     /// Prepares a `Statement` instance by compiling the SQL statement and binding the parameter values.
     ///
-    ///     let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(?, ?)")
+    ///     let parameters: [String: Bindable?] = [":name": "Ford Focus", ":price": 25_999]
+    ///     let statement = try db.prepare("INSERT INTO cars(name, price) VALUES(:name, :price)", parameters)
     ///
     /// For more details, please refer to documentation in the `Statement` class.
     ///
@@ -174,7 +187,7 @@ public class Connection {
     ///
     /// - Returns: The new `Statement` instance.
     ///
-    /// - Throws: A `SQLiteError` if SQLite encounters and error compiling the SQL statement or binding the parameters.
+    /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: [String: Bindable?]) throws -> Statement {
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
