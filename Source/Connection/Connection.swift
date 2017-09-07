@@ -212,7 +212,7 @@ public class Connection {
     ///   - parameters: The parameters to bind to the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement.
-    public func run(_ sql: SQL, parameters: [Bindable?]) throws {
+    public func run(_ sql: SQL, _ parameters: [Bindable?]) throws {
         try prepare(sql).bind(parameters).run()
     }
 
@@ -228,7 +228,7 @@ public class Connection {
     ///   - parameters: A dictionary of key-value pairs to bind to the statement.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when running the SQL statement.
-    public func run(_ sql: SQL, parameters: [String: Bindable?]) throws {
+    public func run(_ sql: SQL, _ parameters: [String: Bindable?]) throws {
         try prepare(sql).bind(parameters).run()
     }
 
