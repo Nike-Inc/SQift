@@ -239,6 +239,7 @@
 		4C34E4611F58DABC006FE2CC /* Authorizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
 		4C34E4661F58DAC7006FE2CC /* AuthorizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizerTests.swift; sourceTree = "<group>"; };
 		4C3C4CFA1BFB2B6F0080A0C6 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C5036FE1F69B13700B54640 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		4C6120751F58BAD500C289C0 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		4C6120771F58BAD500C289C0 /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
 		4C6120781F58BAD500C289C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -568,6 +569,7 @@
 		4CE5E8661F59E87800D47037 /* Deployment */ = {
 			isa = PBXGroup;
 			children = (
+				4C5036FE1F69B13700B54640 /* LICENSE */,
 				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
 			);
 			name = Deployment;
