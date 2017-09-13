@@ -69,7 +69,7 @@ public struct Row {
                 case DataType.float.rawValue:   self = .float
                 case DataType.text.rawValue:    self = .text
                 case DataType.blob.rawValue:    self = .blob
-                default:                          self = .null
+                default:                        self = .null
                 }
             }
         }
