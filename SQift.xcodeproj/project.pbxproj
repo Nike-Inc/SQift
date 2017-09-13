@@ -276,6 +276,9 @@
 		4C61213E1F58BBCE00C289C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CE5E8681F59E88E00D47037 /* SQift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SQift.podspec; sourceTree = "<group>"; };
+		4CE5E8691F59E89700D47037 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		4CE5E86A1F59E89700D47037 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -514,6 +517,8 @@
 		4CA8C2141BF6A49400822606 = {
 			isa = PBXGroup;
 			children = (
+				4CE5E8661F59E87800D47037 /* Deployment */,
+				4CE5E8671F59E88000D47037 /* Documentation */,
 				4CA8C2381BF6A4C100822606 /* Source */,
 				4CA8C23D1BF6A4C700822606 /* Tests */,
 				4CA8C21F1BF6A49400822606 /* Products */,
@@ -558,6 +563,23 @@
 				4C6121281F58BBCE00C289C0 /* Tests */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		4CE5E8661F59E87800D47037 /* Deployment */ = {
+			isa = PBXGroup;
+			children = (
+				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
+			);
+			name = Deployment;
+			sourceTree = "<group>";
+		};
+		4CE5E8671F59E88000D47037 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				4CE5E8691F59E89700D47037 /* CHANGELOG.md */,
+				4CE5E86A1F59E89700D47037 /* README.md */,
+			);
+			name = Documentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
