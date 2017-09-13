@@ -34,43 +34,43 @@ class RowTestCase: BaseConnectionTestCase {
                 let column0 = columns[0]
                 XCTAssertEqual(column0.index, 0)
                 XCTAssertEqual(column0.name, "id")
-                XCTAssertEqual(column0.type, .integer)
+                XCTAssertEqual(column0.dataType, .integer)
                 XCTAssertEqual(column0.value as? Int64, 2)
 
                 let column1 = columns[1]
                 XCTAssertEqual(column1.index, 1)
                 XCTAssertEqual(column1.name, "name")
-                XCTAssertEqual(column1.type, .text)
+                XCTAssertEqual(column1.dataType, .text)
                 XCTAssertEqual(column1.value as? String, "Lana Kane")
 
                 let column2 = columns[2]
                 XCTAssertEqual(column2.index, 2)
                 XCTAssertEqual(column2.name, "date")
-                XCTAssertEqual(column2.type, .text)
+                XCTAssertEqual(column2.dataType, .text)
                 XCTAssertEqual(column2.value as? String, "2015-11-06T08:00:00.000")
 
                 let column3 = columns[3]
                 XCTAssertEqual(column3.index, 3)
                 XCTAssertEqual(column3.name, "missions")
-                XCTAssertEqual(column3.type, .integer)
+                XCTAssertEqual(column3.dataType, .integer)
                 XCTAssertEqual(column3.value as? Int64, 2_315)
 
                 let column4 = columns[4]
                 XCTAssertEqual(column4.index, 4)
                 XCTAssertEqual(column4.name, "salary")
-                XCTAssertEqual(column4.type, .float)
+                XCTAssertEqual(column4.dataType, .float)
                 XCTAssertEqual(column4.value as? Double, 9_600_200.11)
 
                 let column5 = columns[5]
                 XCTAssertEqual(column5.index, 5)
                 XCTAssertEqual(column5.name, "job_title")
-                XCTAssertEqual(column5.type, .blob)
+                XCTAssertEqual(column5.dataType, .blob)
                 XCTAssertEqual(column5.value as? Data, "Top Agent".data(using: .utf8)!)
 
                 let column6 = columns[6]
                 XCTAssertEqual(column6.index, 6)
                 XCTAssertEqual(column6.name, "car")
-                XCTAssertEqual(column6.type, .null)
+                XCTAssertEqual(column6.dataType, .null)
                 XCTAssertEqual(column6.value as? String, nil)
             }
         } catch {
