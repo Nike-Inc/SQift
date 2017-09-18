@@ -849,6 +849,13 @@ SQLite is very complicated, and the goal of SQift is not to simplify it, but ena
 Anyone looking to use SQift in their project needs to have a firm understanding of SQLite and how it works.
 This is absolutely by design.
 
+---
+
+## License
+
+SQift is released under the MIT license.
+See LICENSE for details.
+
 ## Creators
 
 - [Dave Camp](https://github.com/atomiccat) ([@thinbits](https://twitter.com/thinbits))
