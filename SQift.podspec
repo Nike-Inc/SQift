@@ -16,3 +16,4 @@ Pod::Spec.new do |s|
 
   s.libraries = 'sqlite3'
 end
+
