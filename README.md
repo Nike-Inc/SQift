@@ -61,10 +61,6 @@ To integrate SQift into your Xcode project using CocoaPods, specify it in your `
 platform :ios, '11.0'
 use_frameworks!
 
-# Spec sources
-source 'ssh://git@stash.nikedev.com/ncps/nike-private-spec.git'
-source 'https://github.com/CocoaPods/Specs.git'
-
 target '<Your Target Name>' do
     pod 'SQift', '~> 3.0'
 end
