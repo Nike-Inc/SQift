@@ -1,5 +1,10 @@
 # SQift
 
+[![Build Status](https://travis-ci.org/Nike-Inc/SQift.svg?branch=master)](https://travis-ci.org/Nike-Inc/SQift)
+[![CocoaPods Compatible](https://img.shields.io/cocoapods/v/SQift.svg)](https://img.shields.io/cocoapods/v/SQift.svg)
+[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Platform](https://img.shields.io/cocoapods/p/SQift.svg?style=flat)](http://cocoadocs.org/docsets/SQift)
+
 SQift is a lightweight Swift wrapper for SQLite.
 
 ## Features
