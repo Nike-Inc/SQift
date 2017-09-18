@@ -1,18 +1,18 @@
 Pod::Spec.new do |s|
   s.name = 'SQift'
   s.version = '3.0.0'
-  s.license = { :type => 'COMMERCIAL', :text => 'Created and licensed by Nike. Copyright 2015-present Nike, Inc. All rights reserved.' }
+  s.license = 'MIT'
   s.summary = 'A lightweight Swift wrapper for SQLite.'
-  s.homepage = 'https://bitbucket.nike.com/projects/NS/repos/sqift/browse'
+  s.homepage = 'https://github.com/Nike-Inc/SQift'
   s.authors = { 'Dave Camp' => 'dave.camp@nike.com', 'Christian Noon' => 'christian.noon@nike.com' }
+
+  s.source = { :git => 'https://github.com/Nike-Inc/SQift.git', :tag => s.version }
+  s.source_files = 'Source/**/*.swift'
 
   s.ios.deployment_target = '9.0'
   s.osx.deployment_target = '10.11'
   s.tvos.deployment_target = '9.0'
   s.watchos.deployment_target = '2.0'
-
-  s.source = { :git => 'ssh://git@stash.nikedev.com/ns/sqift.git', :tag => s.version }
-  s.source_files = 'Source/**/*.swift'
 
   s.libraries = 'sqlite3'
 end

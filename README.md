@@ -30,13 +30,10 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Communication
 
-- Need help? Open a [Question](https://jira.nike.com/browse/bmd). (Component => `SQift`)
-- Have a feature request? Open a [Feature Request](https://jira.nike.com/browse/bmd). (Component => `SQift`)
-- Find a bug? Open a [Bug](https://jira.nike.com/browse/bmd). (Component => `SQift`)
+- Need help? Open an issue.
+- Have a feature request? Open an issue.
+- Find a bug? Open an issue.
 - Want to contribute? Fork the repo and submit a pull request.
-
-> These tickets go directly to the developers of SQift who are very adamant about providing top notch support for this library.
-> Please don't hesitate to open tickets for any type of issue. If we don't know about it, we can't fix it, support it or build it.
 
 ---
 
@@ -44,7 +41,8 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
+You can install it with the following command:
 
 ```bash
 $ gem install cocoapods
@@ -72,6 +70,25 @@ Then, run the following command:
 ```bash
 $ pod install
 ```
+
+### Carthage
+
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager that builds your dependencies and provides you with binary frameworks.
+
+You can install Carthage with [Homebrew](http://brew.sh/) using the following command:
+
+```bash
+$ brew update
+$ brew install carthage
+```
+
+To integrate SQift into your Xcode project using Carthage, specify it in your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile):
+
+```
+github "Nike-Inc/SQift" ~> 3.0
+```
+
+Run `carthage update` to build the framework and drag the built `SQift.framework` into your Xcode project.
 
 ---
 
@@ -829,5 +846,5 @@ This is absolutely by design.
 
 ## Creators
 
-- [Dave Camp](https://bitbucket.nike.com/users/dcam15) ([@thinbits](https://twitter.com/thinbits))
-- [Christian Noon](https://bitbucket.nike.com/users/cnoon) ([@Christian_Noon](https://twitter.com/Christian_Noon))
+- [Dave Camp](https://github.com/atomiccat) ([@thinbits](https://twitter.com/thinbits))
+- [Christian Noon](https://github.com/cnoon) ([@Christian_Noon](https://twitter.com/Christian_Noon))
