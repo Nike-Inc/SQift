@@ -473,22 +473,23 @@ extension Connection {
 
         func aggregateContextObject() -> AnyObject? {
             let length = MemoryLayout<AnyObject>.size
-            let pointer = sqlite3_aggregate_context(context, Int32(length))
+            guard let pointer = sqlite3_aggregate_context(context, Int32(length)) else { return nil }
 
-            guard let object = pointer?.assumingMemoryBound(to: AnyObject.self).pointee else {
-                let object = contextObjectFactory()
-                pointer?.initializeMemory(as: AnyObject.self, to: object)
-                return object
+            let object: AnyObject
+
+            if pointer.assumingMemoryBound(to: Int.self).pointee == 0 {
+                object = contextObjectFactory()
+                pointer.initializeMemory(as: AnyObject.self, to: object)
+            } else {
+                object = pointer.assumingMemoryBound(to: AnyObject.self).pointee
             }
 
             return object
         }
 
         func deallocateAggregateContextObject() {
-            let length = MemoryLayout<AnyObject>.size
-            let pointer = sqlite3_aggregate_context(context, Int32(length))
-
-            pointer?.assumingMemoryBound(to: AnyObject.self).deinitialize()
+            guard let pointer = sqlite3_aggregate_context(context, Int32(MemoryLayout<AnyObject>.size)) else { return }
+            pointer.assumingMemoryBound(to: AnyObject.self).deinitialize()
         }
     }
 }
