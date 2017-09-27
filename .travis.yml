@@ -8,9 +8,9 @@ env:
   - LC_CTYPE=en_US.UTF-8
   - LANG=en_US.UTF-8
   - PROJECT=SQift.xcodeproj
-  - IOS_FRAMEWORK_SCHEME="SQift iOS"
-  - MACOS_FRAMEWORK_SCHEME="SQift macOS"
-  - TVOS_FRAMEWORK_SCHEME="SQift tvOS"
+  - IOS_FRAMEWORK_SCHEME="SQift iOS CI"
+  - MACOS_FRAMEWORK_SCHEME="SQift macOS CI"
+  - TVOS_FRAMEWORK_SCHEME="SQift tvOS CI"
   - WATCHOS_FRAMEWORK_SCHEME="SQift watchOS"
   - IOS_SDK=iphonesimulator11.0
   - OSX_SDK=macosx10.13

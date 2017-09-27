@@ -31,7 +31,7 @@ class BaseTestCase: XCTestCase {
 
     // MARK: - Properties
 
-    let timeout: TimeInterval = 4.0
+    let timeout: TimeInterval = 10.0
 
     let storageLocation: StorageLocation = {
         let path = FileManager.cachesDirectory.appending("/sqift_tests.db")
