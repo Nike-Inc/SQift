@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4C29B3151BFB28330086A2EF"
+               BlueprintIdentifier = "4C29B2E31BFB25C00086A2EF"
                BuildableName = "SQift.framework"
-               BlueprintName = "SQift tvOS"
+               BlueprintName = "SQift macOS"
                ReferencedContainer = "container:SQift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,16 +28,16 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4C29B31E1BFB28330086A2EF"
+               BlueprintIdentifier = "4C29B2EC1BFB25C00086A2EF"
                BuildableName = "SQift Tests.xctest"
-               BlueprintName = "SQift tvOS Tests"
+               BlueprintName = "SQift macOS Tests"
                ReferencedContainer = "container:SQift.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       language = ""
@@ -47,9 +47,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4C29B31E1BFB28330086A2EF"
+               BlueprintIdentifier = "4C29B2EC1BFB25C00086A2EF"
                BuildableName = "SQift Tests.xctest"
-               BlueprintName = "SQift tvOS Tests"
+               BlueprintName = "SQift macOS Tests"
                ReferencedContainer = "container:SQift.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -57,16 +57,16 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4C29B3151BFB28330086A2EF"
+            BlueprintIdentifier = "4C29B2E31BFB25C00086A2EF"
             BuildableName = "SQift.framework"
-            BlueprintName = "SQift tvOS"
+            BlueprintName = "SQift macOS"
             ReferencedContainer = "container:SQift.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "RUNNING_ON_CI"
-            value = "NO"
+            value = "YES"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
@@ -74,7 +74,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       language = ""
@@ -87,9 +87,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4C29B3151BFB28330086A2EF"
+            BlueprintIdentifier = "4C29B2E31BFB25C00086A2EF"
             BuildableName = "SQift.framework"
-            BlueprintName = "SQift tvOS"
+            BlueprintName = "SQift macOS"
             ReferencedContainer = "container:SQift.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -105,9 +105,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4C29B3151BFB28330086A2EF"
+            BlueprintIdentifier = "4C29B2E31BFB25C00086A2EF"
             BuildableName = "SQift.framework"
-            BlueprintName = "SQift tvOS"
+            BlueprintName = "SQift macOS"
             ReferencedContainer = "container:SQift.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

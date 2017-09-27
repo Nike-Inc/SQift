@@ -108,7 +108,7 @@ class BusyTestCase: BaseConnectionTestCase {
     func testThatConnectionCanSetCustomBusyHandler() {
         do {
             // Given
-            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
+            try TestTables.insertDummyAgents(count: 10_000, connection: connection)
 
             let readConnection = try Connection(storageLocation: storageLocation, readOnly: true)
 
@@ -134,7 +134,7 @@ class BusyTestCase: BaseConnectionTestCase {
                 }
             }
 
-            DispatchQueue.utility.asyncAfter(seconds: 0.001) {
+            DispatchQueue.utility.asyncAfter(seconds: 0.01) {
                 do {
                     _ = try self.connection.checkpoint(mode: .truncate)
                 } catch {
@@ -145,7 +145,7 @@ class BusyTestCase: BaseConnectionTestCase {
             waitForExpectations(timeout: timeout, handler: nil)
 
             // Then
-            XCTAssertEqual(agents?.count, 1_002)
+            XCTAssertEqual(agents?.count, 10_002)
             XCTAssertNil(checkpointError)
             XCTAssertGreaterThan(busyInvocationCount, 0)
         } catch {
@@ -154,9 +154,12 @@ class BusyTestCase: BaseConnectionTestCase {
     }
 
     func testThatConnectionCanSetDefaultBehaviorBusyHandler() {
+        // Disable test on CI since timing is too unpredictable
+        guard !ProcessInfo.isRunningOnCI else { return }
+
         do {
             // Given
-            try TestTables.insertDummyAgents(count: 1_000, connection: connection)
+            try TestTables.insertDummyAgents(count: 10_000, connection: connection)
 
             let readConnection = try Connection(storageLocation: storageLocation, readOnly: true)
 
@@ -176,7 +179,7 @@ class BusyTestCase: BaseConnectionTestCase {
                 }
             }
 
-            DispatchQueue.utility.asyncAfter(seconds: 0.001) {
+            DispatchQueue.utility.asyncAfter(seconds: 0.01) {
                 do {
                     _ = try self.connection.checkpoint(mode: .truncate)
                 } catch {
@@ -187,7 +190,7 @@ class BusyTestCase: BaseConnectionTestCase {
             waitForExpectations(timeout: timeout, handler: nil)
 
             // Then
-            XCTAssertEqual(agents?.count, 1_002)
+            XCTAssertEqual(agents?.count, 10_002)
             XCTAssertNotNil(checkpointError)
 
             if let error = checkpointError as? SQLiteError {

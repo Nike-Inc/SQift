@@ -126,6 +126,7 @@ extension Connection {
                 completionQueue.async { completion(.success) }
             } catch {
                 sqlite3_backup_finish(backup) // cleanup and ignore result
+                progress.cancel()
                 completionQueue.async { completion(.failure(error)) }
             }
         }
