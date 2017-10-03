@@ -114,8 +114,21 @@ class BusyTestCase: BaseConnectionTestCase {
 
             let expectation = self.expectation(description: "agents should be retrieved from database")
             var agents: [Agent]?
-            var busyInvocationCount: Int32 = 0
             var checkpointError: Error?
+
+            let _busyInvocationLock = NSLock()
+            var _busyInvocationCount: Int32 = 0
+
+            var busyInvocationCount: Int32 {
+                get {
+                    _busyInvocationLock.lock() ; defer { _busyInvocationLock.unlock() }
+                    return _busyInvocationCount
+                }
+                set {
+                    _busyInvocationLock.lock() ; defer { _busyInvocationLock.unlock() }
+                    _busyInvocationCount = newValue
+                }
+            }
 
             // When
             try connection.busyHandler(
