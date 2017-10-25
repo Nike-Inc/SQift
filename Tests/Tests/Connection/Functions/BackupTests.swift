@@ -309,6 +309,9 @@ class BackupTestCase: BaseTestCase {
     }
 
     func testThatConnectionCanPauseBackupToDestination() {
+        // Disable test on CI since timing is too unpredictable
+        guard !ProcessInfo.isRunningOnCI else { return }
+
         do {
             // Given
             let sourceConnection = try Connection(storageLocation: storageLocation)
