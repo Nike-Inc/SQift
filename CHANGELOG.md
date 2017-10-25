@@ -1,11 +1,40 @@
 # Changelog
 
-The changelog for SQift includes information about the each release including any update notes, release notes as well as bug fixes, updates to existing features and new features.
-Additionally, SQift follows [semantic versioning](http://semver.org/) (a.k.a semver) which makes it easy to tell whether the release was a MAJOR, MINOR or PATCH revision.
+All notable changes to this project will be documented in this file.
+`SQift` adheres to [Semantic Versioning](http://semver.org/).
+
+#### 3.x Releases
+
+- `3.0.x` Releases - [3.0.0](#300)
+
+#### 2.x Releases
+
+- `2.1.x` Releases - [2.1.0](#210) | [2.1.1](#211)
+- `2.0.x` Releases - [2.0.0](#200)
+
+#### 1.x Releases
+
+- `1.1.x` Releases - [1.1.0](#110) | [1.1.1](#111) | [1.1.2](#112)
+- `1.0.x` Releases - [1.0.0](#100)
+
+#### 0.x Releases
+
+- `0.9.x` Releases - [0.9.0](#090)
+- `0.8.x` Releases - [0.8.0](#080)
+- `0.7.x` Releases - [0.7.0](#070) | [0.7.1](#071)
+- `0.6.x` Releases - [0.6.0](#060) | [0.6.1](#061)
+- `0.5.x` Releases - [0.5.0](#050)
+- `0.4.x` Releases - [0.4.0](#040)
+- `0.3.x` Releases - [0.3.0](#030)
+- `0.2.x` Releases - [0.2.0](#020)
+- `0.1.x` Releases - [0.1.0](#010)
 
 ---
 
-## 3.0.0
+## [3.0.0](https://github.com/Nike-Inc/SQift/releases/tag/3.0.0)
+
+Released on 2017-10-25. All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/1?closed=1).
 
 ### Breaking Changes
 
