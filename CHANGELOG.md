@@ -63,6 +63,7 @@ We were able to delete all the custom subscript functions in SQift itself for ea
 - Support for codable bindings along with array, set, and dictionary bindings.
 - Database test demonstrating how a shared cache can compensate for checkpoint gaps in WAL databases.
 - Deployment and documentation groups to the Xcode project.
+- LICENSE and NOTICE documents to the project.
 
 #### Updated
 
@@ -71,6 +72,7 @@ We were able to delete all the custom subscript functions in SQift itself for ea
 - The `Row` subscript APIs to leverage generic subscripts in Swift 4 so you no longer need to write you own.
 - The source code structure by separating out `Connection` extensions into separate files.
 - The Xcode project to `import SQLite3` directly rather than including the `sqlite3.h` header.
+- The copyright headers throughout the project to conform to the LICENSE.
 
 #### Removed
 
@@ -298,7 +300,6 @@ This required the database encryption logic to be removed from SQift.
 - `Database` and `Connection` initializers now set `sharedCache` to `false` by default.
 
 > Using a `sharedCache` is intended for use with embedded servers to help keep memory usage low for embedded devices.
-> For app development using a WAL journal mode, it is better to not use a shared cache to avoid table locking.
 
 #### Removed
 

@@ -849,7 +849,7 @@ This is absolutely by design.
 
 ## License
 
-SQift is released under the MIT license.
+SQift is released under the New BSD License.
 See LICENSE for details.
 
 ## Creators
