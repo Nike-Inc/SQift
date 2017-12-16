@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 3.x Releases
 
-- `3.0.x` Releases - [3.0.0](#300)
+- `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
 
 #### 2.x Releases
 
@@ -30,6 +30,17 @@ All notable changes to this project will be documented in this file.
 - `0.1.x` Releases - [0.1.0](#010)
 
 ---
+
+## [3.0.1](https://github.com/Nike-Inc/SQift/releases/tag/3.0.1)
+
+Released on 2018-01-02. All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/4?closed=1).
+
+#### Updated
+
+- The Xcode project and Travis CI to support Xcode 9.2.
+  - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#5](https://github.com/Nike-Inc/SQift/pull/5).
 
 ## [3.0.0](https://github.com/Nike-Inc/SQift/releases/tag/3.0.0)
 
