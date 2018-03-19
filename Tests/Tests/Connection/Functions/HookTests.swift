@@ -14,116 +14,104 @@ import SQLite3
 import XCTest
 
 class HookTestCase: BaseConnectionTestCase {
-    func testThatConnectionSupportsUpdateHooks() {
-        do {
-            // Given
-            typealias Result = (type: Connection.UpdateHookType, databaseName: String?, tableName: String?, rowID: Int64)
-            var results: [Result] = []
+    func testThatConnectionSupportsUpdateHooks() throws {
+        // Given
+        typealias Result = (type: Connection.UpdateHookType, databaseName: String?, tableName: String?, rowID: Int64)
+        var results: [Result] = []
 
-            connection.updateHook { type, databaseName, tableName, rowID in
-                results.append((type, databaseName, tableName, rowID))
-            }
+        connection.updateHook { type, databaseName, tableName, rowID in
+            results.append((type, databaseName, tableName, rowID))
+        }
 
-            // When
-            try connection.execute("""
-                CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-                INSERT INTO person(name) VALUES('Sterling Archer');
-                UPDATE person SET name = 'Lana Kane' WHERE id = 1;
-                DELETE FROM person WHERE id = 1
-                """
-            )
+        // When
+        try connection.execute("""
+            CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+            INSERT INTO person(name) VALUES('Sterling Archer');
+            UPDATE person SET name = 'Lana Kane' WHERE id = 1;
+            DELETE FROM person WHERE id = 1
+            """
+        )
 
-            connection.updateHook(nil)
+        connection.updateHook(nil)
 
-            try connection.execute("""
-                INSERT INTO person(name) VALUES('Sterling Archer');
-                UPDATE person SET name = 'Lana Kane' WHERE id = 1;
-                DELETE FROM person WHERE id = 1
-                """
-            )
+        try connection.execute("""
+            INSERT INTO person(name) VALUES('Sterling Archer');
+            UPDATE person SET name = 'Lana Kane' WHERE id = 1;
+            DELETE FROM person WHERE id = 1
+            """
+        )
 
-            // Then
-            XCTAssertEqual(results.count, 3)
+        // Then
+        XCTAssertEqual(results.count, 3)
 
-            if results.count == 3 {
-                XCTAssertEqual(results[0].type, .insert)
-                XCTAssertEqual(results[0].databaseName, "main")
-                XCTAssertEqual(results[0].tableName, "person")
-                XCTAssertEqual(results[0].rowID, 1)
+        if results.count == 3 {
+            XCTAssertEqual(results[0].type, .insert)
+            XCTAssertEqual(results[0].databaseName, "main")
+            XCTAssertEqual(results[0].tableName, "person")
+            XCTAssertEqual(results[0].rowID, 1)
 
-                XCTAssertEqual(results[1].type, .update)
-                XCTAssertEqual(results[1].databaseName, "main")
-                XCTAssertEqual(results[1].tableName, "person")
-                XCTAssertEqual(results[1].rowID, 1)
+            XCTAssertEqual(results[1].type, .update)
+            XCTAssertEqual(results[1].databaseName, "main")
+            XCTAssertEqual(results[1].tableName, "person")
+            XCTAssertEqual(results[1].rowID, 1)
 
-                XCTAssertEqual(results[2].type, .delete)
-                XCTAssertEqual(results[2].databaseName, "main")
-                XCTAssertEqual(results[2].tableName, "person")
-                XCTAssertEqual(results[2].rowID, 1)
-            }
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            XCTAssertEqual(results[2].type, .delete)
+            XCTAssertEqual(results[2].databaseName, "main")
+            XCTAssertEqual(results[2].tableName, "person")
+            XCTAssertEqual(results[2].rowID, 1)
         }
     }
 
-    func testThatConnectionSupportsCommitHooks() {
-        do {
-            // Given
-            var commitCount: Int = 0
+    func testThatConnectionSupportsCommitHooks() throws {
+        // Given
+        var commitCount: Int = 0
 
-            connection.commitHook {
-                commitCount += 1
-                return commitCount > 2
-            }
-
-            // When
-            try connection.execute("""
-                CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-                INSERT INTO person(name) VALUES('Sterling Archer')
-                """
-            )
-
-            // Then
-            XCTAssertEqual(commitCount, 2)
-            XCTAssertThrowsError(try connection.execute("UPDATE person SET name = 'Lana Kane' WHERE id = 1"))
-            XCTAssertEqual(commitCount, 3)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        connection.commitHook {
+            commitCount += 1
+            return commitCount > 2
         }
+
+        // When
+        try connection.execute("""
+            CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+            INSERT INTO person(name) VALUES('Sterling Archer')
+            """
+        )
+
+        // Then
+        XCTAssertEqual(commitCount, 2)
+        XCTAssertThrowsError(try connection.execute("UPDATE person SET name = 'Lana Kane' WHERE id = 1"))
+        XCTAssertEqual(commitCount, 3)
     }
 
-    func testThatConnectionSupportsRollbackHooks() {
-        do {
-            // Given
-            var commitCount: Int = 0
-            var rollbackCount: Int = 0
+    func testThatConnectionSupportsRollbackHooks() throws {
+        // Given
+        var commitCount: Int = 0
+        var rollbackCount: Int = 0
 
-            connection.commitHook {
-                commitCount += 1
-                return commitCount > 2
-            }
-
-            connection.rollbackHook {
-                rollbackCount += 1
-            }
-
-            // When
-            try connection.execute("""
-                CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-                INSERT INTO person(name) VALUES('Sterling Archer')
-                """
-            )
-
-            // Then
-            XCTAssertEqual(commitCount, 2)
-            XCTAssertEqual(rollbackCount, 0)
-
-            XCTAssertThrowsError(try connection.execute("UPDATE person SET name = 'Lana Kane' WHERE id = 1"))
-
-            XCTAssertEqual(commitCount, 3)
-            XCTAssertEqual(rollbackCount, 1)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        connection.commitHook {
+            commitCount += 1
+            return commitCount > 2
         }
+
+        connection.rollbackHook {
+            rollbackCount += 1
+        }
+
+        // When
+        try connection.execute("""
+            CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+            INSERT INTO person(name) VALUES('Sterling Archer')
+            """
+        )
+
+        // Then
+        XCTAssertEqual(commitCount, 2)
+        XCTAssertEqual(rollbackCount, 0)
+
+        XCTAssertThrowsError(try connection.execute("UPDATE person SET name = 'Lana Kane' WHERE id = 1"))
+
+        XCTAssertEqual(commitCount, 3)
+        XCTAssertEqual(rollbackCount, 1)
     }
 }

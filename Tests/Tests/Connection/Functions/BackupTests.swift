@@ -36,349 +36,325 @@ class BackupTestCase: BaseTestCase {
 
     // MARK: - Tests - Successful Backups
 
-    func testThatConnectionCanBackupToDestination() {
-        do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-            let destinationConnection = try Connection(storageLocation: destinationLocation)
+    func testThatConnectionCanBackupToDestination() throws {
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+        let destinationConnection = try Connection(storageLocation: destinationLocation)
 
-            let agentCount = 20_000
-            try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
+        let agentCount = 20_000
+        try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
 
-            let backupExpectation = expectation(description: "backup should complete successfully")
-            let progressExpectation = expectation(description: "progress should be marked as finished")
+        let backupExpectation = expectation(description: "backup should complete successfully")
+        let progressExpectation = expectation(description: "progress should be marked as finished")
 
-            var backupResult: Connection.BackupResult?
+        var backupResult: Connection.BackupResult?
 
-            // When
-            let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
-                backupResult = result
-                backupExpectation.fulfill()
-            }
-
-            var progressValues: [Double] = []
-
-            DispatchQueue.userInitiated.async {
-                while !progress.isFinished { progressValues.append(progress.fractionCompleted) ; usleep(10) }
-                progressValues.append(progress.fractionCompleted)
-
-                progressExpectation.fulfill()
-            }
-
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
-
-            // Then
-            XCTAssertEqual(backupResult?.isSuccess, true)
-
-            XCTAssertEqual(progress.isFinished, true)
-            XCTAssertEqual(progress.isPaused, false)
-            XCTAssertEqual(progress.isCancelled, false)
-
-            XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
-            XCTAssertEqual(progressValues.last, 1.0)
-
-            XCTAssertEqual(sourceAgentCount, agentCount)
-            XCTAssertEqual(destinationAgentCount, agentCount)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        // When
+        let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
+            backupResult = result
+            backupExpectation.fulfill()
         }
+
+        var progressValues: [Double] = []
+
+        DispatchQueue.userInitiated.async {
+            while !progress.isFinished { progressValues.append(progress.fractionCompleted) ; usleep(10) }
+            progressValues.append(progress.fractionCompleted)
+
+            progressExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+        let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
+
+        // Then
+        XCTAssertEqual(backupResult?.isSuccess, true)
+
+        XCTAssertEqual(progress.isFinished, true)
+        XCTAssertEqual(progress.isPaused, false)
+        XCTAssertEqual(progress.isCancelled, false)
+
+        XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
+        XCTAssertEqual(progressValues.last, 1.0)
+
+        XCTAssertEqual(sourceAgentCount, agentCount)
+        XCTAssertEqual(destinationAgentCount, agentCount)
     }
 
-    func testThatConnectionCanBackupToDestinationInOneIteration() {
-        do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-            let destinationConnection = try Connection(storageLocation: destinationLocation)
+    func testThatConnectionCanBackupToDestinationInOneIteration() throws {
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+        let destinationConnection = try Connection(storageLocation: destinationLocation)
 
-            let agentCount = 20_000
-            try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
+        let agentCount = 20_000
+        try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
 
-            let backupExpectation = expectation(description: "backup should complete successfully")
-            let progressExpectation = expectation(description: "progress should be marked as finished")
+        let backupExpectation = expectation(description: "backup should complete successfully")
+        let progressExpectation = expectation(description: "progress should be marked as finished")
 
-            var backupResult: Connection.BackupResult?
+        var backupResult: Connection.BackupResult?
 
-            // When
-            let progress = try sourceConnection.backup(to: destinationConnection, pageSize: -1) { result in
-                backupResult = result
-                backupExpectation.fulfill()
-            }
-
-            var progressValues: Set<Double> = []
-
-            DispatchQueue.userInitiated.async {
-                while !progress.isFinished { progressValues.insert(progress.fractionCompleted) ; usleep(10) }
-                progressValues.insert(progress.fractionCompleted)
-
-                progressExpectation.fulfill()
-            }
-
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
-
-            // Then
-            XCTAssertEqual(backupResult?.isSuccess, true)
-
-            XCTAssertEqual(progress.isFinished, true)
-            XCTAssertEqual(progress.isPaused, false)
-            XCTAssertEqual(progress.isCancelled, false)
-
-            XCTAssertEqual(progressValues.count, 2)
-            let sortedProgressValues = progressValues.sorted()
-            XCTAssertLessThan(sortedProgressValues.first ?? 1.0, 1.0)
-            XCTAssertEqual(sortedProgressValues.last, 1.0)
-
-            XCTAssertEqual(sourceAgentCount, agentCount)
-            XCTAssertEqual(destinationAgentCount, agentCount)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        // When
+        let progress = try sourceConnection.backup(to: destinationConnection, pageSize: -1) { result in
+            backupResult = result
+            backupExpectation.fulfill()
         }
+
+        var progressValues: Set<Double> = []
+
+        DispatchQueue.userInitiated.async {
+            while !progress.isFinished { progressValues.insert(progress.fractionCompleted) ; usleep(10) }
+            progressValues.insert(progress.fractionCompleted)
+
+            progressExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+        let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
+
+        // Then
+        XCTAssertEqual(backupResult?.isSuccess, true)
+
+        XCTAssertEqual(progress.isFinished, true)
+        XCTAssertEqual(progress.isPaused, false)
+        XCTAssertEqual(progress.isCancelled, false)
+
+        XCTAssertEqual(progressValues.count, 2)
+        let sortedProgressValues = progressValues.sorted()
+        XCTAssertLessThan(sortedProgressValues.first ?? 1.0, 1.0)
+        XCTAssertEqual(sortedProgressValues.last, 1.0)
+
+        XCTAssertEqual(sourceAgentCount, agentCount)
+        XCTAssertEqual(destinationAgentCount, agentCount)
     }
 
-    func testThatConnectionCanBackupToDestinationWhileBeingModified() {
-        do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-            let writerConnection = try Connection(storageLocation: storageLocation)
-            let destinationConnection = try Connection(storageLocation: destinationLocation)
+    func testThatConnectionCanBackupToDestinationWhileBeingModified() throws {
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+        let writerConnection = try Connection(storageLocation: storageLocation)
+        let destinationConnection = try Connection(storageLocation: destinationLocation)
 
-            try sourceConnection.execute("PRAGMA journal_mode = WAL")
-            try writerConnection.execute("PRAGMA journal_mode = WAL")
-            try destinationConnection.execute("PRAGMA journal_mode = WAL")
+        try sourceConnection.execute("PRAGMA journal_mode = WAL")
+        try writerConnection.execute("PRAGMA journal_mode = WAL")
+        try destinationConnection.execute("PRAGMA journal_mode = WAL")
 
-            let initialAgentCount = 100_000
-            try seedDatabase(withAgentCount: initialAgentCount, using: sourceConnection)
+        let initialAgentCount = 100_000
+        try seedDatabase(withAgentCount: initialAgentCount, using: sourceConnection)
 
-            let backupExpectation = expectation(description: "backup should complete successfully")
-            let progressExpectation = expectation(description: "progress should be marked as finished")
-            let insertionExpectation = expectation(description: "insertion should complete successfully")
+        let backupExpectation = expectation(description: "backup should complete successfully")
+        let progressExpectation = expectation(description: "progress should be marked as finished")
+        let insertionExpectation = expectation(description: "insertion should complete successfully")
 
-            var backupResult: Connection.BackupResult?
+        var backupResult: Connection.BackupResult?
 
-            // When
-            let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
-                backupResult = result
-                backupExpectation.fulfill()
-            }
+        // When
+        let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
+            backupResult = result
+            backupExpectation.fulfill()
+        }
 
-            var extraAgentInsertionError: Error?
-            let extraAgentCount = 2
-            var progressValues: [Double] = []
-            var progressReset = false
+        var extraAgentInsertionError: Error?
+        let extraAgentCount = 2
+        var progressValues: [Double] = []
+        var progressReset = false
 
-            DispatchQueue.utility.async {
-                var triggeredInsertion = false
+        DispatchQueue.utility.async {
+            var triggeredInsertion = false
 
-                while !progress.isFinished && !progress.isCancelled {
-                    let fractionCompleted = progress.fractionCompleted
+            while !progress.isFinished && !progress.isCancelled {
+                let fractionCompleted = progress.fractionCompleted
 
-                    if !triggeredInsertion && fractionCompleted > 0.1 {
-                        DispatchQueue.userInitiated.async {
-                            do {
-                                try TestTables.insertDummyAgents(count: extraAgentCount, connection: writerConnection)
-                                insertionExpectation.fulfill()
-                            } catch {
-                                extraAgentInsertionError = error
-                                insertionExpectation.fulfill()
-                            }
+                if !triggeredInsertion && fractionCompleted > 0.1 {
+                    DispatchQueue.userInitiated.async {
+                        do {
+                            try TestTables.insertDummyAgents(count: extraAgentCount, connection: writerConnection)
+                            insertionExpectation.fulfill()
+                        } catch {
+                            extraAgentInsertionError = error
+                            insertionExpectation.fulfill()
                         }
-
-                        triggeredInsertion = true
                     }
 
-                    if let previousProgressValue = progressValues.last, fractionCompleted < previousProgressValue {
-                        progressReset = true
-                    }
-
-                    progressValues.append(fractionCompleted)
-                    usleep(20)
+                    triggeredInsertion = true
                 }
 
-                progressValues.append(progress.fractionCompleted)
-                progressExpectation.fulfill()
+                if let previousProgressValue = progressValues.last, fractionCompleted < previousProgressValue {
+                    progressReset = true
+                }
+
+                progressValues.append(fractionCompleted)
+                usleep(20)
             }
 
-            waitForExpectations(timeout: 20, handler: nil)
+            progressValues.append(progress.fractionCompleted)
+            progressExpectation.fulfill()
+        }
 
-            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
+        waitForExpectations(timeout: 20, handler: nil)
 
-            // Then
-            XCTAssertEqual(backupResult?.isSuccess, true)
+        let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+        let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
-            XCTAssertEqual(progress.isFinished, true)
-            XCTAssertEqual(progress.isPaused, false)
-            XCTAssertEqual(progress.isCancelled, false)
+        // Then
+        XCTAssertEqual(backupResult?.isSuccess, true)
 
-            XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
-            XCTAssertEqual(progressValues.last, 1.0)
+        XCTAssertEqual(progress.isFinished, true)
+        XCTAssertEqual(progress.isPaused, false)
+        XCTAssertEqual(progress.isCancelled, false)
 
-            XCTAssertNil(extraAgentInsertionError)
+        XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
+        XCTAssertEqual(progressValues.last, 1.0)
 
-            if !ProcessInfo.isRunningOnCI {
-                //======================================================================================================
-                //
-                // These tests always pass locally and should continue to pass. Unfortunately, we have to disable them
-                // on Travis CI because there is no way to get the timing quite right to ensure the backup is actually
-                // stopped and restarted. Sometimes, the backup is restarted properly, and sometimes the backup just
-                // continues until completion.
-                //
-                // Christian Noon - 9/21/17
-                //
-                //======================================================================================================
+        XCTAssertNil(extraAgentInsertionError)
 
-                let expectedAgentCount = progressReset ? initialAgentCount + extraAgentCount : initialAgentCount
-                XCTAssertEqual(sourceAgentCount, expectedAgentCount)
-                XCTAssertEqual(destinationAgentCount, expectedAgentCount)
-            }
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        if !ProcessInfo.isRunningOnCI {
+            //======================================================================================================
+            //
+            // These tests always pass locally and should continue to pass. Unfortunately, we have to disable them
+            // on Travis CI because there is no way to get the timing quite right to ensure the backup is actually
+            // stopped and restarted. Sometimes, the backup is restarted properly, and sometimes the backup just
+            // continues until completion.
+            //
+            // Christian Noon - 9/21/17
+            //
+            //======================================================================================================
+
+            let expectedAgentCount = progressReset ? initialAgentCount + extraAgentCount : initialAgentCount
+            XCTAssertEqual(sourceAgentCount, expectedAgentCount)
+            XCTAssertEqual(destinationAgentCount, expectedAgentCount)
         }
     }
 
-    func testThatConnectionCanCancelBackupToDestination() {
+    func testThatConnectionCanCancelBackupToDestination() throws {
         // Disable test on CI since timing is too unpredictable
         guard !ProcessInfo.isRunningOnCI else { return }
 
-        do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-            let destinationConnection = try Connection(storageLocation: destinationLocation)
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+        let destinationConnection = try Connection(storageLocation: destinationLocation)
 
-            let agentCount = 20_000
-            try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
+        let agentCount = 20_000
+        try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
 
-            let backupExpectation = expectation(description: "backup should complete successfully")
-            let progressExpectation = expectation(description: "progress should be marked as finished")
+        let backupExpectation = expectation(description: "backup should complete successfully")
+        let progressExpectation = expectation(description: "progress should be marked as finished")
 
-            var backupResult: Connection.BackupResult?
+        var backupResult: Connection.BackupResult?
 
-            // When
-            let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
-                backupResult = result
-                backupExpectation.fulfill()
-            }
-
-            progress.cancel()
-
-            var progressValues: [Double] = []
-
-            DispatchQueue.userInitiated.async {
-                while !progress.isCancelled { progressValues.append(progress.fractionCompleted) ; usleep(10) }
-                progressValues.append(progress.fractionCompleted)
-
-                progressExpectation.fulfill()
-            }
-
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
-
-            // Then
-            XCTAssertEqual(backupResult?.isCancelled, true)
-
-            XCTAssertEqual(progress.isFinished, false)
-            XCTAssertEqual(progress.isPaused, false)
-            XCTAssertEqual(progress.isCancelled, true)
-
-            XCTAssertLessThan(progressValues.last ?? 100, 1.0)
-
-            XCTAssertEqual(sourceAgentCount, agentCount)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        // When
+        let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
+            backupResult = result
+            backupExpectation.fulfill()
         }
+
+        progress.cancel()
+
+        var progressValues: [Double] = []
+
+        DispatchQueue.userInitiated.async {
+            while !progress.isCancelled { progressValues.append(progress.fractionCompleted) ; usleep(10) }
+            progressValues.append(progress.fractionCompleted)
+
+            progressExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+
+        // Then
+        XCTAssertEqual(backupResult?.isCancelled, true)
+
+        XCTAssertEqual(progress.isFinished, false)
+        XCTAssertEqual(progress.isPaused, false)
+        XCTAssertEqual(progress.isCancelled, true)
+
+        XCTAssertLessThan(progressValues.last ?? 100, 1.0)
+
+        XCTAssertEqual(sourceAgentCount, agentCount)
     }
 
-    func testThatConnectionCanPauseBackupToDestination() {
+    func testThatConnectionCanPauseBackupToDestination() throws {
         // Disable test on CI since timing is too unpredictable
         guard !ProcessInfo.isRunningOnCI else { return }
 
-        do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-            let destinationConnection = try Connection(storageLocation: destinationLocation)
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+        let destinationConnection = try Connection(storageLocation: destinationLocation)
 
-            let agentCount = 20_000
-            try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
+        let agentCount = 20_000
+        try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
 
-            let backupExpectation = expectation(description: "backup should complete successfully")
-            let progressExpectation = expectation(description: "progress should be marked as finished")
+        let backupExpectation = expectation(description: "backup should complete successfully")
+        let progressExpectation = expectation(description: "progress should be marked as finished")
 
-            var backupResult: Connection.BackupResult?
+        var backupResult: Connection.BackupResult?
 
-            // When
-            let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
-                backupResult = result
-                backupExpectation.fulfill()
-            }
-
-            DispatchQueue.utility.asyncAfter(seconds: 0.0001) { progress.pause() }
-            DispatchQueue.utility.asyncAfter(seconds: 0.1) { progress.resume() }
-
-            var progressValues: [Double] = []
-
-            DispatchQueue.userInitiated.async {
-                while !progress.isFinished { progressValues.append(progress.fractionCompleted) ; usleep(10) }
-                progressValues.append(progress.fractionCompleted)
-
-                progressExpectation.fulfill()
-            }
-
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
-            let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
-
-            // Then
-            XCTAssertEqual(backupResult?.isSuccess, true)
-
-            XCTAssertEqual(progress.isFinished, true)
-            XCTAssertEqual(progress.isPaused, false)
-            XCTAssertEqual(progress.isCancelled, false)
-
-            XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
-            XCTAssertEqual(progressValues.last, 1.0)
-
-            XCTAssertEqual(sourceAgentCount, agentCount)
-            XCTAssertEqual(destinationAgentCount, agentCount)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        // When
+        let progress = try sourceConnection.backup(to: destinationConnection, pageSize: 10) { result in
+            backupResult = result
+            backupExpectation.fulfill()
         }
+
+        DispatchQueue.utility.asyncAfter(seconds: 0.0001) { progress.pause() }
+        DispatchQueue.utility.asyncAfter(seconds: 0.1) { progress.resume() }
+
+        var progressValues: [Double] = []
+
+        DispatchQueue.userInitiated.async {
+            while !progress.isFinished { progressValues.append(progress.fractionCompleted) ; usleep(10) }
+            progressValues.append(progress.fractionCompleted)
+
+            progressExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        let sourceAgentCount: Int? = try sourceConnection.query("SELECT count(1) FROM agents")
+        let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
+
+        // Then
+        XCTAssertEqual(backupResult?.isSuccess, true)
+
+        XCTAssertEqual(progress.isFinished, true)
+        XCTAssertEqual(progress.isPaused, false)
+        XCTAssertEqual(progress.isCancelled, false)
+
+        XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
+        XCTAssertEqual(progressValues.last, 1.0)
+
+        XCTAssertEqual(sourceAgentCount, agentCount)
+        XCTAssertEqual(destinationAgentCount, agentCount)
     }
 
     // MARK: - Tests - Backup Failures
 
-    func testThatConnectionThrowsErrorWhenTryingToBackupToSelf() {
+    func testThatConnectionThrowsErrorWhenTryingToBackupToSelf() throws {
+        // Given
+        let sourceConnection = try Connection(storageLocation: storageLocation)
+
+        let agentCount = 20_000
+        try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
+
+        var backupError: Error?
+
+        // When
         do {
-            // Given
-            let sourceConnection = try Connection(storageLocation: storageLocation)
-
-            let agentCount = 20_000
-            try seedDatabase(withAgentCount: agentCount, using: sourceConnection)
-
-            var backupError: Error?
-
-            // When
-            do {
-                try sourceConnection.backup(to: sourceConnection) { _ in }
-            } catch {
-                backupError = error
-            }
-
-            // Then
-            XCTAssertTrue(backupError is SQLiteError)
-
-            if let error = backupError as? SQLiteError {
-                XCTAssertEqual(error.code, SQLITE_ERROR)
-                XCTAssertEqual(error.message, "source and destination must be distinct")
-            }
+            try sourceConnection.backup(to: sourceConnection) { _ in }
         } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            backupError = error
+        }
+
+        // Then
+        XCTAssertTrue(backupError is SQLiteError)
+
+        if let error = backupError as? SQLiteError {
+            XCTAssertEqual(error.code, SQLITE_ERROR)
+            XCTAssertEqual(error.message, "source and destination must be distinct")
         }
     }
 

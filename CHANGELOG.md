@@ -38,6 +38,10 @@ All notable changes to this project will be documented in this file.
 
 - A new `TableLockPolicy` to handle table lock errors on `execute`, `prepare`, and `step` operations.
 
+#### Updated
+
+- The test suite by replacing `do-catch` implementations with `throws` test API variants and unhelpful assertion strings.
+
 ---
 
 ## [3.1.0](https://github.com/Nike-Inc/SQift/releases/tag/3.1.0)

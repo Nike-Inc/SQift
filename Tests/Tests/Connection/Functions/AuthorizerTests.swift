@@ -39,92 +39,84 @@ class AuthozierTestCase: BaseConnectionTestCase {
 
     // MARK: - Tests
 
-    func testThatConnectionCanSetAuthorizerAndAllowOperations() {
-        do {
-            // Given
-            var results: [Result] = []
+    func testThatConnectionCanSetAuthorizerAndAllowOperations() throws {
+        // Given
+        var results: [Result] = []
 
-            try connection.authorizer { action, p1, p2, p3, p4 in
-                if action != .read {
-                    let result = Result(action, p1, p2, p3, p4)
-                    results.append(result)
-                }
-
-                return .ok
+        try connection.authorizer { action, p1, p2, p3, p4 in
+            if action != .read {
+                let result = Result(action, p1, p2, p3, p4)
+                results.append(result)
             }
 
-            // When
-            try connection.execute("""
-                CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
-                INSERT INTO person(name) VALUES('Sterling Archer');
-                UPDATE person SET name = 'Lana Kane' WHERE id = 1;
-                SELECT * FROM person;
-                CREATE INDEX name_index ON person (name);
-                DROP INDEX name_index;
-                DELETE FROM person
-                """
-            )
+            return .ok
+        }
 
-            let expectedResults = [
-                Result(.insert, "sqlite_master", nil, "main", nil),
-                Result(.createTable, "person", nil, "main", nil),
-                Result(.update, "sqlite_master", "type", "main", nil),
-                Result(.update, "sqlite_master", "name", "main", nil),
-                Result(.update, "sqlite_master", "tbl_name", "main", nil),
-                Result(.update, "sqlite_master", "rootpage", "main", nil),
-                Result(.update, "sqlite_master", "sql", "main", nil),
-                Result(.insert, "person", nil, "main", nil),
-                Result(.update, "person", "name", "main", nil),
-                Result(.select, nil, nil, nil, nil),
-                Result(.insert, "sqlite_master", nil, "main", nil),
-                Result(.createIndex, "name_index", "person", "main", nil),
-                Result(.insert, "sqlite_master", nil, "main", nil),
-                Result(.reindex, "name_index", nil, "main", nil),
-                Result(.delete, "sqlite_master", nil, "main", nil),
-                Result(.dropIndex, "name_index", "person", "main", nil),
-                Result(.delete, "sqlite_master", nil, "main", nil),
-                Result(.update, "sqlite_master", "rootpage", "main", nil),
-                Result(.delete, "person", nil, "main", nil)
-            ]
+        // When
+        try connection.execute("""
+            CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
+            INSERT INTO person(name) VALUES('Sterling Archer');
+            UPDATE person SET name = 'Lana Kane' WHERE id = 1;
+            SELECT * FROM person;
+            CREATE INDEX name_index ON person (name);
+            DROP INDEX name_index;
+            DELETE FROM person
+            """
+        )
 
-            // Then
-            XCTAssertEqual(results.count, expectedResults.count)
+        let expectedResults = [
+            Result(.insert, "sqlite_master", nil, "main", nil),
+            Result(.createTable, "person", nil, "main", nil),
+            Result(.update, "sqlite_master", "type", "main", nil),
+            Result(.update, "sqlite_master", "name", "main", nil),
+            Result(.update, "sqlite_master", "tbl_name", "main", nil),
+            Result(.update, "sqlite_master", "rootpage", "main", nil),
+            Result(.update, "sqlite_master", "sql", "main", nil),
+            Result(.insert, "person", nil, "main", nil),
+            Result(.update, "person", "name", "main", nil),
+            Result(.select, nil, nil, nil, nil),
+            Result(.insert, "sqlite_master", nil, "main", nil),
+            Result(.createIndex, "name_index", "person", "main", nil),
+            Result(.insert, "sqlite_master", nil, "main", nil),
+            Result(.reindex, "name_index", nil, "main", nil),
+            Result(.delete, "sqlite_master", nil, "main", nil),
+            Result(.dropIndex, "name_index", "person", "main", nil),
+            Result(.delete, "sqlite_master", nil, "main", nil),
+            Result(.update, "sqlite_master", "rootpage", "main", nil),
+            Result(.delete, "person", nil, "main", nil)
+        ]
 
-            for (actual, expected) in zip(results, expectedResults) {
-                XCTAssertEqual(actual, expected)
-            }
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+        // Then
+        XCTAssertEqual(results.count, expectedResults.count)
+
+        for (actual, expected) in zip(results, expectedResults) {
+            XCTAssertEqual(actual, expected)
         }
     }
 
-    func testThatConnectionCanSetAuthorizerAndDenyOperations() {
+    func testThatConnectionCanSetAuthorizerAndDenyOperations() throws {
+        // Given
+        try connection.authorizer { _, _, _, _, _ in return .deny }
+
+        var authorizationError: Error?
+
+        // When
         do {
-            // Given
-            try connection.authorizer { _, _, _, _, _ in return .deny }
-
-            var authorizationError: Error?
-
-            // When
-            do {
-                try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
-            } catch {
-                authorizationError = error
-            }
-
-            // Then
-            XCTAssertNotNil(authorizationError)
-
-            if let error = authorizationError as? SQLiteError {
-                XCTAssertEqual(error.code, SQLITE_AUTH)
-                XCTAssertEqual(error.message, "not authorized")
-            }
+            try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
         } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            authorizationError = error
+        }
+
+        // Then
+        XCTAssertNotNil(authorizationError)
+
+        if let error = authorizationError as? SQLiteError {
+            XCTAssertEqual(error.code, SQLITE_AUTH)
+            XCTAssertEqual(error.message, "not authorized")
         }
     }
 
-    func testThatConnectionCanSetAuthorizerAndIgnoreOperations() {
+    func testThatConnectionCanSetAuthorizerAndIgnoreOperations() throws {
         do {
             // Given
             var results: [Result] = []
@@ -169,29 +161,25 @@ class AuthozierTestCase: BaseConnectionTestCase {
         }
     }
 
-    func testThatConnectionCanSetAuthorizerAndReturnCustomResult() {
+    func testThatConnectionCanSetAuthorizerAndReturnCustomResult() throws {
+        // Given
+        try connection.authorizer { _, _, _, _, _ in return .custom(SQLITE_FAIL) }
+
+        var authorizationError: Error?
+
+        // When
         do {
-            // Given
-            try connection.authorizer { _, _, _, _, _ in return .custom(SQLITE_FAIL) }
-
-            var authorizationError: Error?
-
-            // When
-            do {
-                try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
-            } catch {
-                authorizationError = error
-            }
-
-            // Then
-            XCTAssertNotNil(authorizationError)
-
-            if let error = authorizationError as? SQLiteError {
-                XCTAssertEqual(error.code, SQLITE_ERROR)
-                XCTAssertEqual(error.message, "authorizer malfunction")
-            }
+            try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
         } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            authorizationError = error
+        }
+
+        // Then
+        XCTAssertNotNil(authorizationError)
+
+        if let error = authorizationError as? SQLiteError {
+            XCTAssertEqual(error.code, SQLITE_ERROR)
+            XCTAssertEqual(error.message, "authorizer malfunction")
         }
     }
 }

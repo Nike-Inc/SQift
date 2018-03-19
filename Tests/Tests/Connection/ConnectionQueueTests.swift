@@ -14,28 +14,24 @@ import SQLite3
 import XCTest
 
 class ConnectionQueueTestCase: BaseTestCase {
-    func testThatConnectionQueueCanExecuteStatements() {
-        do {
-            // Given
-            let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
+    func testThatConnectionQueueCanExecuteStatements() throws {
+        // Given
+        let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64?
+        var rowCount: Int64?
 
-            // When, Then
-            try queue.execute { connection in
-                try connection.execute("DROP TABLE IF EXISTS agents")
-                try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
+        // When, Then
+        try queue.execute { connection in
+            try connection.execute("DROP TABLE IF EXISTS agents")
+            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
 
-                rowCount = try connection.query("SELECT count(*) FROM agents")
-            }
-
-            // Then
-            XCTAssertEqual(rowCount, 2)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            rowCount = try connection.query("SELECT count(*) FROM agents")
         }
+
+        // Then
+        XCTAssertEqual(rowCount, 2)
     }
 
     func testThatConnectionQueueThrowsErrorWhenExecutingStatement() {
@@ -51,34 +47,30 @@ class ConnectionQueueTestCase: BaseTestCase {
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
+            XCTAssertEqual(error.code, SQLITE_ERROR)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionQueueCanExecuteStatementsInTransaction() {
-        do {
-            // Given
-            let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
+    func testThatConnectionQueueCanExecuteStatementsInTransaction() throws {
+        // Given
+        let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64?
+        var rowCount: Int64?
 
-            // When, Then
-            try queue.executeInTransaction { connection in
-                try connection.execute("DROP TABLE IF EXISTS agents")
-                try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
+        // When, Then
+        try queue.executeInTransaction { connection in
+            try connection.execute("DROP TABLE IF EXISTS agents")
+            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
 
-                rowCount = try connection.query("SELECT count(*) FROM agents")
-            }
-
-            // Then
-            XCTAssertEqual(rowCount, 2)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            rowCount = try connection.query("SELECT count(*) FROM agents")
         }
+
+        // Then
+        XCTAssertEqual(rowCount, 2)
     }
 
     func testThatConnectionQueueThrowsErrorWhenExecutingTransaction() {
@@ -94,34 +86,30 @@ class ConnectionQueueTestCase: BaseTestCase {
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
+            XCTAssertEqual(error.code, SQLITE_ERROR)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
     }
 
-    func testThatConnectionQueueCanExecuteStatementsInSavepoint() {
-        do {
-            // Given
-            let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
+    func testThatConnectionQueueCanExecuteStatementsInSavepoint() throws {
+        // Given
+        let queue = try ConnectionQueue(connection: Connection(storageLocation: storageLocation))
 
-            var rowCount: Int64?
+        var rowCount: Int64?
 
-            // When, Then
-            try queue.executeInSavepoint(named: "savepoint name with spaces") { connection in
-                try connection.execute("DROP TABLE IF EXISTS agents")
-                try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
-                try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
+        // When, Then
+        try queue.executeInSavepoint(named: "savepoint name with spaces") { connection in
+            try connection.execute("DROP TABLE IF EXISTS agents")
+            try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, job TEXT)")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Sterling Archer", "World's Greatest Secret Agent")
+            try connection.run("INSERT INTO agents(name, job) VALUES(?, ?)", "Lana Kane", "Top Agent")
 
-                rowCount = try connection.query("SELECT count(*) FROM agents")
-            }
-
-            // Then
-            XCTAssertEqual(rowCount, 2)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            rowCount = try connection.query("SELECT count(*) FROM agents")
         }
+
+        // Then
+        XCTAssertEqual(rowCount, 2)
     }
 
     func testThatConnectionQueueThrowsErrorWhenExecutingSavepoint() {
@@ -137,7 +125,7 @@ class ConnectionQueueTestCase: BaseTestCase {
             XCTFail("Execution should not reach this point")
         } catch let error as SQLiteError {
             // Then
-            XCTAssertEqual(error.code, SQLITE_ERROR, "error code should be equal to `SQLITE_ERROR`")
+            XCTAssertEqual(error.code, SQLITE_ERROR)
         } catch {
             XCTFail("Test encountered unexpected error: \(error)")
         }
