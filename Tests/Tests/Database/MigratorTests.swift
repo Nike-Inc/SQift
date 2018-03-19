@@ -13,407 +13,374 @@ import Foundation
 import XCTest
 
 class MigratorTestCase: BaseTestCase {
-    func testThatMigratorCanCreateMigrationsTable() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorCanCreateMigrationsTable() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            // When
-            try migrator.createMigrationTable()
-            let exists: Bool? = try connection.query(
-                "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
-                "table",
-                "schema_migrations"
-            )
+        // When
+        try migrator.createMigrationTable()
+        let exists: Bool? = try connection.query(
+            "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+            "table",
+            "schema_migrations"
+        )
 
-            // Then
-            XCTAssertEqual(exists, true)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(exists, true)
     }
 
-    func testThatMigratorDoesNotThrowWhenCreatingMigrationsTableWhenTableAlreadyExists() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorDoesNotThrowWhenCreatingMigrationsTableWhenTableAlreadyExists() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            // When
-            try migrator.createMigrationTable()
-            try migrator.createMigrationTable()
+        // When
+        try migrator.createMigrationTable()
+        try migrator.createMigrationTable()
 
-            let exists: Bool? = try connection.query(
-                "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
-                "table",
-                "schema_migrations"
-            )
+        let exists: Bool? = try connection.query(
+            "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+            "table",
+            "schema_migrations"
+        )
 
-            // Then
-            XCTAssertEqual(exists, true)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(exists, true)
     }
 
-    func testThatMigratorMigrationsTableExistsPropertyReturnsFalseIfTableDoesNotExists() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorMigrationsTableExistsPropertyReturnsFalseIfTableDoesNotExists() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            // When
-            try connection.execute("DROP TABLE IF EXISTS schema_migrations")
-            let tableExists = migrator.migrationTableExists
+        // When
+        try connection.execute("DROP TABLE IF EXISTS schema_migrations")
+        let tableExists = migrator.migrationTableExists
 
-            // Then
-            XCTAssertFalse(tableExists)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertFalse(tableExists)
     }
 
-    func testThatMigratorMigrationsTableExistsPropertyReturnsTrueIfTableExists() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorMigrationsTableExistsPropertyReturnsTrueIfTableExists() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            // When
-            try migrator.createMigrationTable()
-            let tableExists = migrator.migrationTableExists
+        // When
+        try migrator.createMigrationTable()
+        let tableExists = migrator.migrationTableExists
 
-            // Then
-            XCTAssertTrue(tableExists)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertTrue(tableExists)
     }
 
-    func testThatMigratorCanRunInitialMigration() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorCanRunInitialMigration() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            let expectation = self.expectation(description: "migrations should complete successfully")
+        let expectation = self.expectation(description: "migrations should complete successfully")
 
-            var willMigrate: [UInt64] = []
-            var didMigrate: [UInt64] = []
-            var migrationError: Error?
-            var agentsTableExists: Bool?
+        var willMigrate: [UInt64] = []
+        var didMigrate: [UInt64] = []
+        var migrationError: Error?
+        var agentsTableExists: Bool?
 
-            // When
-            DispatchQueue.utility.async {
-                do {
-                    try migrator.runMigrationsIfNecessary(
-                        migrationSQLForSchemaVersion: { version in
+        // When
+        DispatchQueue.utility.async {
+            do {
+                try migrator.runMigrationsIfNecessary(
+                    migrationSQLForSchemaVersion: { version in
+                        return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
+                    },
+                    willMigrateToSchemaVersion: { version in
+                        willMigrate.append(version)
+                    },
+                    didMigrateToSchemaVersion: { version in
+                        didMigrate.append(version)
+                    }
+                )
+
+                agentsTableExists = try connection.query(
+                    "SELECT count(*) FROM sqlite_master WHERE type = ? AND name = ?",
+                    "table",
+                    "agents"
+                )
+            } catch {
+                migrationError = error
+            }
+
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(willMigrate.count, 1)
+        XCTAssertEqual(didMigrate.count, 1)
+        XCTAssertNil(migrationError)
+        XCTAssertEqual(agentsTableExists, true)
+    }
+
+    func testThatMigratorCanRunMultipleMigrations() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
+
+        let expectation = self.expectation(description: "migrations should complete successfully")
+
+        var willMigrate: [UInt64] = []
+        var didMigrate: [UInt64] = []
+        var migrationError: Error? = nil
+        var agentsTableExists: Bool?
+        var agentCount: Int?
+
+        // When
+        DispatchQueue.utility.async {
+            do {
+                try migrator.runMigrationsIfNecessary(
+                    migrationSQLForSchemaVersion: { version in
+                        switch version {
+                        case 1:
                             return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
-                        },
-                        willMigrateToSchemaVersion: { version in
-                            willMigrate.append(version)
-                        },
-                        didMigrateToSchemaVersion: { version in
-                            didMigrate.append(version)
+
+                        default:
+                            return """
+                            INSERT INTO agents(name) VALUES('Sterling Archer');
+                            INSERT INTO agents(name) VALUES('Lana Kane')
+                            """
                         }
-                    )
+                    },
+                    willMigrateToSchemaVersion: { version in
+                        willMigrate.append(version)
+                    },
+                    didMigrateToSchemaVersion: { version in
+                        didMigrate.append(version)
+                    }
+                )
 
-                    agentsTableExists = try connection.query(
-                        "SELECT count(*) FROM sqlite_master WHERE type = ? AND name = ?",
-                        "table",
-                        "agents"
-                    )
-                } catch {
-                    migrationError = error
-                }
+                agentsTableExists = try connection.query(
+                    "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                    "table",
+                    "agents"
+                )
 
-                expectation.fulfill()
+                agentCount = try connection.query("SELECT count(*) FROM agents")
+            } catch {
+                migrationError = error
             }
 
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            // Then
-            XCTAssertEqual(willMigrate.count, 1)
-            XCTAssertEqual(didMigrate.count, 1)
-            XCTAssertNil(migrationError)
-            XCTAssertEqual(agentsTableExists, true)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            expectation.fulfill()
         }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        // Then
+        if willMigrate.count == 2 && didMigrate.count == 2 {
+            XCTAssertEqual(willMigrate[0], 1)
+            XCTAssertEqual(willMigrate[1], 2)
+
+            XCTAssertEqual(didMigrate[0], 1)
+            XCTAssertEqual(didMigrate[1], 2)
+        } else {
+            XCTFail("will and did migrate counts should be 2")
+        }
+
+        XCTAssertNil(migrationError)
+        XCTAssertEqual(agentsTableExists, true)
+        XCTAssertEqual(agentCount, 2)
     }
 
-    func testThatMigratorCanRunMultipleMigrations() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
+    func testThatMigratorCanRunMigrationsBeyondTheInitialMigration() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        var migrator: Migrator? = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            let expectation = self.expectation(description: "migrations should complete successfully")
+        try migrator?.runMigrationsIfNecessary(
+            migrationSQLForSchemaVersion: { version in
+                return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
+            }
+        )
 
-            var willMigrate: [UInt64] = []
-            var didMigrate: [UInt64] = []
-            var migrationError: Error? = nil
-            var agentsTableExists: Bool?
-            var agentCount: Int?
+        migrator = nil
+        migrator = Migrator(connection: connection, desiredSchemaVersion: 3)
 
-            // When
-            DispatchQueue.utility.async {
-                do {
-                    try migrator.runMigrationsIfNecessary(
-                        migrationSQLForSchemaVersion: { version in
-                            switch version {
-                            case 1:
-                                return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
-                            default:
-                                return """
-                                    INSERT INTO agents(name) VALUES('Sterling Archer');
-                                    INSERT INTO agents(name) VALUES('Lana Kane')
-                                    """
-                            }
-                        },
-                        willMigrateToSchemaVersion: { version in
-                            willMigrate.append(version)
-                        },
-                        didMigrateToSchemaVersion: { version in
-                            didMigrate.append(version)
+        let expectation = self.expectation(description: "migrations should complete successfully")
+
+        var willMigrate: [UInt64] = []
+        var didMigrate: [UInt64] = []
+        var migrationError: Error? = nil
+
+        var agentCount: Int?
+        var missionsTableExists: Bool?
+
+        // When
+        DispatchQueue.utility.async {
+            do {
+                try migrator?.runMigrationsIfNecessary(
+                    migrationSQLForSchemaVersion: { version in
+                        switch version {
+                        case 2:
+                            return """
+                                INSERT INTO agents(name) VALUES('Sterling Archer');
+                                INSERT INTO agents(name) VALUES('Lana Kane')
+                                """
+
+                        default:
+                            return """
+                                CREATE TABLE missions(id INTEGER PRIMARY KEY AUTOINCREMENT, payment REAL NOT NULL)
+                                """
                         }
-                    )
+                    },
+                    willMigrateToSchemaVersion: { version in
+                        willMigrate.append(version)
+                    },
+                    didMigrateToSchemaVersion: { version in
+                        didMigrate.append(version)
+                    }
+                )
 
-                    agentsTableExists = try connection.query("SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
-                        "table",
-                        "agents"
-                    )
+                agentCount = try connection.query("SELECT count(*) FROM agents")
 
-                    agentCount = try connection.query("SELECT count(*) FROM agents")
-                } catch {
-                    migrationError = error
-                }
-
-                expectation.fulfill()
+                missionsTableExists = try connection.query(
+                    "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                    "table",
+                    "missions"
+                )
+            } catch {
+                migrationError = error
             }
 
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            // Then
-            if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 1)
-                XCTAssertEqual(willMigrate[1], 2)
-
-                XCTAssertEqual(didMigrate[0], 1)
-                XCTAssertEqual(didMigrate[1], 2)
-            } else {
-                XCTFail("will and did migrate counts should be 2")
-            }
-
-            XCTAssertNil(migrationError)
-            XCTAssertEqual(agentsTableExists, true)
-            XCTAssertEqual(agentCount, 2)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            expectation.fulfill()
         }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        // Then
+        if willMigrate.count == 2 && didMigrate.count == 2 {
+            XCTAssertEqual(willMigrate[0], 2)
+            XCTAssertEqual(willMigrate[1], 3)
+
+            XCTAssertEqual(didMigrate[0], 2)
+            XCTAssertEqual(didMigrate[1], 3)
+        } else {
+            XCTFail("will and did migrate counts should be 2")
+        }
+
+        XCTAssertNil(migrationError)
+        XCTAssertEqual(agentCount, 2)
+        XCTAssertEqual(missionsTableExists, true)
     }
 
-    func testThatMigratorCanRunMigrationsBeyondTheInitialMigration() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            var migrator: Migrator? = Migrator(connection: connection, desiredSchemaVersion: 1)
+    func testThatMigratorCanRunMigrationsByDelegatingMigrationToTheCaller() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
 
-            try migrator?.runMigrationsIfNecessary(
-                migrationSQLForSchemaVersion: { version in
-                    return "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
-                }
-            )
+        let expectation = self.expectation(description: "migrations should complete successfully")
 
-            migrator = nil
-            migrator = Migrator(connection: connection, desiredSchemaVersion: 3)
+        var willMigrate: [UInt64] = []
+        var didMigrate: [UInt64] = []
+        var migrationError: Error? = nil
+        var agentsTableExists: Bool?
+        var agentCount: Int?
 
-            let expectation = self.expectation(description: "migrations should complete successfully")
-
-            var willMigrate: [UInt64] = []
-            var didMigrate: [UInt64] = []
-            var migrationError: Error? = nil
-
-            var agentCount: Int?
-            var missionsTableExists: Bool?
-
-            // When
-            DispatchQueue.utility.async {
-                do {
-                    try migrator?.runMigrationsIfNecessary(
-                        migrationSQLForSchemaVersion: { version in
-                            switch version {
-                            case 2:
-                                return """
-                                    INSERT INTO agents(name) VALUES('Sterling Archer');
-                                    INSERT INTO agents(name) VALUES('Lana Kane')
-                                    """
-
-                            default:
-                                return """
-                                    CREATE TABLE missions(id INTEGER PRIMARY KEY AUTOINCREMENT, payment REAL NOT NULL)
-                                    """
-                            }
-                        },
-                        willMigrateToSchemaVersion: { version in
-                            willMigrate.append(version)
-                        },
-                        didMigrateToSchemaVersion: { version in
-                            didMigrate.append(version)
+        // When
+        DispatchQueue.utility.async {
+            do {
+                try migrator.runMigrationsIfNecessary(
+                    migrateDatabaseToSchemaVersion: { version, connection in
+                        switch version {
+                        case 1:
+                            try connection.execute(
+                                "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
+                            )
+                        default:
+                            try connection.execute("""
+                                INSERT INTO agents(name) VALUES('Sterling Archer');
+                                INSERT INTO agents(name) VALUES('Lana Kane')
+                                """
+                            )
                         }
-                    )
+                    },
+                    willMigrateToSchemaVersion: { version in
+                        willMigrate.append(version)
+                    },
+                    didMigrateToSchemaVersion: { version in
+                        didMigrate.append(version)
+                    }
+                )
 
-                    agentCount = try connection.query("SELECT count(*) FROM agents")
+                agentsTableExists = try connection.query(
+                    "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
+                    "table",
+                    "agents"
+                )
 
-                    missionsTableExists = try connection.query(
-                        "SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
-                        "table",
-                        "missions"
-                    )
-                } catch {
-                    migrationError = error
-                }
-
-                expectation.fulfill()
+                agentCount = try connection.query("SELECT count(*) FROM agents")
+            } catch {
+                migrationError = error
             }
 
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            // Then
-            if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 2)
-                XCTAssertEqual(willMigrate[1], 3)
-
-                XCTAssertEqual(didMigrate[0], 2)
-                XCTAssertEqual(didMigrate[1], 3)
-            } else {
-                XCTFail("will and did migrate counts should be 2")
-            }
-
-            XCTAssertNil(migrationError)
-            XCTAssertEqual(agentCount, 2)
-            XCTAssertEqual(missionsTableExists, true)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            expectation.fulfill()
         }
+
+        waitForExpectations(timeout: timeout, handler: nil)
+
+        // Then
+        if willMigrate.count == 2 && didMigrate.count == 2 {
+            XCTAssertEqual(willMigrate[0], 1)
+            XCTAssertEqual(willMigrate[1], 2)
+
+            XCTAssertEqual(didMigrate[0], 1)
+            XCTAssertEqual(didMigrate[1], 2)
+        } else {
+            XCTFail("will and did migrate counts should be 2")
+        }
+
+        XCTAssertNil(migrationError)
+        XCTAssertEqual(agentsTableExists, true)
+        XCTAssertEqual(agentCount, 2)
     }
 
-    func testThatMigratorCanRunMigrationsByDelegatingMigrationToTheCaller() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 2)
+    func testThatMigratorGracefullyHandlesErrorEncounteredDuringMigration() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
 
-            let expectation = self.expectation(description: "migrations should complete successfully")
+        let expectation = self.expectation(description: "migrations should complete successfully")
 
-            var willMigrate: [UInt64] = []
-            var didMigrate: [UInt64] = []
-            var migrationError: Error? = nil
-            var agentsTableExists: Bool?
-            var agentCount: Int?
+        var willMigrate: [UInt64] = []
+        var didMigrate: [UInt64] = []
+        var migrationError: Error? = nil
 
-            // When
-            DispatchQueue.utility.async {
-                do {
-                    try migrator.runMigrationsIfNecessary(
-                        migrateDatabaseToSchemaVersion: { version, connection in
-                            switch version {
-                            case 1:
-                                try connection.execute(
-                                    "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT NOT NULL)"
-                                )
-                            default:
-                                try connection.execute("""
-                                    INSERT INTO agents(name) VALUES('Sterling Archer');
-                                    INSERT INTO agents(name) VALUES('Lana Kane')
-                                    """
-                                )
-                            }
-                        },
-                        willMigrateToSchemaVersion: { version in
-                            willMigrate.append(version)
-                        },
-                        didMigrateToSchemaVersion: { version in
-                            didMigrate.append(version)
-                        }
-                    )
-
-                    agentsTableExists = try connection.query("SELECT count(*) FROM sqlite_master WHERE type=? AND name=?",
-                        "table",
-                        "agents"
-                    )
-
-                    agentCount = try connection.query("SELECT count(*) FROM agents")
-                } catch {
-                    migrationError = error
-                }
-
-                expectation.fulfill()
+        // When
+        DispatchQueue.utility.async {
+            do {
+                try migrator.runMigrationsIfNecessary(
+                    migrationSQLForSchemaVersion: { version in
+                        return "CREATE TABLETYPO agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)"
+                    },
+                    willMigrateToSchemaVersion: { version in
+                        willMigrate.append(version)
+                    },
+                    didMigrateToSchemaVersion: { version in
+                        didMigrate.append(version)
+                    }
+                )
+            } catch {
+                migrationError = error
             }
 
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            // Then
-            if willMigrate.count == 2 && didMigrate.count == 2 {
-                XCTAssertEqual(willMigrate[0], 1)
-                XCTAssertEqual(willMigrate[1], 2)
-
-                XCTAssertEqual(didMigrate[0], 1)
-                XCTAssertEqual(didMigrate[1], 2)
-            } else {
-                XCTFail("will and did migrate counts should be 2")
-            }
-
-            XCTAssertNil(migrationError)
-            XCTAssertEqual(agentsTableExists, true)
-            XCTAssertEqual(agentCount, 2)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
+            expectation.fulfill()
         }
-    }
 
-    func testThatMigratorGracefullyHandlesErrorEncounteredDuringMigration() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            let migrator = Migrator(connection: connection, desiredSchemaVersion: 1)
+        waitForExpectations(timeout: timeout, handler: nil)
 
-            let expectation = self.expectation(description: "migrations should complete successfully")
-
-            var willMigrate: [UInt64] = []
-            var didMigrate: [UInt64] = []
-            var migrationError: Error? = nil
-
-            // When
-            DispatchQueue.utility.async {
-                do {
-                    try migrator.runMigrationsIfNecessary(
-                        migrationSQLForSchemaVersion: { version in
-                            return "CREATE TABLETYPO agents(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)"
-                        },
-                        willMigrateToSchemaVersion: { version in
-                            willMigrate.append(version)
-                        },
-                        didMigrateToSchemaVersion: { version in
-                            didMigrate.append(version)
-                        }
-                    )
-                } catch {
-                    migrationError = error
-                }
-
-                expectation.fulfill()
-            }
-
-            waitForExpectations(timeout: timeout, handler: nil)
-
-            // Then
-            XCTAssertEqual(willMigrate.count, 1)
-            XCTAssertEqual(didMigrate.count, 0)
-            XCTAssertNotNil(migrationError)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(willMigrate.count, 1)
+        XCTAssertEqual(didMigrate.count, 0)
+        XCTAssertNotNil(migrationError)
     }
 }

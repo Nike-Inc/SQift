@@ -402,124 +402,104 @@ class BindingTestCase: BaseTestCase {
 
     // MARK: - Tests - Codable Binding
 
-    func testCodableBinding() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
+    func testCodableBinding() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
 
-            let archer = Person(firstName: "Sterling", lastName: "Archer", countries: ["USA", "France", "Belgium"], friends: 0, homes: 2)
-            let lana = Person(firstName: "Lana", lastName: "Kane", countries: ["USA", "China", "Russia"], friends: 1, homes: 20)
+        let archer = Person(firstName: "Sterling", lastName: "Archer", countries: ["USA", "France", "Belgium"], friends: 0, homes: 2)
+        let lana = Person(firstName: "Lana", lastName: "Kane", countries: ["USA", "China", "Russia"], friends: 1, homes: 20)
 
-            // When
-            try connection.run("INSERT INTO person(data) VALUES(?)", archer)
-            try connection.run("INSERT INTO person(data) VALUES(?)", lana)
+        // When
+        try connection.run("INSERT INTO person(data) VALUES(?)", archer)
+        try connection.run("INSERT INTO person(data) VALUES(?)", lana)
 
-            let archerQueried: Person? = try connection.query("SELECT data FROM person WHERE id = ?", 1)
-            let lanaQueried: Person? = try connection.query("SELECT data FROM person WHERE id = ?", 2)
+        let archerQueried: Person? = try connection.query("SELECT data FROM person WHERE id = ?", 1)
+        let lanaQueried: Person? = try connection.query("SELECT data FROM person WHERE id = ?", 2)
 
-            // Then
-            XCTAssertEqual(archerQueried, archer)
-            XCTAssertEqual(lanaQueried, lana)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(archerQueried, archer)
+        XCTAssertEqual(lanaQueried, lana)
     }
 
     // MARK: - Tests - Collection Bindings
 
-    func testArrayBinding() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
+    func testArrayBinding() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
 
-            let points: ArrayBinding = [
-                CGPoint(x: 1.0, y: 2.0),
-                CGPoint(x: 3.0, y: 4.0),
-                CGPoint(x: 5.0, y: 6.0),
-                CGPoint(x: 7.0, y: 8.0),
-                CGPoint(x: 9.0, y: 10.0)
-            ]
+        let points: ArrayBinding = [
+            CGPoint(x: 1.0, y: 2.0),
+            CGPoint(x: 3.0, y: 4.0),
+            CGPoint(x: 5.0, y: 6.0),
+            CGPoint(x: 7.0, y: 8.0),
+            CGPoint(x: 9.0, y: 10.0)
+        ]
 
-            // When
-            try connection.run("INSERT INTO stream(data) VALUES(?)", points)
-            let pointsQueried: ArrayBinding<CGPoint>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
+        // When
+        try connection.run("INSERT INTO stream(data) VALUES(?)", points)
+        let pointsQueried: ArrayBinding<CGPoint>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
 
-            // Then
-            XCTAssertEqual(pointsQueried?.elements ?? [], points.elements)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(pointsQueried?.elements ?? [], points.elements)
     }
 
-    func testArrayBindingOfCodableBindings() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
+    func testArrayBindingOfCodableBindings() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
 
-            let people: ArrayBinding = [
-                Person(firstName: "Sterling", lastName: "Archer", countries: ["USA", "France", "Belgium"], friends: 0, homes: 2),
-                Person(firstName: "Lana", lastName: "Kane", countries: ["USA", "China", "Russia"], friends: 1, homes: 20)
-            ]
+        let people: ArrayBinding = [
+            Person(firstName: "Sterling", lastName: "Archer", countries: ["USA", "France", "Belgium"], friends: 0, homes: 2),
+            Person(firstName: "Lana", lastName: "Kane", countries: ["USA", "China", "Russia"], friends: 1, homes: 20)
+        ]
 
-            // When
-            try connection.run("INSERT INTO stream(data) VALUES(?)", people)
-            let peopleQueried: ArrayBinding<Person>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
+        // When
+        try connection.run("INSERT INTO stream(data) VALUES(?)", people)
+        let peopleQueried: ArrayBinding<Person>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
 
-            // Then
-            XCTAssertEqual(peopleQueried?.elements ?? [], people.elements)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(peopleQueried?.elements ?? [], people.elements)
     }
 
-    func testSetBinding() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
+    func testSetBinding() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
 
-            let identifiers: SetBinding = [
-                UUID(),
-                UUID(),
-                UUID(),
-                UUID()
-            ]
+        let identifiers: SetBinding = [
+            UUID(),
+            UUID(),
+            UUID(),
+            UUID()
+        ]
 
-            // When
-            try connection.run("INSERT INTO stream(data) VALUES(?)", identifiers)
-            let identifiersQueried: SetBinding<UUID>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
+        // When
+        try connection.run("INSERT INTO stream(data) VALUES(?)", identifiers)
+        let identifiersQueried: SetBinding<UUID>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
 
-            // Then
-            XCTAssertEqual(identifiersQueried?.elements ?? [], identifiers.elements)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(identifiersQueried?.elements ?? [], identifiers.elements)
     }
 
-    func testDictionaryBinding() {
-        do {
-            // Given
-            let connection = try Connection(storageLocation: storageLocation)
-            try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
+    func testDictionaryBinding() throws {
+        // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try connection.execute("CREATE TABLE stream(id INTEGER PRIMARY KEY, data BLOB NOT NULL)")
 
-            let capitals: DictionaryBinding = [
-                "Iowa": "Des Moines",
-                "Oregon": "Salem",
-                "California": "Sacremento",
-                "Washington": "Olympia"
-            ]
+        let capitals: DictionaryBinding = [
+            "Iowa": "Des Moines",
+            "Oregon": "Salem",
+            "California": "Sacremento",
+            "Washington": "Olympia"
+        ]
 
-            // When
-            try connection.run("INSERT INTO stream(data) VALUES(?)", capitals)
-            let capitalsQueried: DictionaryBinding<String, String>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
+        // When
+        try connection.run("INSERT INTO stream(data) VALUES(?)", capitals)
+        let capitalsQueried: DictionaryBinding<String, String>? = try connection.query("SELECT data FROM stream WHERE id = ?", 1)
 
-            // Then
-            XCTAssertEqual(capitalsQueried?.elements ?? [:], capitals.elements)
-        } catch {
-            XCTFail("Test encountered unexpected error: \(error)")
-        }
+        // Then
+        XCTAssertEqual(capitalsQueried?.elements ?? [:], capitals.elements)
     }
 }
