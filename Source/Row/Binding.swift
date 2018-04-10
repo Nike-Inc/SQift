@@ -347,10 +347,7 @@ extension Data: Binding {
 /// The `CodableBinding` protocol represents a `Binding` that is also `Codable`.
 public protocol CodableBinding: Codable, Binding {}
 
-extension CodableBinding {
-    /// The binding type of a parameter to bind to a statement.
-    public typealias BindingType = Data
-
+extension CodableBinding where BindingType == Data {
     /// The binding value representation of the type to be bound to a `Statement`.
     public var bindingValue: BindingValue {
         var data: Data
@@ -382,6 +379,9 @@ extension CodableBinding {
 
 /// A `CodableBinding` container for an `Array`.
 public struct ArrayBinding<T: Codable>: CodableBinding, ExpressibleByArrayLiteral {
+    /// The binding type of a parameter to bind to a statement.
+    public typealias BindingType = Data
+
     /// The elements of the binding.
     public let elements: [T]
 
@@ -402,6 +402,9 @@ public struct ArrayBinding<T: Codable>: CodableBinding, ExpressibleByArrayLitera
 
 /// A `CodableBinding` container for a `Set`.
 public struct SetBinding<T: Hashable & Codable>: CodableBinding, ExpressibleByArrayLiteral {
+    /// The binding type of a parameter to bind to a statement.
+    public typealias BindingType = Data
+
     /// The elements of the binding.
     public let elements: Set<T>
 
@@ -422,6 +425,9 @@ public struct SetBinding<T: Hashable & Codable>: CodableBinding, ExpressibleByAr
 
 /// A `CodableBinding` container for a `Dictionary`.
 public struct DictionaryBinding<Key: Hashable & Codable, Value: Codable>: CodableBinding, ExpressibleByDictionaryLiteral {
+    /// The binding type of a parameter to bind to a statement.
+    public typealias BindingType = Data
+
     /// The elements of the binding.
     public let elements: [Key: Value]
 
