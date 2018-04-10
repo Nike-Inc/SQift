@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'SQift'
-  s.version = '3.0.1'
+  s.version = '3.0.2'
   s.license = 'MIT'
   s.summary = 'A lightweight Swift wrapper for SQLite.'
   s.homepage = 'https://github.com/Nike-Inc/SQift'
@@ -17,4 +17,3 @@ Pod::Spec.new do |s|
 
   s.libraries = 'sqlite3'
 end
-
