@@ -282,6 +282,7 @@
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB1AE431FA1169000976A5C /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
+		4CD9E069207C47FB00D02902 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		4CE5E8681F59E88E00D47037 /* SQift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SQift.podspec; sourceTree = "<group>"; };
 		4CE5E8691F59E89700D47037 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		4CE5E86A1F59E89700D47037 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -526,6 +527,7 @@
 			children = (
 				4CE5E8661F59E87800D47037 /* Deployment */,
 				4CE5E8671F59E88000D47037 /* Documentation */,
+				4CD9E068207C47EC00D02902 /* Integration */,
 				4CA8C2381BF6A4C100822606 /* Source */,
 				4CA8C23D1BF6A4C700822606 /* Tests */,
 				4CA8C21F1BF6A49400822606 /* Products */,
@@ -570,6 +572,14 @@
 				4C6121281F58BBCE00C289C0 /* Tests */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		4CD9E068207C47EC00D02902 /* Integration */ = {
+			isa = PBXGroup;
+			children = (
+				4CD9E069207C47FB00D02902 /* .travis.yml */,
+			);
+			name = Integration;
 			sourceTree = "<group>";
 		};
 		4CE5E8661F59E87800D47037 /* Deployment */ = {
