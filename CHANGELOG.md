@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 
 #### 3.x Releases
 
-- `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301) | [3.0.2](#302)
+- `3.1.x` Releases - [3.1.0](#310)
+- `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
 
 #### 2.x Releases
 
@@ -31,10 +32,10 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [3.0.2](https://github.com/Nike-Inc/SQift/releases/tag/3.0.2)
+## [3.1.0](https://github.com/Nike-Inc/SQift/releases/tag/3.1.0)
 
 Released on 2018-04-10. All issues associated with this milestone can be found using this
-[filter](https://github.com/Nike-Inc/SQift/milestone/5?closed=1).
+[filter](https://github.com/Nike-Inc/SQift/milestone/2?closed=1).
 
 #### Updated
 
@@ -50,6 +51,8 @@ Released on 2018-04-10. All issues associated with this milestone can be found u
 - Compiler warnings in `CodableBinding` protocol extension with associated type typealias.
   - Fixed by [Christian Noon](https://github.com/cnoon) in Pull Request 
   [#6](https://github.com/Nike-Inc/SQift/pull/6).
+
+---
 
 ## [3.0.1](https://github.com/Nike-Inc/SQift/releases/tag/3.0.1)
 
