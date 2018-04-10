@@ -17,6 +17,8 @@ class BindingTestCase: BaseTestCase {
     // MARK: - Helper Types
 
     private struct Person: CodableBinding, Equatable {
+        typealias BindingType = Data
+
         let firstName: String
         let lastName: String
         let countries: [String]
