@@ -465,7 +465,7 @@ extension Connection {
 
             if pointer.assumingMemoryBound(to: Int.self).pointee == 0 {
                 object = contextObjectFactory()
-                pointer.initializeMemory(as: AnyObject.self, to: object)
+                pointer.initializeMemory(as: AnyObject.self, repeating: object, count: 1)
             } else {
                 object = pointer.assumingMemoryBound(to: AnyObject.self).pointee
             }
@@ -475,7 +475,7 @@ extension Connection {
 
         func deallocateAggregateContextObject() {
             guard let pointer = sqlite3_aggregate_context(context, Int32(MemoryLayout<AnyObject>.size)) else { return }
-            pointer.assumingMemoryBound(to: AnyObject.self).deinitialize()
+            pointer.assumingMemoryBound(to: AnyObject.self).deinitialize(count: 1)
         }
     }
 }
