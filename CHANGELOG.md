@@ -32,6 +32,14 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+#### Added
+
+- A new `TableLockPolicy` to handle table lock errors on `execute`, `prepare`, and `step` operations.
+
+---
+
 ## [3.1.0](https://github.com/Nike-Inc/SQift/releases/tag/3.1.0)
 
 Released on 2018-04-10. All issues associated with this milestone can be found using this

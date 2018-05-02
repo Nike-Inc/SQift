@@ -22,6 +22,9 @@ public class Connection {
 
     // MARK: - Properties
 
+    /// The table lock policy used to handle table lock errors encountered when using a shared cache.
+    public let tableLockPolicy: TableLockPolicy
+
     /// Returns the fileName of the database connection.
     /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/db_filename.html).
     public var fileName: String { return String(cString: sqlite3_db_filename(handle, nil)) }
@@ -64,6 +67,7 @@ public class Connection {
     ///
     /// - Parameters:
     ///   - storageLocation: The storage location path to use during initialization.
+    ///   - tableLockPolicy: The table lock policy used to handle table lock errors. `.fastFail` by default.
     ///   - readOnly:        Whether the connection should be read-only. `false` by default.
     ///   - multiThreaded:   Whether the connection should be multi-threaded. `true` by default.
     ///   - sharedCache:     Whether the connection should use a shared cache. `false` by default.
@@ -71,6 +75,7 @@ public class Connection {
     /// - Throws: A `SQLiteError` if SQLite encounters an error when opening the database connection.
     public convenience init(
         storageLocation: StorageLocation = .inMemory,
+        tableLockPolicy: TableLockPolicy = .fastFail,
         readOnly: Bool = false,
         multiThreaded: Bool = true,
         sharedCache: Bool = false)
@@ -82,7 +87,7 @@ public class Connection {
         flags |= multiThreaded ? SQLITE_OPEN_NOMUTEX : SQLITE_OPEN_FULLMUTEX
         flags |= sharedCache ? SQLITE_OPEN_SHAREDCACHE : SQLITE_OPEN_PRIVATECACHE
 
-        try self.init(storageLocation: storageLocation, flags: flags)
+        try self.init(storageLocation: storageLocation, tableLockPolicy: tableLockPolicy, flags: flags)
     }
 
     /// Creates the database `Connection` with the specified storage location and initialization flags.
@@ -91,14 +96,22 @@ public class Connection {
     ///
     /// - Parameters:
     ///   - storageLocation: The storage location path to use during initialization.
+    ///   - tableLockPolicy: The table lock policy used to handle table lock errors. `.fastFail` by default.
     ///   - flags:           The bitmask flags to use when initializing the connection.
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error when opening the database connection.
-    public init(storageLocation: StorageLocation, flags: Int32) throws {
+    public init(
+        storageLocation: StorageLocation,
+        tableLockPolicy: TableLockPolicy = .fastFail,
+        flags: Int32)
+        throws
+    {
+        self.tableLockPolicy = tableLockPolicy
+
         var tempHandle: OpaquePointer?
         try check(sqlite3_open_v2(storageLocation.path, &tempHandle, flags, nil))
 
-        handle = tempHandle!
+        self.handle = tempHandle!
     }
 
     deinit {
@@ -118,7 +131,16 @@ public class Connection {
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters and error when executing the SQL statement.
     public func execute(_ sql: SQL) throws {
-        try check(sqlite3_exec(handle, sql, nil, nil, nil))
+        var result = sqlite3_exec(handle, sql, nil, nil, nil)
+
+        if let delay = tableLockPolicy.intervalInMicroseconds {
+            while result == SQLITE_LOCKED {
+                usleep(delay)
+                result = sqlite3_exec(handle, sql, nil, nil, nil)
+            }
+        }
+
+        try check(result)
     }
 
     /// Causes any active database operation to abort and return at its earliest opportunity.
