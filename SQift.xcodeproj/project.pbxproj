@@ -193,6 +193,13 @@
 		4C61216C1F58BBE400C289C0 /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6121391F58BBCE00C289C0 /* StringExtensionTests.swift */; };
 		4C61216D1F58BBE400C289C0 /* BindingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C61213B1F58BBCE00C289C0 /* BindingTests.swift */; };
 		4C61216E1F58BBE400C289C0 /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C61213C1F58BBCE00C289C0 /* RowTests.swift */; };
+		4C7EC8C920461EFF000FC1EF /* TableLockPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */; };
+		4C7EC8CA20461EFF000FC1EF /* TableLockPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */; };
+		4C7EC8CB20461EFF000FC1EF /* TableLockPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */; };
+		4C7EC8CC20461EFF000FC1EF /* TableLockPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */; };
+		4C7EC8CE20462706000FC1EF /* TableLockPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */; };
+		4C7EC8CF20462706000FC1EF /* TableLockPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */; };
+		4C7EC8D020462706000FC1EF /* TableLockPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */; };
 		4CA8C2291BF6A49400822606 /* SQift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA8C21E1BF6A49400822606 /* SQift.framework */; };
 /* End PBXBuildFile section */
 
@@ -279,6 +286,8 @@
 		4C61213B1F58BBCE00C289C0 /* BindingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindingTests.swift; sourceTree = "<group>"; };
 		4C61213C1F58BBCE00C289C0 /* RowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
 		4C61213E1F58BBCE00C289C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableLockPolicy.swift; sourceTree = "<group>"; };
+		4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableLockPolicyTests.swift; sourceTree = "<group>"; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB1AE431FA1169000976A5C /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
@@ -406,6 +415,7 @@
 				4C61208A1F58BAD500C289C0 /* Database.swift */,
 				4C61208B1F58BAD500C289C0 /* Migrator.swift */,
 				4C61208C1F58BAD500C289C0 /* StorageLocation.swift */,
+				4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -484,6 +494,7 @@
 			children = (
 				4C6121341F58BBCE00C289C0 /* DatabaseTests.swift */,
 				4C6121351F58BBCE00C289C0 /* MigratorTests.swift */,
+				4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -926,6 +937,7 @@
 				4C6120DE1F58BB5200C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120E01F58BB5200C289C0 /* Collation.swift in Sources */,
 				4C34E4651F58DABC006FE2CC /* Authorizer.swift in Sources */,
+				4C7EC8CA20461EFF000FC1EF /* TableLockPolicy.swift in Sources */,
 				4C6120EA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120E41F58BB5200C289C0 /* Trace.swift in Sources */,
 				4C34E4401F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -958,6 +970,7 @@
 				4C6121581F58BBE400C289C0 /* TransactionTests.swift in Sources */,
 				4C34E4441F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121521F58BBE400C289C0 /* ConnectionQueueTests.swift in Sources */,
+				4C7EC8CF20462706000FC1EF /* TableLockPolicyTests.swift in Sources */,
 				4C61215A1F58BBE400C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4361F58D8EA006FE2CC /* StatementTests.swift in Sources */,
 				4C34E43B1F58D933006FE2CC /* BaseTestCase.swift in Sources */,
@@ -988,6 +1001,7 @@
 				4C6120EE1F58BB5200C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120F01F58BB5200C289C0 /* Collation.swift in Sources */,
 				4C34E4621F58DABC006FE2CC /* Authorizer.swift in Sources */,
+				4C7EC8CB20461EFF000FC1EF /* TableLockPolicy.swift in Sources */,
 				4C6120FA1F58BB5200C289C0 /* StringExtension.swift in Sources */,
 				4C6120F41F58BB5200C289C0 /* Trace.swift in Sources */,
 				4C34E4411F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -1020,6 +1034,7 @@
 				4C6121681F58BBE400C289C0 /* TransactionTests.swift in Sources */,
 				4C34E4431F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121621F58BBE400C289C0 /* ConnectionQueueTests.swift in Sources */,
+				4C7EC8D020462706000FC1EF /* TableLockPolicyTests.swift in Sources */,
 				4C61216A1F58BBE400C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4371F58D8EA006FE2CC /* StatementTests.swift in Sources */,
 				4C34E43C1F58D934006FE2CC /* BaseTestCase.swift in Sources */,
@@ -1050,6 +1065,7 @@
 				4C6120FE1F58BB5300C289C0 /* ConnectionPool.swift in Sources */,
 				4C6121001F58BB5300C289C0 /* Collation.swift in Sources */,
 				4C34E4641F58DABC006FE2CC /* Authorizer.swift in Sources */,
+				4C7EC8CC20461EFF000FC1EF /* TableLockPolicy.swift in Sources */,
 				4C61210A1F58BB5300C289C0 /* StringExtension.swift in Sources */,
 				4C6121041F58BB5300C289C0 /* Trace.swift in Sources */,
 				4C34E43E1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -1079,6 +1095,7 @@
 				4C6120CE1F58BB5100C289C0 /* ConnectionPool.swift in Sources */,
 				4C6120D01F58BB5100C289C0 /* Collation.swift in Sources */,
 				4C34E4631F58DABC006FE2CC /* Authorizer.swift in Sources */,
+				4C7EC8C920461EFF000FC1EF /* TableLockPolicy.swift in Sources */,
 				4C6120DA1F58BB5100C289C0 /* StringExtension.swift in Sources */,
 				4C6120D41F58BB5100C289C0 /* Trace.swift in Sources */,
 				4C34E43F1F58D97C006FE2CC /* Checkpoint.swift in Sources */,
@@ -1111,6 +1128,7 @@
 				4C6121481F58BBE300C289C0 /* TransactionTests.swift in Sources */,
 				4C34E4451F58D990006FE2CC /* CheckpointTests.swift in Sources */,
 				4C6121421F58BBE300C289C0 /* ConnectionQueueTests.swift in Sources */,
+				4C7EC8CE20462706000FC1EF /* TableLockPolicyTests.swift in Sources */,
 				4C61214A1F58BBE300C289C0 /* MigratorTests.swift in Sources */,
 				4C34E4381F58D8EA006FE2CC /* StatementTests.swift in Sources */,
 				4C34E43A1F58D933006FE2CC /* BaseTestCase.swift in Sources */,

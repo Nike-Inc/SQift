@@ -64,7 +64,17 @@ public class Statement {
         self.connection = connection
 
         var tempHandle: OpaquePointer?
-        try connection.check(sqlite3_prepare_v2(connection.handle, sql, -1, &tempHandle, nil))
+
+        var result = sqlite3_prepare_v2(connection.handle, sql, -1, &tempHandle, nil)
+
+        if let delay = connection.tableLockPolicy.intervalInMicroseconds {
+            while result == SQLITE_LOCKED {
+                usleep(delay)
+                result = sqlite3_prepare_v2(connection.handle, sql, -1, &tempHandle, nil)
+            }
+        }
+
+        try connection.check(result)
 
         handle = tempHandle!
     }
@@ -424,7 +434,16 @@ public class Statement {
     // MARK: - Internal - Step
 
     func step() throws -> Bool {
-        return try connection.check(sqlite3_step(handle)) == SQLITE_ROW
+        var result = sqlite3_step(handle)
+
+        if let delay = connection.tableLockPolicy.intervalInMicroseconds {
+            while result == SQLITE_LOCKED {
+                usleep(delay)
+                result = sqlite3_step(handle)
+            }
+        }
+
+        return try connection.check(result) == SQLITE_ROW
     }
 
     // MARK: - Private - Execution and Binding
