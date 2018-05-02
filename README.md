@@ -746,6 +746,28 @@ This can happen when other long lived read operations are running while changes 
 
 > We would like to encourage everyone to use a `Database` object rather than working directly with connection queues or connection pools.
 
+#### Table Lock Policy
+
+Table lock errors are `SQLITE_ERROR` types thrown by `execute`, `prepare`, and `step` operations.
+These errors can occur when the database is configured with a WAL journal mode as well as a shared cache.
+When one connection has obtained a lock on a table, another connection running on a different thread will receive table lock errors until the previous lock is released.
+In these situations, there are a couple of ways to proceed.
+The error can either be immediately thrown and handled by the client, or the calling thread can poll the operation until the lock is released.
+
+The `TableLockPolicy` defines two different ways to handle table lock errors.
+The first option is to poll on the calling thread at a specified interval until the lock is released.
+The other option is to immediately fast fail by throwing the table lock error as soon as it is encountered.
+`Connection`, `ConnectionPool`, and `Database` types are set to `.fastFail` by default.
+
+In order to enable polling for table lock errors, all that needs to be done is to set the policy in the `Connection` or `Database` initializer.
+
+```swift
+let connection = try Connection(storageLocation: storageLocation, tableLockPolicy: .poll(0.01))
+let database = try Database(storageLocation: .onDisk("path_to_db"), tableLockPolicy: .poll(0.01))
+```
+
+> When using a WAL journal mode and a shared cache, it is recommended to use a `.poll` table lock policy with a poll interval of `10 ms`. 
+
 ### Migrations
 
 Production applications generally need to migrate the database schema from time-to-time.
