@@ -40,6 +40,11 @@ public struct SQLiteError: Error {
         self.code = sqlite3_errcode(connection.handle)
         self.message = String(cString: sqlite3_errmsg(connection.handle))
     }
+
+    init(code: Int32, message: String) {
+        self.code = code
+        self.message = message
+    }
 }
 
 // MARK: - CustomStringConvertible
