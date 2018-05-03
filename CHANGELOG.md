@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 3.x Releases
 
+- `3.2.x` Releases - [3.2.0](#320)
 - `3.1.x` Releases - [3.1.0](#310)
 - `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
 
@@ -32,15 +33,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Unreleased]
+## [3.2.0](https://github.com/Nike-Inc/SQift/releases/tag/3.2.0)
+
+Released on 2018-05-02. All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/3?closed=1).
 
 #### Added
 
 - A new `TableLockPolicy` to handle table lock errors on `execute`, `prepare`, and `step` operations.
+  - Added by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#7](https://github.com/Nike-Inc/SQift/pull/7).
 
 #### Updated
 
 - The test suite by replacing `do-catch` implementations with `throws` test API variants and unhelpful assertion strings.
+  - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#8](https://github.com/Nike-Inc/SQift/pull/8).
 
 ---
 
