@@ -88,6 +88,9 @@ class TableLockPolicyTestCase: BaseConnectionTestCase {
     }
 
     func testThatConnectionThrowsTableLockErrorWhenReadLockBlocksWriteLock() throws {
+        // Disable test on CI since timing is too unpredictable
+        guard !ProcessInfo.isRunningOnCI else { return }
+
         // Given
         let writeConnection = try Connection(
             storageLocation: storageLocation,
