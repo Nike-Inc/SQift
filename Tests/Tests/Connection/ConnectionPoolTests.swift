@@ -108,17 +108,19 @@ class ConnectionPoolTestCase: BaseTestCase {
 
     func testThatConnectionPoolCanExecuteReadOnlyClosure() throws {
         // Given
+        let connection = try Connection(storageLocation: storageLocation)
+        try TestTables.createAndPopulateAgentsTable(using: connection)
         let pool = ConnectionPool(storageLocation: storageLocation)
 
         var count: Int?
 
         // When
         try pool.execute { connection in
-            count = try connection.query("SELECT count(*) FROM sqlite_master where type = 'table'")
+            count = try connection.query("SELECT count(*) FROM agents")
         }
 
         // Then
-        XCTAssertEqual(count, 0)
+        XCTAssertGreaterThanOrEqual(count ?? -1, 0)
     }
 
     func testThatConnectionPoolFailsToExecuteWriteClosure() {
