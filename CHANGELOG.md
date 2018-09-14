@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 3.x Releases
 
-- `3.2.x` Releases - [3.2.0](#320)
+- `3.2.x` Releases - [3.2.0](#320) | | [3.2.1](#321) 
 - `3.1.x` Releases - [3.1.0](#310)
 - `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
 
@@ -32,6 +32,28 @@ All notable changes to this project will be documented in this file.
 - `0.1.x` Releases - [0.1.0](#010)
 
 ---
+
+## [3.2.1](https://github.com/Nike-Inc/SQift/releases/tag/3.2.1)
+
+Released on 2018-09-17. All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/6?closed=1).
+
+#### Added
+
+- An internal initializer to `SQLiteError` to assist in error mocking for testing.
+  - Added by [Christian Noon](https://github.com/cnoon).
+
+#### Updated
+
+- The Xcode project to use Xcode 9.3 compatibility mode. 
+  - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#10](https://github.com/Nike-Inc/SQift/pull/10).
+- The Xcode project to support Xcode 10 and Swift 4.2. 
+  - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#10](https://github.com/Nike-Inc/SQift/pull/10).
+- The Travis-CI YAML file to use `bundler` and Xcode 10.
+  - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#10](https://github.com/Nike-Inc/SQift/pull/10).
 
 ## [3.2.0](https://github.com/Nike-Inc/SQift/releases/tag/3.2.0)
 
