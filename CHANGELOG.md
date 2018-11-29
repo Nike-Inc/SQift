@@ -33,6 +33,12 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+#### Removed
+- Support for WatchOS 2.0.
+  - Added by [Jereme Claussen](https://github.com/jereme)
+
 ## [3.2.1](https://github.com/Nike-Inc/SQift/releases/tag/3.2.1)
 
 Released on 2018-09-17. All issues associated with this milestone can be found using this
