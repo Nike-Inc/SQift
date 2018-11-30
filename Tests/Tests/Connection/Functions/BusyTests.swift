@@ -42,7 +42,6 @@ class BusyTestCase: BaseConnectionTestCase {
         var checkpointError: Error?
 
         // When
-        let timeout: TimeInterval
 
         // CN (8/21/17) - I can't find a way around this issue. It seems that iOS 10 and 11 might have a
         // simulator bug or potentially a bug in SQLite where the timeout is actually in nanoseconds instead
@@ -52,12 +51,7 @@ class BusyTestCase: BaseConnectionTestCase {
         //
         // I also tested using `PRAGMA busy_timeout = 2000` and the same behavior is observed. I can't find
         // any information about this online which is odd, but we should really avoid using this in production.
-        if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
-            timeout = 20_000.0
-            // try connection.execute("PRAGMA busy_timeout = 2000")
-        } else {
-            timeout = 2.0
-        }
+        let timeout: TimeInterval = 20_000.0
 
         try connection.busyHandler(.timeout(timeout)) // throws SQLITE_BUSY error if this is disabled
 

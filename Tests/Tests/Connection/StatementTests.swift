@@ -71,8 +71,6 @@ class StatementTestCase: BaseConnectionTestCase {
     }
 
     func testThatStatementCanReturnExpandedSQLBoundWithParameters() throws {
-        guard #available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *) else { return }
-
         // Given
         try connection.execute("CREATE TABLE person(id INTEGER PRIMARY KEY, first_name TEXT NOT NULL)")
 
