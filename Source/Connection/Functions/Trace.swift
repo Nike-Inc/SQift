@@ -33,7 +33,6 @@ extension Connection {
     ///
     /// - connectionClosed: Invoked when a database connection closes. The `connection` is a pointer to the database
     ///                     connection.
-    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     public enum TraceEvent: CustomStringConvertible {
         case statement(statement: String, sql: SQL)
         case profile(statement: String, seconds: Double)
@@ -83,7 +82,6 @@ extension Connection {
         }
     }
 
-    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     private class TraceEventBox {
         let closure: (TraceEvent) -> Void
 
@@ -139,35 +137,6 @@ extension Connection {
         }
     }
 
-    // MARK: - Tracing
-
-    /// Registers the callback with SQLite to be called each time a statement calls step.
-    ///
-    /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/profile.html).
-    ///
-    /// - Parameter closure: The closure called when SQLite internally calls step on a statement.
-    @available(*, deprecated: 3.3, message: "The `trace` API will be removed in SQift 4.0. Please use `traceEvent` instead.")
-    public func trace(_ closure: ((String) -> Void)?) {
-        guard let closure = closure else {
-            sqlite3_trace(handle, nil, nil)
-            traceBox = nil
-            return
-        }
-
-        let box = TraceBox(closure)
-        traceBox = box
-
-        sqlite3_trace(
-            handle,
-            { (boxPointer: UnsafeMutableRawPointer?, data: UnsafePointer<Int8>?) in
-                guard let boxPointer = boxPointer else { return }
-                let box = Unmanaged<TraceBox>.fromOpaque(boxPointer).takeUnretainedValue()
-                box.trace(data)
-            },
-            Unmanaged<TraceBox>.passUnretained(box).toOpaque()
-        )
-    }
-
     /// Registers the callback with SQLite to be called each time a statement calls step.
     ///
     /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/trace_v2.html).
@@ -175,7 +144,6 @@ extension Connection {
     /// - Parameters:
     ///   - mask:    The bitwise OR-ed mask of trace event constants.
     ///   - closure: The closure called when SQLite internally calls step on a statement.
-    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     public func traceEvent(mask: UInt32? = nil, closure: ((TraceEvent) -> Void)?) {
         guard let closure = closure else {
             sqlite3_trace_v2(handle, 0, nil, nil)

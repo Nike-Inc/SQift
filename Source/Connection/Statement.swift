@@ -33,7 +33,6 @@ public class Statement {
     ///
     /// Note that this API can return `nil` if there is insufficient memory to hold the result, or if the result would
     /// exceed the maximum string length determined by the [SQLITE_LIMIT_LENGTH].
-    @available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
     public var expandedSQL: SQL? {
         guard let expandedSQL = sqlite3_expanded_sql(handle) else { return nil }
         return SQL(cString: expandedSQL)

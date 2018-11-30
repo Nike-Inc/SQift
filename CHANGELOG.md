@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 `SQift` adheres to [Semantic Versioning](http://semver.org/).
 
+#### 4.x Releases
+
+- `4.0.x` Releases - [4.0.0](#400)
+
 #### 3.x Releases
 
 - `3.3.x` Releases - [3.3.0](#330)
@@ -31,6 +35,22 @@ All notable changes to this project will be documented in this file.
 - `0.3.x` Releases - [0.3.0](#030)
 - `0.2.x` Releases - [0.2.0](#020)
 - `0.1.x` Releases - [0.1.0](#010)
+
+---
+
+## [4.0.0](https://github.com/Nike-Inc/SQift/releases/tag/4.0.0)
+
+#### Added
+- Migration Guide for SQift 4 and added it to the README.
+  - Added by [Jereme Claussen](https://github.com/jereme)
+
+#### Updated
+- Deployment targets to iOS 9.0, Mac OSX 10.11, WatchOS 2.0 and tvOS 9.0.
+  - Added by [Jereme Claussen](https://github.com/jereme)
+  
+#### Removed
+- `Connection.trace` in favor of `Connection.traceEvent()`
+  - Added by [Jereme Claussen](https://github.com/jereme)
 
 ---
 
