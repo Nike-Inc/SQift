@@ -146,6 +146,7 @@ extension Connection {
     /// For more details, please refer to the [documentation](https://www.sqlite.org/c3ref/profile.html).
     ///
     /// - Parameter closure: The closure called when SQLite internally calls step on a statement.
+    @available(*, deprecated: 3.3, message: "The `trace` API will be removed in SQift 4.0. Please use `traceEvent` instead.")
     public func trace(_ closure: ((String) -> Void)?) {
         guard let closure = closure else {
             sqlite3_trace(handle, nil, nil)
