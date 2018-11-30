@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 3.x Releases
 
+- `3.3.x` Releases - [3.3.0](#330)
 - `3.2.x` Releases - [3.2.0](#320) | | [3.2.1](#321) 
 - `3.1.x` Releases - [3.1.0](#310)
 - `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
@@ -30,6 +31,19 @@ All notable changes to this project will be documented in this file.
 - `0.3.x` Releases - [0.3.0](#030)
 - `0.2.x` Releases - [0.2.0](#020)
 - `0.1.x` Releases - [0.1.0](#010)
+
+---
+
+## [3.3.0](https://github.com/Nike-Inc/SQift/releases/tag/3.3.0)
+
+Released on 2018-11-30. All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/5?closed=1).
+
+#### Deprecated
+
+- The `trace` API to prepare for 4.0 migration since the internal `sqlite3_trace` API is deprecated when bumping deployment targets.
+  - Deprecated by [Christian Noon](https://github.com/cnoon) in Pull Request
+  [#15](https://github.com/Nike-Inc/SQift/pull/15).
 
 ---
 
