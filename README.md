@@ -29,9 +29,13 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Requirements
 
-- iOS 9.0+, macOS 10.11+, tvOS 9.0+, watchOS 2.0+
+- iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+
 - Xcode 9.3+
 - Swift 4.1+
+
+## Migration Guides
+
+- [SQift 4.0 Migration Guide](Documentation/SQift%204.0%20Migration%20Guide.md)
 
 ## Communication
 
@@ -86,7 +90,7 @@ $ brew install carthage
 To integrate SQift into your Xcode project using Carthage, specify it in your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile):
 
 ```
-github "Nike-Inc/SQift" ~> 3.0
+github "Nike-Inc/SQift" ~> 4.0
 ```
 
 Run `carthage update` to build the framework and drag the built `SQift.framework` into your Xcode project.
@@ -487,13 +491,15 @@ try connection.transaction {
 ### Tracing
 
 When debugging SQL statements, sometimes it can be helpful to be able to print out what is actually being executed by SQLite.
-SQift allows you to do this through the `trace`and `traceEvent` APIs by registering a closure to run for each statement execution.
+SQift allows you to do this through the `traceEvent` API by registering a closure to run for each statement execution.
 
 ```swift
 let connection = try Connection(storageLocation: storageLocation)
 
-connection.trace { sql in
-    print(sql)
+connection.traceEvent { event in
+    if case .statement(_, let sql) = sql {
+        print(sql)
+    }
 }
 
 try connection.execute("CREATE TABLE employees(id INTEGER PRIMARY KEY, name TEXT)")

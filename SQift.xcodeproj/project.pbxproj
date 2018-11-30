@@ -228,6 +228,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SQift 4.0 Migration Guide.md"; sourceTree = "<group>"; };
 		4C13EF9E1F7C116D0069CF58 /* ProcessInfoExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfoExtension.swift; sourceTree = "<group>"; };
 		4C29B2E41BFB25C00086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B2ED1BFB25C00086A2EF /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -608,6 +609,7 @@
 			children = (
 				4CE5E8691F59E89700D47037 /* CHANGELOG.md */,
 				4CE5E86A1F59E89700D47037 /* README.md */,
+				1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
@@ -1188,6 +1190,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
@@ -1215,6 +1218,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = "-lsqlite3";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
@@ -1286,6 +1290,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -1312,6 +1317,7 @@
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -1331,6 +1337,7 @@
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -1350,6 +1357,7 @@
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -1380,6 +1388,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -1406,6 +1415,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1470,8 +1480,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1526,8 +1536,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1558,6 +1568,7 @@
 				);
 				INFOPLIST_FILE = "Source/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1582,6 +1593,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "SQLITE_HAS_CODEC=1";
 				INFOPLIST_FILE = "Source/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

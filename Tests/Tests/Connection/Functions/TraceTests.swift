@@ -13,35 +13,6 @@ import Foundation
 import XCTest
 
 class TraceTestCase: BaseTestCase {
-    func testThatConnectionCanTraceStatementExecution() throws {
-        // Given
-        let connection = try Connection(storageLocation: storageLocation)
-
-        var statements: [String] = []
-
-        // When
-        connection.trace { SQL in
-            statements.append(SQL)
-        }
-
-        try connection.execute("CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
-        try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(1, "Sterling Archer").run()
-        try connection.prepare("INSERT INTO agents VALUES(?, ?)").bind(2, "Lana Kane").run()
-        try connection.stepAll("SELECT * FROM agents")
-
-        connection.trace(nil)
-
-        // Then
-        if statements.count == 4 {
-            XCTAssertEqual(statements[0], "CREATE TABLE agents(id INTEGER PRIMARY KEY, name TEXT)")
-            XCTAssertEqual(statements[1], "INSERT INTO agents VALUES(1, 'Sterling Archer')")
-            XCTAssertEqual(statements[2], "INSERT INTO agents VALUES(2, 'Lana Kane')")
-            XCTAssertEqual(statements[3], "SELECT * FROM agents")
-        } else {
-            XCTFail("statements count should be 4")
-        }
-    }
-
     func testThatConnectionCanTraceStatementEventExecution() throws {
         if #available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *) {
             // Given
@@ -163,7 +134,6 @@ class TraceTestCase: BaseTestCase {
 
 // MARK: -
 
-@available(iOS 10.0, macOS 10.12.0, tvOS 10.0, watchOS 3.0, *)
 extension Connection.TraceEvent {
     var rawValue: String {
         switch self {
