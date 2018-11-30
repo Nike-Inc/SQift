@@ -35,6 +35,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+#### Updated
+- Usages of `sqlite3_trace` to `sqlite3_trace_v2` for WatchOS 3.0 compatibility.
+  - Added by [Jereme Claussen](https://github.com/jereme)
+
 #### Removed
 - Support for WatchOS 2.0.
   - Added by [Jereme Claussen](https://github.com/jereme)

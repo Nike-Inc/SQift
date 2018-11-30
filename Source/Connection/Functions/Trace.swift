@@ -148,7 +148,7 @@ extension Connection {
     /// - Parameter closure: The closure called when SQLite internally calls step on a statement.
     public func trace(_ closure: ((String) -> Void)?) {
         guard let closure = closure else {
-            sqlite3_trace(handle, nil, nil)
+            sqlite3_trace_v2(handle, 0, nil, nil)
             traceBox = nil
             return
         }
@@ -156,12 +156,13 @@ extension Connection {
         let box = TraceBox(closure)
         traceBox = box
 
-        sqlite3_trace(
+        sqlite3_trace_v2(
             handle,
-            { (boxPointer: UnsafeMutableRawPointer?, data: UnsafePointer<Int8>?) in
-                guard let boxPointer = boxPointer else { return }
-                let box = Unmanaged<TraceBox>.fromOpaque(boxPointer).takeUnretainedValue()
-                box.trace(data)
+            0,
+            { (mask: UInt32, boxPointer: UnsafeMutableRawPointer?, arg1: UnsafeMutableRawPointer?, arg2: UnsafeMutableRawPointer?) in
+                guard let boxPointer = boxPointer else { return 0 }
+                let box = Unmanaged<TraceEventBox>.fromOpaque(boxPointer).takeUnretainedValue()
+                return box.trace(mask: mask, arg1: arg1, arg2: arg2)
             },
             Unmanaged<TraceBox>.passUnretained(box).toOpaque()
         )
