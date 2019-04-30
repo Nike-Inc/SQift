@@ -30,8 +30,8 @@ SQift is a lightweight Swift wrapper for SQLite.
 ## Requirements
 
 - iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+
-- Xcode 9.3+
-- Swift 4.1+
+- Xcode 10.0+
+- Swift 4.2+
 
 ## Migration Guides
 

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 4.x Releases
 
+- `4.1.x` Releases - [4.1.0](#410)
 - `4.0.x` Releases - [4.0.0](#400)
 
 #### 3.x Releases
@@ -37,11 +38,23 @@ All notable changes to this project will be documented in this file.
 - `0.1.x` Releases - [0.1.0](#010)
 
 ---
+## [4.1.0](https://github.com/Nike-Inc/SQift/releases/tag/4.1.0)
+
+Release on 2019-04-30.  All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/8?closed=1).
+
+#### Updated
+-  To Swift 5 with backwards compatibility to Swift 4.2.
+   - Updated by [William Thompson](https://github.com/eSpecialized) in Pull Request [#18](https://github.com/Nike-Inc/SQift/pull/18).
+-  Deployment targets to watchOS 3.0 and tvOS 10.0 in Xcode project to match podspec.
+   - Updated by [William Thompson](https://github.com/eSpecialized) in Pull Request [#18](https://github.com/Nike-Inc/SQift/pull/18).
+
+---
 
 ## [4.0.0](https://github.com/Nike-Inc/SQift/releases/tag/4.0.0)
 
 Release on 2018-11-30.  All issues associated with this milestone can be found using this
-[filter](https://github.com/Nike-Inc/SQift/milestone/7?closed=1)
+[filter](https://github.com/Nike-Inc/SQift/milestone/7?closed=1).
 
 #### Added
 - Migration Guide for SQift 4 and added it to the README.

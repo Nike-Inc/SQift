@@ -361,7 +361,13 @@ extension Connection {
                 sqlite3_result_text64(context, text, UInt64(text.utf8.count), SQLITE_TRANSIENT, UInt8(SQLITE_UTF8))
 
             case .data(var data):
-                data.withUnsafeBytes { sqlite3_result_blob64(context, $0, UInt64(data.count), SQLITE_TRANSIENT) }
+                #if swift(<5.0)
+                    data.withUnsafeBytes { sqlite3_result_blob64(context, $0, UInt64(data.count), SQLITE_TRANSIENT) }
+                #else
+                    data.withUnsafeBytes {
+                        sqlite3_result_blob64(context, $0.bindMemory(to: UInt8.self).baseAddress, UInt64(data.count), SQLITE_TRANSIENT)
+                    }
+                #endif
 
             case .zeroData(let length):
                 sqlite3_result_zeroblob64(context, length)
