@@ -112,7 +112,9 @@ public class ConnectionQueue {
 // MARK: - Hashable
 
 extension ConnectionQueue: Hashable {
-    public var hashValue: Int { return id.hashValue }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id.hashValue)
+    }
 }
 
 // MARK: - Equatable

@@ -472,9 +472,15 @@ public class Statement {
             try connection.check(sqlite3_bind_text(handle, index, value, -1, SQLITE_TRANSIENT))
 
         case .blob(let value):
-            try value.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
-                try connection.check(sqlite3_bind_blob(handle, index, bytes, Int32(value.count), SQLITE_TRANSIENT))
-            }
+            #if swift(<5.0)
+                try value.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
+                    try connection.check(sqlite3_bind_blob(handle, index, bytes, Int32(value.count), SQLITE_TRANSIENT))
+                }
+            #else
+               try value.withUnsafeBytes {
+                    _ = try connection.check(sqlite3_bind_blob(handle, index, $0.bindMemory(to: UInt8.self).baseAddress, Int32(value.count), SQLITE_TRANSIENT))
+                }
+            #endif
         }
     }
 }
