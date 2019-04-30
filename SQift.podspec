@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "SQift"
-  s.version = "4.1.0"
+  s.version = "5.0.0"
   s.license = "MIT"
   s.summary = "A lightweight Swift wrapper for SQLite."
   s.homepage = "https://github.com/Nike-Inc/SQift"
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
 
   s.source = { :git => "https://github.com/Nike-Inc/SQift.git", :tag => s.version }
   s.source_files = "Source/**/*.swift"
-  s.swift_versions = ["4.2", "5.0"]
+  s.swift_version = "5.0"
 
   s.ios.deployment_target = "10.0"
   s.osx.deployment_target = "10.12"
