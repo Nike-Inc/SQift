@@ -1288,7 +1288,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -1316,7 +1315,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
@@ -1338,7 +1336,6 @@
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
@@ -1359,7 +1356,6 @@
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
-				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
@@ -1390,7 +1386,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
@@ -1418,7 +1413,6 @@
 				PRODUCT_NAME = SQift;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
@@ -1583,7 +1577,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1609,7 +1602,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nike.SQift;
 				PRODUCT_NAME = SQift;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -1628,7 +1620,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-Tests";
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1647,7 +1638,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nike.SQift-Tests";
 				PRODUCT_NAME = "SQift Tests";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

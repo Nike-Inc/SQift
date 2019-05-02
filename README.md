@@ -66,7 +66,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'SQift', '~> 4.1.1'
+    pod 'SQift', '~> 4.1'
 end
 ```
 
@@ -90,7 +90,7 @@ $ brew install carthage
 To integrate SQift into your Xcode project using Carthage, specify it in your [Cartfile](https://github.com/Carthage/Carthage/blob/master/Documentation/Artifacts.md#cartfile):
 
 ```
-github "Nike-Inc/SQift" ~> 4.1.1
+github "Nike-Inc/SQift" ~> 4.1
 ```
 
 Run `carthage update` to build the framework and drag the built `SQift.framework` into your Xcode project.
