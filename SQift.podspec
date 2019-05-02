@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "SQift"
-  s.version = "4.1.0"
+  s.version = "4.1.1"
   s.license = "MIT"
   s.summary = "A lightweight Swift wrapper for SQLite."
   s.homepage = "https://github.com/Nike-Inc/SQift"

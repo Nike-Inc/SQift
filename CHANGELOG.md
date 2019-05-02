@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 4.x Releases
 
-- `4.1.x` Releases - [4.1.0](#410)
+- `4.1.x` Releases - [4.1.0](#410)|| [4.1.1](#411)
 - `4.0.x` Releases - [4.0.0](#400)
 
 #### 3.x Releases
@@ -38,6 +38,19 @@ All notable changes to this project will be documented in this file.
 - `0.1.x` Releases - [0.1.0](#010)
 
 ---
+
+## [4.1.1](https://github.com/Nike-Inc/SQift/releases/tag/4.1.1)
+
+Release on 2019-05-02.  All issues associated with this milestone can be found using this
+[filter](https://github.com/Nike-Inc/SQift/milestone/11?closed=1).
+
+#### Fixed
+-  To Swift 4.2 for Carthage, git submodule support.
+- Updated by [William Thompson](https://github.com/eSpecialized) in Pull Request [#18](https://github.com/Nike-Inc/SQift/pull/24).
+
+
+---
+
 ## [4.1.0](https://github.com/Nike-Inc/SQift/releases/tag/4.1.0)
 
 Release on 2019-04-30.  All issues associated with this milestone can be found using this
