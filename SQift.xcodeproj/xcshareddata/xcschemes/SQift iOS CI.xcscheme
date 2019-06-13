@@ -51,6 +51,16 @@
          </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4CA8C2271BF6A49400822606"
+               BuildableName = "SQift Tests.xctest"
+               BlueprintName = "SQift iOS Tests"
+               ReferencedContainer = "container:SQift.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <EnvironmentVariables>
          <EnvironmentVariable

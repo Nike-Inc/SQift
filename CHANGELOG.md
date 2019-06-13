@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 #### 5.x Releases
 
-- `5.0.x` Releases - [5.0.0](#500)||[5.0.1](#501)
+- `5.0.x` Releases - [5.0.0](#500) | [5.0.1](#501)
 
 #### 4.x Releases
 
@@ -43,13 +43,13 @@ All notable changes to this project will be documented in this file.
 
 ## [5.0.1](https://github.com/Nike-Inc/SQift/releases/tag/5.0.1)
 
-Release on 2019-06-13.  All issues associated with this milestone can be found using this
+Released on 2019-06-27. All issues associated with this milestone can be found using this
 [filter](https://github.com/Nike-Inc/SQift/milestone/12?closed=1).
 
 #### Updated
 
--  Fixes Carthage build issues with failing tests. Updates to Scheme's allows carthage to do the build.
-- Updated by [William Thompson](https://github.com/eSpecialized) in Pull Request [#28](https://github.com/Nike-Inc/SQift/pull/28).
+- Fixed issue where Carthage was unable to build SQift due to schemes requiring test suite compilation.
+  - Fixed by [William Thompson](https://github.com/eSpecialized) in Pull Request [#28](https://github.com/Nike-Inc/SQift/pull/28).
 
 
 ---
