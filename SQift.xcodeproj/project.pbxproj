@@ -228,7 +228,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "SQift 4.0 Migration Guide.md"; sourceTree = "<group>"; };
 		4C13EF9E1F7C116D0069CF58 /* ProcessInfoExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfoExtension.swift; sourceTree = "<group>"; };
 		4C29B2E41BFB25C00086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B2ED1BFB25C00086A2EF /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -288,13 +287,15 @@
 		4C61213E1F58BBCE00C289C0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C7EC8C820461EFF000FC1EF /* TableLockPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableLockPolicy.swift; sourceTree = "<group>"; };
 		4C7EC8CD20462706000FC1EF /* TableLockPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableLockPolicyTests.swift; sourceTree = "<group>"; };
+		4C8A44472363BCF8008C7BBC /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		4C8A44482363BCF8008C7BBC /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		4C8A44492363BCF8008C7BBC /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
+		4C8A44522363BD57008C7BBC /* SQift 4.0 Migration Guide.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = "SQift 4.0 Migration Guide.md"; path = "Documentation/SQift 4.0 Migration Guide.md"; sourceTree = "<group>"; };
 		4CA8C21E1BF6A49400822606 /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CA8C2281BF6A49400822606 /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB1AE431FA1169000976A5C /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
 		4CD9E069207C47FB00D02902 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		4CE5E8681F59E88E00D47037 /* SQift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SQift.podspec; sourceTree = "<group>"; };
-		4CE5E8691F59E89700D47037 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
-		4CE5E86A1F59E89700D47037 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -532,11 +533,30 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		4C8A44462363BCB7008C7BBC /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				4C8A44482363BCF8008C7BBC /* CHANGELOG.md */,
+				4C8A44492363BCF8008C7BBC /* CONTRIBUTING.md */,
+				4C8A44472363BCF8008C7BBC /* README.md */,
+				4C8A44512363BD3C008C7BBC /* Migration Guides */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		4C8A44512363BD3C008C7BBC /* Migration Guides */ = {
+			isa = PBXGroup;
+			children = (
+				4C8A44522363BD57008C7BBC /* SQift 4.0 Migration Guide.md */,
+			);
+			name = "Migration Guides";
+			sourceTree = "<group>";
+		};
 		4CA8C2141BF6A49400822606 = {
 			isa = PBXGroup;
 			children = (
 				4CE5E8661F59E87800D47037 /* Deployment */,
-				4CE5E8671F59E88000D47037 /* Documentation */,
+				4C8A44462363BCB7008C7BBC /* Documentation */,
 				4CD9E068207C47EC00D02902 /* Integration */,
 				4CA8C2381BF6A4C100822606 /* Source */,
 				4CA8C23D1BF6A4C700822606 /* Tests */,
@@ -600,16 +620,6 @@
 				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
 			);
 			name = Deployment;
-			sourceTree = "<group>";
-		};
-		4CE5E8671F59E88000D47037 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				4CE5E8691F59E89700D47037 /* CHANGELOG.md */,
-				4CE5E86A1F59E89700D47037 /* README.md */,
-				1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */,
-			);
-			name = Documentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

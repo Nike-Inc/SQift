@@ -49,6 +49,8 @@ All notable changes to this project will be documented in this file.
 
 - Issue where Carthage was unable to build SQift due to schemes requiring test suite compilation.
   - Fixed by [William Thompson](https://github.com/eSpecialized) in Pull Request [#28](https://github.com/Nike-Inc/SQift/pull/28).
+- Issue in Xcode project Documentation group where links were invalid and README links were broken.
+  - Fixed by [James Eisenhauer](https://github.com/jimmyeisenhauer) in Pull Request [#30](https://github.com/Nike-Inc/SQift/pull/30).
 
 ---
 
