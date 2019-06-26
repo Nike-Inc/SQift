@@ -353,6 +353,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3BE1BD8022C43D6A003D05BA /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */,
+			);
+			path = Documentation;
+			sourceTree = "<group>";
+		};
 		4C6120741F58BAD500C289C0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -535,8 +543,10 @@
 		4CA8C2141BF6A49400822606 = {
 			isa = PBXGroup;
 			children = (
+				4CE5E86A1F59E89700D47037 /* README.md */,
+				4CE5E8691F59E89700D47037 /* CHANGELOG.md */,
+				3BE1BD8022C43D6A003D05BA /* Documentation */,
 				4CE5E8661F59E87800D47037 /* Deployment */,
-				4CE5E8671F59E88000D47037 /* Documentation */,
 				4CD9E068207C47EC00D02902 /* Integration */,
 				4CA8C2381BF6A4C100822606 /* Source */,
 				4CA8C23D1BF6A4C700822606 /* Tests */,
@@ -600,16 +610,6 @@
 				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
 			);
 			name = Deployment;
-			sourceTree = "<group>";
-		};
-		4CE5E8671F59E88000D47037 /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				4CE5E8691F59E89700D47037 /* CHANGELOG.md */,
-				4CE5E86A1F59E89700D47037 /* README.md */,
-				1E65A75F21B1C19C007F75F3 /* SQift 4.0 Migration Guide.md */,
-			);
-			name = Documentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
