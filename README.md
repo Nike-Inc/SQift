@@ -35,7 +35,7 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Migration Guides
 
-- [SQift 4.0 Migration Guide](Documentation/SQift%204.0%20Migration%20Guide.md)
+- [SQift 4.0 Migration Guide](SQift%204.0%20Migration%20Guide.md)
 
 ## Communication
 
