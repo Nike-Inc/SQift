@@ -43,6 +43,15 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## Unreleased
+
+#### Fixed
+
+- Issue where Carthage was unable to build SQift due to schemes requiring test suite compilation.
+  - Fixed by [William Thompson](https://github.com/eSpecialized) in Pull Request [#28](https://github.com/Nike-Inc/SQift/pull/28).
+
+---
+
 ## [5.0.0](https://github.com/Nike-Inc/SQift/releases/tag/5.0.0)
 
 Release on 2019-04-30.  All issues associated with this milestone can be found using this
