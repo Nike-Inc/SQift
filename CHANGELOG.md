@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 #### 3.x Releases
 
 - `3.3.x` Releases - [3.3.0](#330)
-- `3.2.x` Releases - [3.2.0](#320) | | [3.2.1](#321) 
+- `3.2.x` Releases - [3.2.0](#320) | | [3.2.1](#321)
 - `3.1.x` Releases - [3.1.0](#310)
 - `3.0.x` Releases - [3.0.0](#300) | [3.0.1](#301)
 
@@ -45,7 +45,7 @@ All notable changes to this project will be documented in this file.
 
 ## [5.0.1](https://github.com/Nike-Inc/SQift/releases/tag/5.0.1)
 
-Release on 2019-10-25. All issues associated with this milestone can be found using this
+Released on 2019-10-25. All issues associated with this milestone can be found using this
 [filter](https://github.com/Nike-Inc/SQift/milestone/12?closed=1).
 
 #### Fixed
@@ -59,7 +59,7 @@ Release on 2019-10-25. All issues associated with this milestone can be found us
 
 ## [5.0.0](https://github.com/Nike-Inc/SQift/releases/tag/5.0.0)
 
-Release on 2019-04-30. All issues associated with this milestone can be found using this
+Released on 2019-04-30. All issues associated with this milestone can be found using this
 [filter](https://github.com/Nike-Inc/SQift/milestone/10?closed=1).
 
 #### Updated
@@ -71,7 +71,7 @@ Release on 2019-04-30. All issues associated with this milestone can be found us
 
 ## [4.1.0](https://github.com/Nike-Inc/SQift/releases/tag/4.1.0)
 
-Release on 2019-04-30. All issues associated with this milestone can be found using this
+Released on 2019-04-30. All issues associated with this milestone can be found using this
 [filter](https://github.com/Nike-Inc/SQift/milestone/8?closed=1).
 
 #### Updated
@@ -85,7 +85,7 @@ Release on 2019-04-30. All issues associated with this milestone can be found us
 
 ## [4.0.0](https://github.com/Nike-Inc/SQift/releases/tag/4.0.0)
 
-Release on 2018-11-30. All issues associated with this milestone can be found using this
+Released on 2018-11-30. All issues associated with this milestone can be found using this
 [filter](https://github.com/Nike-Inc/SQift/milestone/7?closed=1).
 
 #### Added
@@ -97,7 +97,7 @@ Release on 2018-11-30. All issues associated with this milestone can be found us
 
 - Deployment targets to iOS 9.0, Mac OSX 10.11, WatchOS 2.0 and tvOS 9.0.
   - Updated by [Jereme Claussen](https://github.com/jereme) in Pull Request [#16](https://github.com/Nike-Inc/SQift/pull/16).
-  
+
 #### Removed
 
 - `Connection.trace` in favor of `Connection.traceEvent()`
@@ -130,10 +130,10 @@ Released on 2018-09-17. All issues associated with this milestone can be found u
 
 #### Updated
 
-- The Xcode project to use Xcode 9.3 compatibility mode. 
+- The Xcode project to use Xcode 9.3 compatibility mode.
   - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
   [#10](https://github.com/Nike-Inc/SQift/pull/10).
-- The Xcode project to support Xcode 10 and Swift 4.2. 
+- The Xcode project to support Xcode 10 and Swift 4.2.
   - Updated by [Christian Noon](https://github.com/cnoon) in Pull Request
   [#10](https://github.com/Nike-Inc/SQift/pull/10).
 - The Travis-CI YAML file to use `bundler` and Xcode 10.
@@ -176,7 +176,7 @@ Released on 2018-04-10. All issues associated with this milestone can be found u
   - Fixed by [Christian Noon](https://github.com/cnoon) in Pull Request
   [#6](https://github.com/Nike-Inc/SQift/pull/6).
 - Compiler warnings in `CodableBinding` protocol extension with associated type typealias.
-  - Fixed by [Christian Noon](https://github.com/cnoon) in Pull Request 
+  - Fixed by [Christian Noon](https://github.com/cnoon) in Pull Request
   [#6](https://github.com/Nike-Inc/SQift/pull/6).
 
 ---
