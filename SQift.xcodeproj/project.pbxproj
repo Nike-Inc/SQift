@@ -296,6 +296,7 @@
 		4CB1AE431FA1169000976A5C /* NOTICE */ = {isa = PBXFileReference; lastKnownFileType = text; path = NOTICE; sourceTree = "<group>"; };
 		4CD9E069207C47FB00D02902 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		4CE5E8681F59E88E00D47037 /* SQift.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SQift.podspec; sourceTree = "<group>"; };
+		F68734B5238B7293006DC8D8 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -617,6 +618,7 @@
 			children = (
 				4C5036FE1F69B13700B54640 /* LICENSE */,
 				4CB1AE431FA1169000976A5C /* NOTICE */,
+				F68734B5238B7293006DC8D8 /* Package.swift */,
 				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
 			);
 			name = Deployment;
