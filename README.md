@@ -54,7 +54,7 @@ The [Swift Package Manager](https://swift.org/package-manager/) is a tool for ma
 
 >Xcode 11+ is required to provide SwiftPM support for iOS, watchOS, and tvOS platforms.
 
-In Xcode menu `File -> Swift Packages -> Add Package Dependency...` enter repository URL `https://github.com/Nike-Inc/SQift.git`.
+In Xcode menu `File -> Swift Packages -> Add Package Dependency...` enter repository URL `https://github.com/DnV1eX/SQift.git`.
 
 ### CocoaPods
 
