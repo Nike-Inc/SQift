@@ -60,6 +60,8 @@ public class Connection {
     var updateHookBox: Any?
     var commitHookBox: Any?
     var rollbackHookBox: Any?
+    
+    let lock: NSLock = NSLock()
 
     // MARK: - Initialization
 
@@ -172,6 +174,8 @@ public class Connection {
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: Bindable?...) throws -> Statement {
+        lock.lock(); defer { lock.unlock() }
+
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -192,6 +196,8 @@ public class Connection {
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: [Bindable?]) throws -> Statement {
+        lock.lock(); defer { lock.unlock() }
+
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
@@ -213,6 +219,8 @@ public class Connection {
     ///
     /// - Throws: A `SQLiteError` if SQLite encounters an error compiling the SQL statement or binding the parameters.
     public func prepare(_ sql: SQL, _ parameters: [String: Bindable?]) throws -> Statement {
+        lock.lock(); defer { lock.unlock() }
+
         let statement = try Statement(connection: self, sql: sql)
         if !parameters.isEmpty { try statement.bind(parameters) }
 
