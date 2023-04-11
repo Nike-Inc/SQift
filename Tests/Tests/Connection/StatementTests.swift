@@ -91,4 +91,24 @@ class StatementTestCase: BaseConnectionTestCase {
         XCTAssertEqual(deleteSQL, "DELETE FROM person WHERE id = 1")
         XCTAssertEqual(selectSQL, "SELECT * FROM person WHERE id = 1")
     }
+    
+    func testThatMultipleStatementsWillNotCrashBadAccess() throws {
+        // Given
+        let sema = DispatchSemaphore(value: 0)
+        
+        // When
+        DispatchQueue.userInitiated.async {
+            _ = try? self.connection.prepare("SELECT name FROM agents WHERE missions > ?", 2_000)
+        }
+        
+        DispatchQueue.userInitiated.async {
+            _ = try? self.connection.prepare("SELECT name FROM agents WHERE missions < ?", 2_000)
+        }
+        
+        DispatchQueue.background.asyncAfter(seconds: 1) {
+            sema.signal()
+        }
+        
+        sema.wait()
+    }
 }
