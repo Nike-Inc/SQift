@@ -13,7 +13,7 @@ import SQift
 import SQLite3
 import XCTest
 
-class AuthozierTestCase: BaseConnectionTestCase {
+class AuthorizerTestCase: BaseConnectionTestCase {
 
     // MARK: - Helper Types
 
