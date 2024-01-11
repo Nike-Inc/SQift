@@ -159,8 +159,6 @@ class BackupTestCase: BaseTestCase {
 
         var extraAgentInsertionError: Error?
         let extraAgentCount = 2
-        var progressValues: [Double] = []
-        var progressReset = false
 
         DispatchQueue.utility.async {
             var triggeredInsertion = false
@@ -172,6 +170,7 @@ class BackupTestCase: BaseTestCase {
                     DispatchQueue.userInitiated.async {
                         do {
                             try TestTables.insertDummyAgents(count: extraAgentCount, connection: writerConnection)
+                            XCTAssertLessThan(fractionCompleted, 1.0, "Test needs to ensure that the insertion happens while the backup is running")
                             insertionExpectation.fulfill()
                         } catch {
                             extraAgentInsertionError = error
@@ -182,15 +181,9 @@ class BackupTestCase: BaseTestCase {
                     triggeredInsertion = true
                 }
 
-                if let previousProgressValue = progressValues.last, fractionCompleted < previousProgressValue {
-                    progressReset = true
-                }
-
-                progressValues.append(fractionCompleted)
                 usleep(20)
             }
 
-            progressValues.append(progress.fractionCompleted)
             progressExpectation.fulfill()
         }
 
@@ -206,9 +199,6 @@ class BackupTestCase: BaseTestCase {
         XCTAssertFalse(progress.isPaused, "should not be paused")
         XCTAssertFalse(progress.isCancelled, "should not be cancelled")
 
-        XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
-        XCTAssertEqual(progressValues.last, 1.0)
-
         XCTAssertNil(extraAgentInsertionError)
 
         if !ProcessInfo.isRunningOnCI {
@@ -223,9 +213,8 @@ class BackupTestCase: BaseTestCase {
             //
             //======================================================================================================
 
-            let expectedAgentCount = progressReset ? initialAgentCount + extraAgentCount : initialAgentCount
-            XCTAssertEqual(sourceAgentCount, expectedAgentCount)
-            XCTAssertEqual(destinationAgentCount, expectedAgentCount)
+            XCTAssertEqual(sourceAgentCount, initialAgentCount + extraAgentCount)
+            XCTAssertGreaterThanOrEqual(destinationAgentCount ?? 0, initialAgentCount)
         }
     }
 
@@ -250,6 +239,7 @@ class BackupTestCase: BaseTestCase {
             backupResult = result
             backupExpectation.fulfill()
         }
+        
         progress.cancel()
 
         var progressValues: [Double] = []

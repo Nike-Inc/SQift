@@ -106,7 +106,6 @@ extension Connection {
                     progress.totalUnitCount = totalPageCount
                     progress.completedUnitCount = completedPageCount
 
-                    usleep(1000) // sleep briefly to give time for other tasks to run
                 } while result != SQLITE_DONE
 
                 try self.check(sqlite3_backup_finish(backup)) // cleanup but track result

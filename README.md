@@ -48,6 +48,32 @@ SQift is a lightweight Swift wrapper for SQLite.
 
 ## Installation
 
+### Swift Package Manager
+
+The [Swift Package Manager](https://swift.org/package-manager/) is a tool for managing the distribution of Swift code. It’s integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+
+>Xcode 11+ is required to provide SwiftPM support for iOS, watchOS, and tvOS platforms.
+In Xcode menu `File -> Swift Packages -> Add Package Dependency...` enter repository URL `https://github.com/nike-inc/SQift.git`.
+
+Or, alternatively, in a `Package.swift` file:
+
+```swift
+let package = Package(
+    name: "MyPackage",
+    dependencies: [
+		.package(url: "https://github.com/nike-inc/SQift", from: "5.0.1"),
+    ],
+    products: [
+        // ...
+    ],
+    targets: [
+        .target(
+            name: "YourTarget",
+            dependencies: ["SQift"]
+        ),
+    // ...
+```
+
 ### CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.

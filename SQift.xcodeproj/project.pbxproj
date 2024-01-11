@@ -228,6 +228,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2F73CA762B50B32D000BEA64 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		4C13EF9E1F7C116D0069CF58 /* ProcessInfoExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessInfoExtension.swift; sourceTree = "<group>"; };
 		4C29B2E41BFB25C00086A2EF /* SQift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C29B2ED1BFB25C00086A2EF /* SQift Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQift Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -618,6 +619,7 @@
 				4C5036FE1F69B13700B54640 /* LICENSE */,
 				4CB1AE431FA1169000976A5C /* NOTICE */,
 				4CE5E8681F59E88E00D47037 /* SQift.podspec */,
+				2F73CA762B50B32D000BEA64 /* Package.swift */,
 			);
 			name = Deployment;
 			sourceTree = "<group>";
