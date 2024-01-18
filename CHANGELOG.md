@@ -43,6 +43,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [5.1](https://github.com/Nike-Inc/SQift/releases/tag/5.1)
+
+Released on 2024-01-18.
+
+#### Added
+
+- Swift Package Manager Support
+  - Added by [Ben Scheirman](https://github.com/subdigital) in Pull Request [#40](https://github.com/Nike-Inc/SQift/pull/40)
+
+#### Fixed
+
 ## [5.0.1](https://github.com/Nike-Inc/SQift/releases/tag/5.0.1)
 
 Released on 2019-10-25. All issues associated with this milestone can be found using this
