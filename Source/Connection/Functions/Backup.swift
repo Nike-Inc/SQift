@@ -105,6 +105,7 @@ extension Connection {
 
                     progress.totalUnitCount = totalPageCount
                     progress.completedUnitCount = completedPageCount
+
                 } while result != SQLITE_DONE
 
                 try self.check(sqlite3_backup_finish(backup)) // cleanup but track result

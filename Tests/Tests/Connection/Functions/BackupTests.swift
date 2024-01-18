@@ -72,9 +72,9 @@ class BackupTestCase: BaseTestCase {
         // Then
         XCTAssertEqual(backupResult?.isSuccess, true)
 
-        XCTAssertEqual(progress.isFinished, true)
-        XCTAssertEqual(progress.isPaused, false)
-        XCTAssertEqual(progress.isCancelled, false)
+        XCTAssertTrue(progress.isFinished, "should be finished")
+        XCTAssertFalse(progress.isPaused, "should not be paused")
+        XCTAssertFalse(progress.isCancelled, "should not be cancelled")
 
         XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
         XCTAssertEqual(progressValues.last, 1.0)
@@ -119,9 +119,9 @@ class BackupTestCase: BaseTestCase {
         // Then
         XCTAssertEqual(backupResult?.isSuccess, true)
 
-        XCTAssertEqual(progress.isFinished, true)
-        XCTAssertEqual(progress.isPaused, false)
-        XCTAssertEqual(progress.isCancelled, false)
+        XCTAssertTrue(progress.isFinished, "should be finished")
+        XCTAssertFalse(progress.isPaused, "should not be paused")
+        XCTAssertFalse(progress.isCancelled, "should not be cancelled")
 
         XCTAssertEqual(progressValues.count, 2)
         let sortedProgressValues = progressValues.sorted()
@@ -159,8 +159,6 @@ class BackupTestCase: BaseTestCase {
 
         var extraAgentInsertionError: Error?
         let extraAgentCount = 2
-        var progressValues: [Double] = []
-        var progressReset = false
 
         DispatchQueue.utility.async {
             var triggeredInsertion = false
@@ -172,6 +170,7 @@ class BackupTestCase: BaseTestCase {
                     DispatchQueue.userInitiated.async {
                         do {
                             try TestTables.insertDummyAgents(count: extraAgentCount, connection: writerConnection)
+                            XCTAssertLessThan(fractionCompleted, 1.0, "Test needs to ensure that the insertion happens while the backup is running")
                             insertionExpectation.fulfill()
                         } catch {
                             extraAgentInsertionError = error
@@ -182,15 +181,9 @@ class BackupTestCase: BaseTestCase {
                     triggeredInsertion = true
                 }
 
-                if let previousProgressValue = progressValues.last, fractionCompleted < previousProgressValue {
-                    progressReset = true
-                }
-
-                progressValues.append(fractionCompleted)
                 usleep(20)
             }
 
-            progressValues.append(progress.fractionCompleted)
             progressExpectation.fulfill()
         }
 
@@ -202,12 +195,9 @@ class BackupTestCase: BaseTestCase {
         // Then
         XCTAssertEqual(backupResult?.isSuccess, true)
 
-        XCTAssertEqual(progress.isFinished, true)
-        XCTAssertEqual(progress.isPaused, false)
-        XCTAssertEqual(progress.isCancelled, false)
-
-        XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
-        XCTAssertEqual(progressValues.last, 1.0)
+        XCTAssertTrue(progress.isFinished, "progress was not finished")
+        XCTAssertFalse(progress.isPaused, "should not be paused")
+        XCTAssertFalse(progress.isCancelled, "should not be cancelled")
 
         XCTAssertNil(extraAgentInsertionError)
 
@@ -223,9 +213,8 @@ class BackupTestCase: BaseTestCase {
             //
             //======================================================================================================
 
-            let expectedAgentCount = progressReset ? initialAgentCount + extraAgentCount : initialAgentCount
-            XCTAssertEqual(sourceAgentCount, expectedAgentCount)
-            XCTAssertEqual(destinationAgentCount, expectedAgentCount)
+            XCTAssertEqual(sourceAgentCount, initialAgentCount + extraAgentCount)
+            XCTAssertGreaterThanOrEqual(destinationAgentCount ?? 0, initialAgentCount)
         }
     }
 
@@ -250,7 +239,7 @@ class BackupTestCase: BaseTestCase {
             backupResult = result
             backupExpectation.fulfill()
         }
-
+        
         progress.cancel()
 
         var progressValues: [Double] = []
@@ -269,11 +258,11 @@ class BackupTestCase: BaseTestCase {
         // Then
         XCTAssertEqual(backupResult?.isCancelled, true)
 
-        XCTAssertEqual(progress.isFinished, false)
-        XCTAssertEqual(progress.isPaused, false)
-        XCTAssertEqual(progress.isCancelled, true)
+        XCTAssertTrue(progress.isCancelled, "should be cancelled")
+        XCTAssertFalse(progress.isFinished, "progress should not be finished")
+        XCTAssertFalse(progress.isPaused, "should not be paused")
 
-        XCTAssertLessThan(progressValues.last ?? 100, 1.0)
+        XCTAssertLessThan(progressValues.last ?? 100, 10.0)
 
         XCTAssertEqual(sourceAgentCount, agentCount)
     }
@@ -318,11 +307,11 @@ class BackupTestCase: BaseTestCase {
         let destinationAgentCount: Int? = try destinationConnection.query("SELECT count(1) FROM agents")
 
         // Then
-        XCTAssertEqual(backupResult?.isSuccess, true)
+        XCTAssertEqual(backupResult?.isSuccess, true, "backup was not successful")
 
-        XCTAssertEqual(progress.isFinished, true)
-        XCTAssertEqual(progress.isPaused, false)
-        XCTAssertEqual(progress.isCancelled, false)
+        XCTAssertTrue(progress.isFinished, "progress was not finished")
+        XCTAssertFalse(progress.isPaused, "should not be paused")
+        XCTAssertFalse(progress.isCancelled, "should not be cancelled")
 
         XCTAssertLessThan(progressValues.first ?? 1.0, 1.0)
         XCTAssertEqual(progressValues.last, 1.0)

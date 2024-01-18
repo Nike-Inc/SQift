@@ -54,6 +54,9 @@ class TableLockPolicyTestCase: BaseConnectionTestCase {
         var writeError: Error?
         var readError: Error?
 
+        // give any previous test run time to release a lock so the write can actually start
+        Thread.sleep(forTimeInterval: 0.1)
+
         // When
         DispatchQueue.userInitiated.async {
             do {
@@ -65,7 +68,7 @@ class TableLockPolicyTestCase: BaseConnectionTestCase {
             writeExpectation.fulfill()
         }
 
-        DispatchQueue.userInitiated.asyncAfter(seconds: 0.05) {
+        DispatchQueue.userInitiated.asyncAfter(seconds: 0.001) {
             do {
                 readCount = try readConnection.query("SELECT count(*) FROM agents")
             } catch {
@@ -75,11 +78,11 @@ class TableLockPolicyTestCase: BaseConnectionTestCase {
             readExpectation.fulfill()
         }
 
-        waitForExpectations(timeout: timeout, handler: nil)
+        wait(for: [readExpectation, writeExpectation], timeout: timeout)
 
         // Then
         XCTAssertNil(writeError)
-        XCTAssertNil(readCount)
+        XCTAssertNil(readCount, "Read should not have succeeded, it should have thrown an error")
         XCTAssertNotNil(readError)
 
         if let readError = readError as? SQLiteError {
