@@ -61,7 +61,7 @@ Or, alternatively, in a `Package.swift` file:
 let package = Package(
     name: "MyPackage",
     dependencies: [
-		.package(url: "https://github.com/nike-inc/SQift", from: "5.0.1"),
+		.package(url: "https://github.com/nike-inc/SQift", from: "5.1"),
     ],
     products: [
         // ...
