@@ -523,7 +523,7 @@ SQift allows you to do this through the `traceEvent` API by registering a closur
 let connection = try Connection(storageLocation: storageLocation)
 
 connection.traceEvent { event in
-    if case .statement(_, let sql) = sql {
+    if case .statement(_, let sql) = event {
         print(sql)
     }
 }
